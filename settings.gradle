@@ -1,3 +1,4 @@
 rootProject.name = 'fastline'
 include 'common'
 include 'delivery-service'
+include 'ai-service'
