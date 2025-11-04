@@ -39,3 +39,6 @@ out/
 
 ### Config ###
 .env*
+
+### macOS ###
+.DS_Store
