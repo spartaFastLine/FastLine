@@ -9,7 +9,7 @@ public class ResponseUtil {
 
 	// 성공 응답 생성 (데이터와 메시지, 상태코드가 있는 경우)
 	public static <T> ResponseEntity<ApiResponse<T>> successResponse(
-            SuccessCode successCode, T data) {
+			SuccessCode successCode, T data) {
 		ApiResponse<T> response = ApiResponse.ofSuccess(successCode.getMessage(), data);
 		return new ResponseEntity<>(response, successCode.getHttpStatus());
 	}

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class DeliveryRepositoryImpl implements DeliveryRepository {
 
-    private final JpaDeliveryRepository jpaDeliveryRepository;
+	private final JpaDeliveryRepository jpaDeliveryRepository;
 }

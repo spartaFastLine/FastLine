@@ -1,4 +1,3 @@
 package com.fastline.common.dto;
 
-public class TestDTO {
-}
+public class TestDTO {}
