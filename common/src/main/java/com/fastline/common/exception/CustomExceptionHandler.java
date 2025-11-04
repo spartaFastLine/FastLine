@@ -2,14 +2,13 @@ package com.fastline.common.exception;
 
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j(topic = "CustomExceptionHandler")
