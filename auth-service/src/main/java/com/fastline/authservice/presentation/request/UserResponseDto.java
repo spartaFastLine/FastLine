@@ -7,6 +7,7 @@ import java.util.UUID;
 
 @Getter
 public class UserResponseDto {
+    private final Long userId;
     private final String email;
     private final String username;
     private final String password;
@@ -16,6 +17,7 @@ public class UserResponseDto {
     private final UUID hubId;
 
     public UserResponseDto(User user) {
+        this.userId = user.getId();
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.password = user.getPassword();

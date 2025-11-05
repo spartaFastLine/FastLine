@@ -11,3 +11,29 @@ java {
         languageVersion = JavaLanguageVersion.of(17)
     }
 }
+// Querydsl 설정
+dependencies {
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+}
+
+def querydslDir = layout.buildDirectory.dir("generated/querydsl").get().asFile
+
+sourceSets {
+    main {
+        java {
+            srcDir querydslDir
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorPath = configurations.annotationProcessor
+    options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+}
+
+jar {
+    from(querydslDir) // generated Q 클래스(소스)를 포함시키거나 컴파일된 클래스를 포함하게 보장
+}

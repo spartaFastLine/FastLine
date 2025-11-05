@@ -37,7 +37,7 @@ public class WebSecurityConfig {
                 authorizeHttpRequests.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()  //resources 접근 허용 설정
                         .requestMatchers("/api/auth/signup", "/api/auth/login" ).permitAll() // 회원가입, 로그인 접근 허용
 //                        .requestMatchers("/api/auth/permmit/signup").hasAnyRole("MASTER", "HUB_MANAGER")  //마스터만 접근 허용
-                        .requestMatchers("/api/auth/permmit/signup").hasAnyAuthority("ROLE_MASTER", "ROLE_HUB_MANAGER")  //마스터만 접근 허용
+                        .requestMatchers("/api/auth/permmit/signup", "api/users/managers/*").hasAnyAuthority("ROLE_MASTER", "ROLE_HUB_MANAGER")  //마스터만 접근 허용
                         .anyRequest().authenticated()); // 그 외 모든 요청 인증처리
 
         // jwt(토큰 기반 인증 방식)는 세션을 필요로 하지 않음, STATELESS -> 완전 사용 안함

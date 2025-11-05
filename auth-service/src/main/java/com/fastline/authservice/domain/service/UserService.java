@@ -1,16 +1,20 @@
 package com.fastline.authservice.domain.service;
 
 import com.fastline.authservice.domain.model.User;
+import com.fastline.authservice.domain.model.UserRole;
 import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.authservice.presentation.request.UpdatePasswordRequestDto;
 import com.fastline.authservice.presentation.request.UpdateSlackRequestDto;
 import com.fastline.authservice.presentation.request.UserResponseDto;
+import com.fastline.authservice.presentation.request.UserSearchRequestDto;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,15 +31,19 @@ public class UserService {
     }
 
     //유저 다건 조회
-    //todo : 검색 조건에 따른 필터링 로직 추가 필요
     //todo : 정렬조건에 따라 정렬 로직 추가 필요
-//    @Transactional(readOnly = true)
-//    public Page<UserResponseDto> getUsers(Long userId, UserSearchRequestDto requestDto) {
-//        User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
-//        Pageable pageable = PageRequest.of(requestDto.getPage(), requestDto.getSize());
-//
-//        return null;
-//    }
+    //todo : 페이징 처리 추가 필요
+    @Transactional(readOnly = true)
+    public List<UserResponseDto> getUsers(Long userId, UserSearchRequestDto requestDto) {
+        User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        //허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
+        if(requestDto.getHubId()!=null) {
+            if(user.getRole()!= UserRole.MASTER&&!user.getHubId().equals(requestDto.getHubId()))
+                throw new CustomException(ErrorCode.NOT_HUB_MANAGER);
+        }
+        List<User> users = userRepository.findUsers(requestDto.getUsername(), requestDto.getHubId(), requestDto.getRole(), requestDto.getStatus());
+        return users.stream().map(UserResponseDto::new).toList();
+    }
 
     //비밀번호 수정
     @Transactional

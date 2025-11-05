@@ -11,10 +11,11 @@ import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.success.SuccessCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -23,12 +24,12 @@ public class UserController {
     private final UserService userService;
 
     //유저 다건 조회
-//    @GetMapping("/managers")
-//    public ResponseEntity<ApiResponse<Page<UserResponseDto>>> getUsers(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid UserSearchRequestDto requestDto) {
-//        Page<UserResponseDto> responseDto = userService.getUsers(userDetails.getUser().getId(), requestDto);
-//        return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
-//
-//    }
+    @GetMapping("/managers/users")
+    public ResponseEntity<ApiResponse<List<UserResponseDto>>> getUsers(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserSearchRequestDto requestDto) {
+        List<UserResponseDto> responseDto = userService.getUsers(userDetails.getUser().getId(), requestDto);
+        return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
+
+    }
     //유저 단건 조회- 전체 가능
     @GetMapping("/user")
     public ResponseEntity<ApiResponse<UserResponseDto>> getUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
