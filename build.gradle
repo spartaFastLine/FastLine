@@ -73,3 +73,10 @@ project(':ai-service') {
         implementation project(':common')
     }
 }
+
+
+project(':vendor-service') {
+    dependencies {
+        implementation project(':common')
+    }
+}
