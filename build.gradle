@@ -72,3 +72,8 @@ project(':ai-service') {
         implementation project(':common')
     }
 }
+project(':auth-service') {
+    dependencies {
+        implementation project(':common')
+    }
+}
