@@ -54,7 +54,7 @@ public class AuthService {
         User manager = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
         User newUser = userRepository.findById(requestDto.getUserId()).orElseThrow(() -> new IllegalArgumentException("승인할 사용자를 찾을 수 없습니다."));
         // 관리자가 MASTER가 아니거나 HUB_MANAGER인데 승인할 사용자가 다른 허브에 속해있다면 예외 발생
-        if(manager.getRole()!=UserRole.MASTER&&(manager.getRole()==UserRole.HUB_MANAGER&&newUser.getHubId()!=manager.getHubId()))
+        if(manager.getRole()!=UserRole.MASTER&&!(manager.getRole()==UserRole.HUB_MANAGER&&newUser.getHubId()==manager.getHubId()))
             throw new IllegalArgumentException("사용자 승인 권한이 없습니다.");
 
         if(newUser.getStatus() != UserStatus.PENDING) throw new IllegalArgumentException("승인 대기중인 사용자가 아닙니다.");
