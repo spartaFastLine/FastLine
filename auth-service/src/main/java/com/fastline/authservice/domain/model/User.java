@@ -1,5 +1,6 @@
 package com.fastline.authservice.domain.model;
 
+import com.fastline.common.jpa.TimeBaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import java.util.UUID;
 @Entity
 @Table(name="p_users")
 @NoArgsConstructor
-public class User extends  BaseTimestamp{
+public class User extends TimeBaseEntity {
     @Id
     @Column(name="user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
