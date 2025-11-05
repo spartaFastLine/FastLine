@@ -2,6 +2,7 @@ package com.fastline.authservice.domain.model;
 
 import com.fastline.common.jpa.TimeBaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -51,5 +52,13 @@ public class User extends TimeBaseEntity {
 
     public void permitSignup() {
         this.status = UserStatus.APPROVE;
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
+    public void updateSlackId(@NotBlank String slackId) {
+        this.slackId = slackId;
     }
 }

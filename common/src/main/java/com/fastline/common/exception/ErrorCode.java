@@ -20,6 +20,7 @@ public enum ErrorCode {
 	EXIST_USERNAME(HttpStatus.BAD_REQUEST, "이미 존재하는 사용자 이름입니다."),
 	NOT_PENDING(HttpStatus.BAD_REQUEST, "승인대기 상태가 아닙니다."),
 	PASSWORD_NOT_MATCHES(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
+	PASSWORD_EQUAL(HttpStatus.BAD_REQUEST, "기존의 비밀번호와 동일한 비밀번호입니다."),
 	NO_USER_PERMIT_AUTHORITY(HttpStatus.BAD_REQUEST, "사용자 승인 권한이 없습니다."),
 	DUPLICATED(HttpStatus.CONFLICT, "회원가입 실패"),
 	FORBIDDEN(HttpStatus.FORBIDDEN, "인가 실패"),
