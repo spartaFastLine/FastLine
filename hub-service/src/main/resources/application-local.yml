@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
 
 # 로컬 디버깅용 SQL 로그(필요 시)
 logging:
