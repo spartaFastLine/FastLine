@@ -5,6 +5,9 @@ import com.fastline.authservice.domain.service.AuthService;
 import com.fastline.authservice.presentation.request.LoginRequestDto;
 import com.fastline.authservice.presentation.request.PermitRequestDto;
 import com.fastline.authservice.presentation.request.SignupRequestDto;
+import com.fastline.common.response.ApiResponse;
+import com.fastline.common.response.ResponseUtil;
+import com.fastline.common.success.SuccessCode;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,22 +23,22 @@ public class AuthController {
 
     //회원가입
     @PostMapping("/signup")
-    public ResponseEntity signup(@RequestBody @Valid SignupRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<Void>> signup(@RequestBody @Valid SignupRequestDto requestDto) {
         authService.signup(requestDto);
-        return ResponseEntity.ok().build();
+        return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_SUCCESS);
     }
 
     //회원가입 승인
     @PutMapping("/permit/signup")
-    public ResponseEntity permitSignup(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid PermitRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<Void>> permitSignup(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid PermitRequestDto requestDto) {
         authService.permitSignup(userDetails.getUser().getId(), requestDto);
-        return ResponseEntity.ok().build();
+        return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_PERMIT_SUCCESS);
     }
 
     //로그인
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid LoginRequestDto requestDto, HttpServletResponse res) {
+    public ResponseEntity<ApiResponse<Void>> login(@RequestBody @Valid LoginRequestDto requestDto, HttpServletResponse res) {
         authService.login(requestDto, res);
-        return ResponseEntity.ok().build();
+        return ResponseUtil.successResponse(SuccessCode.USER_LOGIN_SUCCESS);
     }
 }

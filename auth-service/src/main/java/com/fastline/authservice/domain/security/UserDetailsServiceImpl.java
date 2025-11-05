@@ -3,6 +3,8 @@ package com.fastline.authservice.domain.security;
 import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.model.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
+import com.fastline.common.exception.CustomException;
+import com.fastline.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,8 +21,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
-        if(user.getStatus()!= UserStatus.APPROVE) throw new IllegalArgumentException("승인된 사용자가 아닙니다.");
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        if(user.getStatus()!= UserStatus.APPROVE) throw new CustomException(ErrorCode.USER_NOT_APPROVE);
         return new UserDetailsImpl(user);
     }
 }
