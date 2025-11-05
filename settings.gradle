@@ -1,5 +1,6 @@
 rootProject.name = 'fastline'
 include 'common'
 include 'delivery-service'
+include 'hub-service'
 include 'ai-service'
 include 'vendor-service'

@@ -67,6 +67,11 @@ project(':delivery-service') {
         implementation project(':common')
     }
 }
+project(':hub-service') {
+    dependencies {
+        implementation project(':common')
+    }
+}
 
 project(':ai-service') {
     dependencies {
