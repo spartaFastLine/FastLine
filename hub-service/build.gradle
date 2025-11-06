@@ -19,53 +19,11 @@ repositories {
 }
 
 dependencies {
-    /*implementation(platform("org.springframework.boot:spring-boot-dependencies:3.3.4"))
-    implementation(platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.5"))*/
-    /* --- Spring Core --- */
-   /* implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-*/
-    /* --- JPA & DB --- */
-   /* implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtimeOnly 'org.postgresql:postgresql'   // DB: PostgreSQL
-    testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:postgresql")
-   */ //implementation 'org.flywaydb:flyway-core' // DB Migration
-
-    /* --- Messaging (Saga/Event) --- */
-    //implementation 'org.springframework.boot:spring-boot-starter-amqp' // RabbitMQ
-    // 또는 Kafka를 쓴다면
-    // implementation 'org.springframework.kafka:spring-kafka'
-
-    /* --- Common Utils --- */
-//    implementation 'org.springframework.boot:spring-boot-starter-aop'
-
-    /* --- Auth / Security (공통 Gateway와 연동) --- */
-    //implementation 'org.springframework.boot:spring-boot-starter-security'
-    //implementation 'org.keycloak:keycloak-spring-boot-starter:24.0.5'
-
-    /* --- Cloud / Service Discovery (MSA 구조) --- */
-//    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
- //   implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-
-    /* --- Logging --- */
-//    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-
-    /* --- Test --- */
-//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-//
-//    compileOnly 'org.projectlombok:lombok'
-//    annotationProcessor 'org.projectlombok:lombok'
-
-    //implementation(platform("org.springframework.boot:spring-boot-dependencies:3.3.4"))
-    //implementation(platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.5"))
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-//  implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    //implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     //implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     compileOnly 'org.projectlombok:lombok'
