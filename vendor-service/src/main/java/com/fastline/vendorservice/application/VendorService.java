@@ -2,10 +2,9 @@ package com.fastline.vendorservice.application;
 
 import com.fastline.vendorservice.application.command.CreateVendorCommand;
 import com.fastline.vendorservice.domain.entity.Vendor;
-import com.fastline.vendorservice.domain.entity.VendorType;
 import com.fastline.vendorservice.domain.repository.VendorRepository;
 import com.fastline.vendorservice.domain.vo.VendorAddress;
-import com.fastline.vendorservice.infrastructure.external.HubClient;
+import com.fastline.vendorservice.domain.vo.VendorType;
 import com.fastline.vendorservice.presentation.response.VendorResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -42,12 +41,12 @@ public class VendorService {
         );
 
         Vendor insertedVendor = repository.insert(vendor);
-        return new VendorResponse(
-                insertedVendor.getId(),
-                insertedVendor.getName(),
-                insertedVendor.getType(),
-                insertedVendor.getAddress(),
-                insertedVendor.getHubId()
-        );
+        return VendorResponse.fromVendor(insertedVendor);
+    }
+
+    public VendorResponse findByVendorId(UUID vendorId) {
+
+        Vendor findVendor = repository.findByVendorId(vendorId);
+        return VendorResponse.fromVendor(findVendor);
     }
 }

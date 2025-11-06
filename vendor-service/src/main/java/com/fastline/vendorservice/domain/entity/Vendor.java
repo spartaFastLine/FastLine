@@ -4,9 +4,12 @@ import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.jpa.TimeBaseEntity;
 import com.fastline.vendorservice.domain.vo.VendorAddress;
+import com.fastline.vendorservice.domain.vo.VendorType;
 import jakarta.persistence.*;
-import java.util.UUID;
 import lombok.Getter;
+import lombok.ToString;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "p_vendor", uniqueConstraints = @UniqueConstraint(name = "addressIsUnique", columnNames = {"city", "district", "roadName", "zipCode"}))

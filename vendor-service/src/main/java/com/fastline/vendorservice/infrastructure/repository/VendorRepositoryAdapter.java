@@ -29,4 +29,12 @@ public class VendorRepositoryAdapter implements VendorRepository{
 
         return insertedVendor;
     }
+
+    @Override
+    public Vendor findByVendorId(UUID vendorId) {
+        return jpaVendorRepository.findById(vendorId)
+                .orElseThrow(
+                        () -> new CustomException(ErrorCode.VENDOR_NOT_FOUND)
+                );
+    }
 }

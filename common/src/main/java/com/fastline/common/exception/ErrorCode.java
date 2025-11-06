@@ -24,7 +24,8 @@ public enum ErrorCode {
 	ALREADY_DELETED_USER(HttpStatus.CONFLICT, "회원 삭제 실패"),
 
     // 업체 (vendor)
-    ADDRESS_DUPLICATED(HttpStatus.CONFLICT, "업체 등록 실패");
+    ADDRESS_DUPLICATED(HttpStatus.CONFLICT, "업체 등록 실패"),
+    VENDOR_NOT_FOUND(HttpStatus.NOT_FOUND, "업체 조회 실패");
 
 	private final HttpStatus httpStatus;
 	private final String message;
