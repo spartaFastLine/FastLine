@@ -48,4 +48,13 @@ public class Vendor extends TimeBaseEntity {
         vendor.hubId = hubId;
         return vendor;
     }
+
+    public Vendor update(String name, VendorType type, VendorAddress address, UUID hubId) {
+
+        this.name = name;
+        this.type = type;
+        this.address = address;
+        this.hubId = hubId;
+        return this;
+    }
 }
