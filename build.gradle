@@ -25,6 +25,12 @@ subprojects {
         mavenCentral()
     }
 
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:2025.0.0"
+        }
+    }
+
     dependencies {
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
@@ -63,6 +69,11 @@ project(':common') {
 }
 
 project(':delivery-service') {
+    dependencies {
+        implementation project(':common')
+    }
+}
+project(':hub-service') {
     dependencies {
         implementation project(':common')
     }
