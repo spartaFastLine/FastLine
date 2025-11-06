@@ -1,6 +1,6 @@
 spring:
   config:
-    import: optional:file:.env.dev[.properties]
+    import: optional:file:./ai-service/.env.dev[.properties]
 
   datasource:
     driver-class-name: org.postgresql.Driver
