@@ -31,6 +31,11 @@ spring:
     open-in-view: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+gemini:
+  api-key: ${GEMINI_API_KEY}
+  model: "gemini-2.5-flash"
+  base-url: "https://generativelanguage.googleapis.com/v1/models/"
+
 logging:
   level:
     root: INFO
