@@ -25,6 +25,7 @@ public enum ErrorCode {
 
     // 업체 (vendor)
     ADDRESS_DUPLICATED(HttpStatus.CONFLICT, "업체 등록 실패"),
+    VENDOR_NOT_FOUND(HttpStatus.NOT_FOUND, "업체 조회 실패"),
 
 	// AI
 	GENERATION_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "AI 응답 생성 실패");

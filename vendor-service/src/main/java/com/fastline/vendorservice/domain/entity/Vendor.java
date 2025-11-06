@@ -3,14 +3,27 @@ package com.fastline.vendorservice.domain.entity;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.jpa.TimeBaseEntity;
+import com.fastline.vendorservice.application.command.UpdateVendorCommand;
 import com.fastline.vendorservice.domain.vo.VendorAddress;
+import com.fastline.vendorservice.domain.vo.VendorType;
 import jakarta.persistence.*;
-import java.util.UUID;
 import lombok.Getter;
+import lombok.ToString;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "p_vendor", uniqueConstraints = @UniqueConstraint(name = "addressIsUnique", columnNames = {"city", "district", "roadName", "zipCode"}))
 @Getter
+@FilterDef(
+        name = "softDeleteFilter",
+        defaultCondition = "deleted_at IS NULL",
+        autoEnabled = true,
+        applyToLoadByKey = true
+)
+@Filter(name = "softDeleteFilter")
 public class Vendor extends TimeBaseEntity {
 
 	@Id
@@ -44,5 +57,15 @@ public class Vendor extends TimeBaseEntity {
         vendor.address = address;
         vendor.hubId = hubId;
         return vendor;
+    }
+
+    public Vendor update(UpdateVendorCommand updateCommand) {
+
+        this.name = updateCommand.name() == null ? getName() : updateCommand.name();
+        this.type = updateCommand.type() == null ? getType() : VendorType.fromString(updateCommand.type());
+        this.address.update(updateCommand);
+        this.hubId = updateCommand.hubId() ==  null ? getHubId() : updateCommand.hubId();
+
+        return this;
     }
 }

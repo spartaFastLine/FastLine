@@ -1,4 +1,4 @@
-package com.fastline.vendorservice.domain.entity;
+package com.fastline.vendorservice.domain.vo;
 
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;

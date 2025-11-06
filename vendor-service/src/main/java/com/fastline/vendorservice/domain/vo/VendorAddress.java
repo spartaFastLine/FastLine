@@ -2,6 +2,8 @@ package com.fastline.vendorservice.domain.vo;
 
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
+import com.fastline.vendorservice.application.command.UpdateVendorCommand;
+import com.fastline.vendorservice.domain.entity.Vendor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -36,6 +38,17 @@ public class VendorAddress {
         vendorAddress.district = district;
         vendorAddress.roadName = roadName;
         vendorAddress.zipCode = zipCode;
+        return vendorAddress;
+    }
+
+    public VendorAddress update(UpdateVendorCommand command) {
+
+        VendorAddress vendorAddress = new VendorAddress();
+        vendorAddress.city = command.city() != null ? command.city() : this.city;
+        vendorAddress.district = command.district() != null ? command.district() : this.district;
+        vendorAddress.roadName = command.roadName() != null ? command.roadName() : this.roadName;
+        vendorAddress.zipCode = command.zipCode() != null ? command.zipCode() : this.zipCode;
+
         return vendorAddress;
     }
 }
