@@ -61,10 +61,10 @@ public class Vendor extends TimeBaseEntity {
 
     public Vendor update(UpdateVendorCommand updateCommand) {
 
-        this.name = updateCommand.name() == null ? getName() : updateCommand.name();
-        this.type = updateCommand.type() == null ? getType() : VendorType.fromString(updateCommand.type());
-        this.address.update(updateCommand);
-        this.hubId = updateCommand.hubId() ==  null ? getHubId() : updateCommand.hubId();
+        this.name = updateCommand.name() == null ? name : updateCommand.name();
+        this.type = updateCommand.type() == null ? type : VendorType.fromString(updateCommand.type());
+        this.address = address.update(updateCommand);
+        this.hubId = updateCommand.hubId() ==  null ? hubId : updateCommand.hubId();
 
         return this;
     }
