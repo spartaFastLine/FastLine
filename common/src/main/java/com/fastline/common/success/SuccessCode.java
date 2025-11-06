@@ -21,7 +21,10 @@ public enum SuccessCode {
     VENDOR_SAVE_SUCCESS(HttpStatus.CREATED, "업체 등록 성공"),
 
 	// AI
-	MESSAGE_GENERATION_SUCCESS(HttpStatus.OK, "최종 발송 시한 정보 생성 성공");
+	MESSAGE_GENERATION_SUCCESS(HttpStatus.OK, "최종 발송 시한 정보 생성 성공"),
+
+    // 배송 (delivery)
+    DELIVERY_SAVE_SUCCESS(HttpStatus.CREATED, "배송 생성 성공");
 
 	private final HttpStatus httpStatus;
 	private final String message;
