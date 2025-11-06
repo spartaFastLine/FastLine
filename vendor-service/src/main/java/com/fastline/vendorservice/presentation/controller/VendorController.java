@@ -8,12 +8,9 @@ import com.fastline.common.success.SuccessCode;
 import com.fastline.vendorservice.application.VendorService;
 import com.fastline.vendorservice.application.command.CreateVendorCommand;
 import com.fastline.vendorservice.application.command.UpdateVendorCommand;
-import com.fastline.vendorservice.domain.entity.Vendor;
 import com.fastline.vendorservice.presentation.request.VendorCreateRequest;
 import com.fastline.vendorservice.presentation.request.VendorUpdateRequest;
-import com.fastline.vendorservice.presentation.response.vendor.VendorCreateResponse;
-import com.fastline.vendorservice.presentation.response.vendor.VendorFindResponse;
-import com.fastline.vendorservice.presentation.response.vendor.VendorUpdateResponse;
+import com.fastline.vendorservice.presentation.response.VendorResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +26,7 @@ public class VendorController {
     private final VendorService service;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<VendorCreateResponse>> insertVendor(@RequestBody @Valid VendorCreateRequest createRequest) {
+    public ResponseEntity<ApiResponse<VendorResponse>> insertVendor(@RequestBody @Valid VendorCreateRequest createRequest) {
 
         CreateVendorCommand createCommand = new CreateVendorCommand(
                 createRequest.name(),
@@ -41,35 +38,20 @@ public class VendorController {
                 createRequest.hubId()
         );
 
-        Vendor vendor = service.insert(createCommand);
-        VendorCreateResponse response = new VendorCreateResponse(
-                vendor.getId(),
-                vendor.getName(),
-                vendor.getType(),
-                vendor.getAddress(),
-                vendor.getHubId()
-        );
+        VendorResponse response = service.insert(createCommand);
         return ResponseUtil.successResponse(SuccessCode.VENDOR_SAVE_SUCCESS , response);
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<VendorFindResponse>> findVendor(@RequestParam UUID vendorId) {
+    public ResponseEntity<ApiResponse<VendorResponse>> getVendor(@RequestParam UUID vendorId) {
 
-        Vendor vendor = service.findByVendorId(vendorId);
-        VendorFindResponse response = new VendorFindResponse(
-                vendor.getId(),
-                vendor.getName(),
-                vendor.getType(),
-                vendor.getAddress(),
-                vendor.getHubId()
-        );
-
+        VendorResponse response = service.findByVendorId(vendorId);
         return ResponseUtil.successResponse(SuccessCode.VENDOR_FIND_SUCCESS, response);
     }
 
     @PutMapping
-    public ResponseEntity<ApiResponse<VendorUpdateResponse>> updateVendor(@RequestBody @Valid VendorUpdateRequest updateRequest,
-                                                                          @RequestParam UUID vendorId) {
+    public ResponseEntity<ApiResponse<VendorResponse>> updateVendor(@RequestBody @Valid VendorUpdateRequest updateRequest,
+                                                                    @RequestParam UUID vendorId) {
 
         if(updateRequest == null)
             throw new CustomException(ErrorCode.VALIDATION_ERROR);
@@ -84,14 +66,7 @@ public class VendorController {
                 updateRequest.hubId()
         );
 
-        Vendor vendor = service.updateVendor(vendorId, updateCommand);
-        VendorUpdateResponse response = new VendorUpdateResponse(
-                vendor.getName(),
-                vendor.getType(),
-                vendor.getAddress(),
-                vendor.getHubId()
-        );
-
+        VendorResponse response = service.updateVendor(vendorId, updateCommand);
         return ResponseUtil.successResponse(SuccessCode.VENDOR_UPDATE_SUCCESS, response);
     }
 

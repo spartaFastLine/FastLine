@@ -6,16 +6,15 @@ import com.fastline.vendorservice.domain.entity.Vendor;
 import com.fastline.vendorservice.domain.repository.VendorRepository;
 import com.fastline.vendorservice.domain.vo.VendorAddress;
 import com.fastline.vendorservice.domain.vo.VendorType;
-
+import com.fastline.vendorservice.presentation.response.VendorResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class VendorService {
 
     private final VendorRepository repository;
@@ -25,8 +24,8 @@ public class VendorService {
      * TODO: 허브 서비스로의 API 호출 성공, 실패시 흐름처리 작성 필요
      * TODO: 성공시, Vendor.create의 UUID.randomUUID() 부분에 허브ID. 실패시 적절한 예외처리
      */
-
-    public Vendor insert(CreateVendorCommand createCommand) {
+    @Transactional
+    public VendorResponse insert(CreateVendorCommand createCommand) {
 
         VendorType vendorType = VendorType.fromString(createCommand.type());
 
@@ -42,20 +41,21 @@ public class VendorService {
                 createCommand.name(), vendorType, vendorAddress, UUID.randomUUID()
         );
 
-        return repository.insert(vendor);
+        Vendor insertedVendor = repository.insert(vendor);
+        return VendorResponse.fromVendor(insertedVendor);
     }
 
-    @Transactional(readOnly = true)
-    public Vendor findByVendorId(UUID vendorId) {
+    public VendorResponse findByVendorId(UUID vendorId) {
 
-        return repository.findByVendorId(vendorId);
+        Vendor findVendor = repository.findByVendorId(vendorId);
+        return VendorResponse.fromVendor(findVendor);
     }
 
     /**
      * TODO: hubId 업데이트 시도시, 유효한 Id인지 허브서비스로의 API요청 흐름 필요.
      * TODO: 성공시 그대로 진행, 실패시 적절한 예외처리
      */
-    public Vendor updateVendor(UUID vendorId, UpdateVendorCommand updateCommand) {
+    public VendorResponse updateVendor(UUID vendorId, UpdateVendorCommand updateCommand) {
 
         Vendor findVendor = repository.findByVendorId(vendorId);
         if (updateCommand.hubId() != null && updateCommand.hubId() != findVendor.getHubId()) {
@@ -63,7 +63,9 @@ public class VendorService {
         }
 
         findVendor.update(updateCommand);
-        return repository.insert(findVendor);
+        Vendor updatedVendor = repository.insert(findVendor);
+
+        return VendorResponse.fromVendor(updatedVendor);
     }
 
     public UUID deleteVendor(UUID vendorId) {
