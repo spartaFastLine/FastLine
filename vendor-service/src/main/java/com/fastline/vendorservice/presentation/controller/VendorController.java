@@ -1,0 +1,41 @@
+package com.fastline.vendorservice.presentation.controller;
+
+import com.fastline.common.response.ApiResponse;
+import com.fastline.common.response.ResponseUtil;
+import com.fastline.common.success.SuccessCode;
+import com.fastline.vendorservice.application.VendorService;
+import com.fastline.vendorservice.application.command.CreateVendorCommand;
+import com.fastline.vendorservice.presentation.request.VendorCreateRequest;
+import com.fastline.vendorservice.presentation.response.VendorResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/vendor")
+@RequiredArgsConstructor
+public class VendorController {
+
+    private final VendorService service;
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<VendorResponse>> insertVendor(@RequestBody @Valid VendorCreateRequest createRequest) {
+
+        CreateVendorCommand createCommand = new CreateVendorCommand(
+                createRequest.name(),
+                createRequest.type(),
+                createRequest.city(),
+                createRequest.district(),
+                createRequest.roadName(),
+                createRequest.zipCode(),
+                createRequest.hubId()
+        );
+
+        VendorResponse response = service.insert(createCommand);
+        return ResponseUtil.successResponse(SuccessCode.VENDOR_SAVE_SUCCESS , response);
+    }
+}
