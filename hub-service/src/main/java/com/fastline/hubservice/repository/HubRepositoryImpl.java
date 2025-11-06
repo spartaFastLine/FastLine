@@ -6,7 +6,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class HubRepositoryImpl implements HubRepository {
+public class HubRepositoryImpl{
+//public class HubRepositoryImpl implements HubRepository {
 
-	// private final HubRepository hubRepository;
+    // private final HubRepository hubRepository;
 }
