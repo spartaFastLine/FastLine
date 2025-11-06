@@ -1,10 +1,10 @@
- package com.fastline.aiservice.domain;
+package com.fastline.aiservice.domain;
 
- import lombok.Getter;
+import lombok.Getter;
 
- @Getter
- public enum RequestStatus {
+@Getter
+public enum RequestStatus {
 	REQUESTED,
 	SUCCESS,
 	FAIL
- }
+}
