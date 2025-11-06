@@ -2,6 +2,7 @@ package com.fastline.vendorservice.domain.vo;
 
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
+import com.fastline.vendorservice.application.command.UpdateVendorCommand;
 import com.fastline.vendorservice.domain.entity.Vendor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -40,13 +41,13 @@ public class VendorAddress {
         return vendorAddress;
     }
 
-    public VendorAddress update(String city, String district, String roadName, String zipCode) {
+    public VendorAddress update(UpdateVendorCommand command) {
 
         VendorAddress vendorAddress = new VendorAddress();
-        vendorAddress.city = city != null ? city : this.city;
-        vendorAddress.district = district != null ? district : this.district;
-        vendorAddress.roadName = roadName != null ? roadName : this.roadName;
-        vendorAddress.zipCode = zipCode != null ? zipCode : this.zipCode;
+        vendorAddress.city = command.city() != null ? command.city() : this.city;
+        vendorAddress.district = command.district() != null ? command.district() : this.district;
+        vendorAddress.roadName = command.roadName() != null ? command.roadName() : this.roadName;
+        vendorAddress.zipCode = command.zipCode() != null ? command.zipCode() : this.zipCode;
 
         return vendorAddress;
     }
