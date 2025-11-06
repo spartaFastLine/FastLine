@@ -40,4 +40,4 @@ logging:
     org.springframework.jdbc.core: DEBUG
 
 server:
-  port: 8088
+  port: 8089
