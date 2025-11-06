@@ -23,6 +23,7 @@ public enum ErrorCode {
 	PASSWORD_NOT_MATCHES(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
 	PASSWORD_EQUAL(HttpStatus.BAD_REQUEST, "기존의 비밀번호와 동일한 비밀번호입니다."),
 	NO_USER_PERMIT_AUTHORITY(HttpStatus.BAD_REQUEST, "사용자 승인 권한이 없습니다."),
+	INVALID_SORYBY(HttpStatus.BAD_REQUEST, "잘못된 정렬 조건입니다"),
 	DUPLICATED(HttpStatus.CONFLICT, "회원가입 실패"),
 	FORBIDDEN(HttpStatus.FORBIDDEN, "인가 실패"),
 	UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증 실패"),
