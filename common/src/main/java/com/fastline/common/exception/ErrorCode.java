@@ -21,7 +21,10 @@ public enum ErrorCode {
 	LOGOUT_FAIL(HttpStatus.UNAUTHORIZED, "로그아웃 실패"),
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자 조회 실패"),
 	INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호 변경 실패"),
-	ALREADY_DELETED_USER(HttpStatus.CONFLICT, "회원 삭제 실패");
+	ALREADY_DELETED_USER(HttpStatus.CONFLICT, "회원 삭제 실패"),
+
+    // 업체 (vendor)
+    ADDRESS_DUPLICATED(HttpStatus.CONFLICT, "업체 등록 실패");
 
 	private final HttpStatus httpStatus;
 	private final String message;
