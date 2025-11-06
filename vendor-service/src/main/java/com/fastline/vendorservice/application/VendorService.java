@@ -58,18 +58,11 @@ public class VendorService {
     public VendorResponse updateVendor(UUID vendorId, UpdateVendorCommand updateCommand) {
 
         Vendor findVendor = repository.findByVendorId(vendorId);
-
-        String newName = updateCommand.name() == null ? findVendor.getName() : updateCommand.name();
-        VendorType newType = updateCommand.type() == null ? findVendor.getType() : VendorType.fromString(updateCommand.type());
-        VendorAddress newAddress = findVendor.getAddress().update(
-                updateCommand.city(), updateCommand.district(), updateCommand.roadName(), updateCommand.zipCode());
-        UUID hubId = updateCommand.hubId() ==  null ? findVendor.getHubId() : updateCommand.hubId();
-
-        if (findVendor.getHubId() != hubId) {
+        if (updateCommand.hubId() != null && updateCommand.hubId() != findVendor.getHubId()) {
 //            hubClient.findHub(); -- 존재하는 허브인지 허브 서비스로 API 호출. 없거나 에러시 적절한 처리 필요
         }
 
-        findVendor.update(newName, newType, newAddress, hubId);
+        findVendor.update(updateCommand);
         Vendor updatedVendor = repository.insert(findVendor);
 
         return VendorResponse.fromVendor(updatedVendor);

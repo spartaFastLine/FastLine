@@ -3,6 +3,7 @@ package com.fastline.vendorservice.domain.entity;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.jpa.TimeBaseEntity;
+import com.fastline.vendorservice.application.command.UpdateVendorCommand;
 import com.fastline.vendorservice.domain.vo.VendorAddress;
 import com.fastline.vendorservice.domain.vo.VendorType;
 import jakarta.persistence.*;
@@ -58,12 +59,13 @@ public class Vendor extends TimeBaseEntity {
         return vendor;
     }
 
-    public Vendor update(String name, VendorType type, VendorAddress address, UUID hubId) {
+    public Vendor update(UpdateVendorCommand updateCommand) {
 
-        this.name = name;
-        this.type = type;
-        this.address = address;
-        this.hubId = hubId;
+        this.name = updateCommand.name() == null ? getName() : updateCommand.name();
+        this.type = updateCommand.type() == null ? getType() : VendorType.fromString(updateCommand.type());
+        this.address.update(updateCommand);
+        this.hubId = updateCommand.hubId() ==  null ? getHubId() : updateCommand.hubId();
+
         return this;
     }
 }
