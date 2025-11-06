@@ -3,11 +3,9 @@ package com.fastline.authservice.domain.service;
 import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.model.UserOrderBy;
 import com.fastline.authservice.domain.model.UserRole;
+import com.fastline.authservice.domain.model.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
-import com.fastline.authservice.presentation.request.UpdatePasswordRequestDto;
-import com.fastline.authservice.presentation.request.UpdateSlackRequestDto;
-import com.fastline.authservice.presentation.request.UserResponseDto;
-import com.fastline.authservice.presentation.request.UserSearchRequestDto;
+import com.fastline.authservice.presentation.request.*;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +32,6 @@ public class UserService {
     }
 
     //유저 다건 조회
-    //todo : 정렬조건에 따라 정렬 로직 추가 필요
-    //todo : 페이징 처리 추가 필요
     @Transactional(readOnly = true)
     public Page<UserResponseDto> getUsers(Long userId, UserSearchRequestDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -80,4 +76,24 @@ public class UserService {
     }
 
 
+    @Transactional
+    public void withdrawUser(Long userId) {
+        // 유저 확인
+        User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        if(user.getStatus()!= UserStatus.APPROVE) throw new CustomException(ErrorCode.NOT_APPROVE);
+        // 권한 정지
+        user.updateReject();
+    }
+
+
+    @Transactional
+    public void deleteUserpermit(Long managerId, PermitRequestDto requestDto) {
+        //해당 허브의 관리자인지 확인
+        User manager = userRepository.findById(managerId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(requestDto.getUserId()).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        if(manager.getRole()== UserRole.HUB_MANAGER&&!manager.getHubId().equals(user.getHubId())) throw new CustomException(ErrorCode.NOT_HUB_MANAGER);
+        if(user.getStatus()!= UserStatus.REJECTED) throw new CustomException(ErrorCode.NOT_REJECTED);
+        //탈퇴 신청한 유저 삭제
+        user.delete();
+    }
 }

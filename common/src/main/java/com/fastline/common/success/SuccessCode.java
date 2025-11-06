@@ -16,6 +16,7 @@ public enum SuccessCode {
 	USER_READ_SUCCESS(HttpStatus.OK, "회원 정보 조회 성공"),
 	USER_UPDATE_SUCCESS(HttpStatus.OK, "회원 정보 수정 성공"),
 	PASSWORD_UPDATE_SUCCESS(HttpStatus.OK, "비밀번호 수정 성공"),
+	USER_WITHDRAWAL_REQUEST_SUCCESS(HttpStatus.OK, "회원탈퇴 신청 성공"),
 	USER_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "회원 삭제 성공");
 
 	private final HttpStatus httpStatus;

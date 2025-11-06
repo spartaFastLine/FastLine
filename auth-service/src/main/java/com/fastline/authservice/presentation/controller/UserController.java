@@ -2,10 +2,7 @@ package com.fastline.authservice.presentation.controller;
 
 import com.fastline.authservice.domain.security.UserDetailsImpl;
 import com.fastline.authservice.domain.service.UserService;
-import com.fastline.authservice.presentation.request.UpdatePasswordRequestDto;
-import com.fastline.authservice.presentation.request.UpdateSlackRequestDto;
-import com.fastline.authservice.presentation.request.UserResponseDto;
-import com.fastline.authservice.presentation.request.UserSearchRequestDto;
+import com.fastline.authservice.presentation.request.*;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.success.SuccessCode;
@@ -48,5 +45,17 @@ public class UserController {
         return ResponseUtil.successResponse(SuccessCode.USER_UPDATE_SUCCESS);
     }
     //회원 탈퇴 신청
+    @PostMapping("/user/withdraw")
+    public ResponseEntity<ApiResponse<Void>> withdrawUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.withdrawUser(userDetails.getUser().getId());
+        return ResponseUtil.successResponse(SuccessCode.USER_WITHDRAWAL_REQUEST_SUCCESS);
+    }
     //회원 탈퇴 승인
+    @DeleteMapping("/managers/withdraw/permit")
+    public ResponseEntity<ApiResponse<Void>> deleteUserpermit(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid PermitRequestDto requestDto) {
+        userService.deleteUserpermit(userDetails.getUser().getId(), requestDto);
+        return ResponseUtil.successResponse(SuccessCode.USER_DELETE_SUCCESS);
+    }
+
+    // 후에 회원 강제 탈퇴기능 추가
 }

@@ -61,4 +61,11 @@ public class User extends TimeBaseEntity {
     public void updateSlackId(@NotBlank String slackId) {
         this.slackId = slackId;
     }
+
+    public void updateReject() {this.status = UserStatus.REJECTED;}
+
+    public void delete() {
+        this.status = UserStatus.DELETED;
+        markDeleted();
+    }
 }
