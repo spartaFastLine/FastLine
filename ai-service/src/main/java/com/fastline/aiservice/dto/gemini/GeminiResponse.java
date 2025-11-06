@@ -1,12 +1,16 @@
- package com.fastline.aiservice.dto.gemini;
+package com.fastline.aiservice.dto.gemini;
 
- import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
 
- public record GeminiResponse(
-        List<Candidate> candidates
- ) {
-    public record Candidate(Content content) {
-        public record Content(List<Part> parts) {}
-        public record Part(String text) {}
-    }
- }
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record GeminiResponse(List<Candidate> candidates) {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public record Candidate(Content content) {
+		@JsonIgnoreProperties(ignoreUnknown = true)
+		public record Content(String role, List<Part> parts) {}
+
+		@JsonIgnoreProperties(ignoreUnknown = true)
+		public record Part(String text) {}
+	}
+}

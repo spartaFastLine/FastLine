@@ -18,7 +18,11 @@ public enum SuccessCode {
 	USER_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "회원 삭제 성공"),
 
     // 업체 (vendor)
-    VENDOR_SAVE_SUCCESS(HttpStatus.CREATED, "업체 등록 성공");
+    VENDOR_SAVE_SUCCESS(HttpStatus.CREATED, "업체 등록 성공"),
+
+	// AI
+	MESSAGE_GENERATION_SUCCESS(HttpStatus.OK, "최종 발송 시한 정보 생성 성공");
+
 	private final HttpStatus httpStatus;
 	private final String message;
 }
