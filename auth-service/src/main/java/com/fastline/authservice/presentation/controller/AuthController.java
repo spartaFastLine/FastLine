@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,7 @@ public class AuthController {
 
     //회원가입 승인
     @PutMapping("/permit/signup")
+    @PreAuthorize("hasAnyRole('ROLE_MASTER', 'ROLE_HUB_MANAGER')")
     public ResponseEntity<ApiResponse<Void>> permitSignup(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid PermitRequestDto requestDto) {
         authService.permitSignup(userDetails.getUser().getId(), requestDto);
         return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_PERMIT_SUCCESS);

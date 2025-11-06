@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -40,13 +41,18 @@ public class UserService {
             if(user.getRole()!= UserRole.MASTER&&!user.getHubId().equals(requestDto.getHubId()))
                 throw new CustomException(ErrorCode.NOT_HUB_MANAGER);
         }
+        //허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
+        UUID hubId = requestDto.getHubId();
+        if(user.getRole()== UserRole.HUB_MANAGER&&hubId==null) {
+            hubId = user.getHubId();
+        }
         //정렬조건 체크
         UserOrderBy.checkValid(requestDto.getSortBy());
 
         //오름차순/내림차순
         Sort.Direction directions = requestDto.isSortAscending()? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(requestDto.getPage()-1, requestDto.getSize(), Sort.by(directions, requestDto.getSortBy()));
-        Page<User> users = userRepository.findUsers(requestDto.getUsername(), requestDto.getHubId(), requestDto.getRole(), requestDto.getStatus(), pageable);
+        Page<User> users = userRepository.findUsers(requestDto.getUsername(), hubId, requestDto.getRole(), requestDto.getStatus(), pageable);
         return users.map(UserResponseDto::new);
     }
 

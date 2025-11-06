@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class UserController {
     private final UserService userService;
 
     //유저 다건 조회
+    @PreAuthorize("hasAnyRole('ROLE_MASTER', 'ROLE_HUB_MANAGER')")
     @GetMapping("/managers/users")
     public ResponseEntity<ApiResponse<Page<UserResponseDto>>> getUsers(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserSearchRequestDto requestDto) {
         Page<UserResponseDto> responseDto = userService.getUsers(userDetails.getUser().getId(), requestDto);
@@ -51,6 +53,7 @@ public class UserController {
         return ResponseUtil.successResponse(SuccessCode.USER_WITHDRAWAL_REQUEST_SUCCESS);
     }
     //회원 탈퇴 승인
+    @PreAuthorize("hasAnyRole('ROLE_MASTER', 'ROLE_HUB_MANAGER')")
     @DeleteMapping("/managers/withdraw/permit")
     public ResponseEntity<ApiResponse<Void>> deleteUserpermit(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid PermitRequestDto requestDto) {
         userService.deleteUserpermit(userDetails.getUser().getId(), requestDto);
