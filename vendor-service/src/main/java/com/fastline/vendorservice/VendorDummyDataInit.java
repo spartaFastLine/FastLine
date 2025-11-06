@@ -1,7 +1,7 @@
 package com.fastline.vendorservice;
 
 import com.fastline.vendorservice.domain.entity.Vendor;
-import com.fastline.vendorservice.domain.entity.VendorType;
+import com.fastline.vendorservice.domain.vo.VendorType;
 import com.fastline.vendorservice.domain.repository.VendorRepository;
 import com.fastline.vendorservice.domain.vo.VendorAddress;
 import lombok.RequiredArgsConstructor;
