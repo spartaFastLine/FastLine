@@ -9,4 +9,6 @@ public interface VendorRepository {
     Vendor insert(Vendor vendor);
 
     Vendor findByVendorId(UUID vendorId);
+
+    UUID deleteByVendorId(UUID vendorId);
 }

@@ -8,12 +8,21 @@ import com.fastline.vendorservice.domain.vo.VendorType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "p_vendor", uniqueConstraints = @UniqueConstraint(name = "addressIsUnique", columnNames = {"city", "district", "roadName", "zipCode"}))
 @Getter
+@FilterDef(
+        name = "softDeleteFilter",
+        defaultCondition = "deleted_at IS NULL",
+        autoEnabled = true,
+        applyToLoadByKey = true
+)
+@Filter(name = "softDeleteFilter")
 public class Vendor extends TimeBaseEntity {
 
 	@Id

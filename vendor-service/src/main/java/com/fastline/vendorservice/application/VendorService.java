@@ -74,4 +74,8 @@ public class VendorService {
 
         return VendorResponse.fromVendor(updatedVendor);
     }
+
+    public UUID deleteVendor(UUID vendorId) {
+        return repository.deleteByVendorId(vendorId);
+    }
 }

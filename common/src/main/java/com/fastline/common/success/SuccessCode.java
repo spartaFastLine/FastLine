@@ -20,7 +20,8 @@ public enum SuccessCode {
     // 업체 (vendor)
     VENDOR_SAVE_SUCCESS(HttpStatus.CREATED, "업체 등록 성공"),
     VENDOR_FIND_SUCCESS(HttpStatus.OK, "업체 조회 성공"),
-    VENDOR_UPDATE_SUCCESS(HttpStatus.OK, "업체 정보 수정 성공");
+    VENDOR_UPDATE_SUCCESS(HttpStatus.OK, "업체 정보 수정 성공"),
+    VENDOR_DELETE_SUCCESS(HttpStatus.OK, "업체 삭제 성공");
 
 	private final HttpStatus httpStatus;
 	private final String message;

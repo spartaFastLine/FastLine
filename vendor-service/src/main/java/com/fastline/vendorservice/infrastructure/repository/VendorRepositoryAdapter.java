@@ -37,4 +37,13 @@ public class VendorRepositoryAdapter implements VendorRepository{
                         () -> new CustomException(ErrorCode.VENDOR_NOT_FOUND)
                 );
     }
+
+    @Override
+    public UUID deleteByVendorId(UUID vendorId) {
+        if(!jpaVendorRepository.existsById(vendorId))
+            throw new CustomException(ErrorCode.VENDOR_NOT_FOUND);
+
+        jpaVendorRepository.deleteById(vendorId);
+        return vendorId;
+    }
 }

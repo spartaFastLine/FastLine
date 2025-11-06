@@ -69,4 +69,11 @@ public class VendorController {
         VendorResponse response = service.updateVendor(vendorId, updateCommand);
         return ResponseUtil.successResponse(SuccessCode.VENDOR_UPDATE_SUCCESS, response);
     }
+
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<UUID>> deleteVendor(@RequestParam UUID vendorId) {
+
+        UUID deletedId = service.deleteVendor(vendorId);
+        return ResponseUtil.successResponse(SuccessCode.VENDOR_DELETE_SUCCESS, deletedId);
+    }
 }
