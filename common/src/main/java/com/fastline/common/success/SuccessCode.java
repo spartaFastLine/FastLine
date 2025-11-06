@@ -10,11 +10,13 @@ import org.springframework.http.HttpStatus;
 public enum SuccessCode {
 
 	// 회원 (user)
-	USER_SAVE_SUCCESS(HttpStatus.CREATED, "회원가입 성공"),
+	USER_SIGNUP_SUCCESS(HttpStatus.CREATED, "회원가입 성공, 승인을 기다려주세요."),
+	USER_SIGNUP_PERMIT_SUCCESS(HttpStatus.CREATED, "회원가입 승인 성공"),
 	USER_LOGIN_SUCCESS(HttpStatus.OK, "로그인 성공"),
 	USER_READ_SUCCESS(HttpStatus.OK, "회원 정보 조회 성공"),
 	USER_UPDATE_SUCCESS(HttpStatus.OK, "회원 정보 수정 성공"),
 	PASSWORD_UPDATE_SUCCESS(HttpStatus.OK, "비밀번호 수정 성공"),
+	USER_WITHDRAWAL_REQUEST_SUCCESS(HttpStatus.OK, "회원탈퇴 신청 성공"),
 	USER_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "회원 삭제 성공"),
 
     // 업체 (vendor)
