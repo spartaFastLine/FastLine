@@ -48,7 +48,7 @@ public class SlackMessageService {
 			slackClient.send(
 					SLACK_WEBHOOK_URL, payload(p -> p.text(TITLE).attachments(List.of(attachment))));
 		} catch (IOException e) {
-			log.error("Slack 메시지 전송 실패, orderId: {}", orderInfo.orderId(), e);
+			log.error("[Slack 메시지 전송 실패] orderId: {}", orderInfo.orderId(), e);
 			throw new CustomException(SEND_SLACK_MESSAGE_FAIL);
 		}
 
