@@ -68,14 +68,14 @@ public class Hub extends TimeBaseEntity  {
 
         Double lat = requireNonNull(spec.latitude(), "latitude");
         Double lon = requireNonNull(spec.longitude(), "longitude");
-
+        /*스팩구간*/
         if (lat < -90.0 || lat > 90.0) {
             throw new IllegalArgumentException("latitude must be between -90 and 90");
         }
         if (lon < -180.0 || lon > 180.0) {
             throw new IllegalArgumentException("longitude must be between -180 and 180");
         }
-
+        /*vo 구간 */
         // 중앙 허브 규칙: 중앙이면 상위 허브가 없어야 한다
         if (spec.isCentral() && spec.centralHubId() != null) {
             throw new IllegalArgumentException("Central hub must not have centralHubId");

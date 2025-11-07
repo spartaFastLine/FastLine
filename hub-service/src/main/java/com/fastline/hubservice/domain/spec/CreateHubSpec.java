@@ -13,4 +13,7 @@ public record CreateHubSpec(
         String address,
         Double latitude,
         Double longitude
-) {}
+) {
+
+
+}
