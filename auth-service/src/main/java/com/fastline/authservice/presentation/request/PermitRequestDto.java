@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class PermitRequestDto {
-    @NotNull
-    private Long userId;
-    private boolean forced;
+	@NotNull private Long userId;
+	private boolean forced;
 }

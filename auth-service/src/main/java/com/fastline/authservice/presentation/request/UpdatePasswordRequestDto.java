@@ -6,8 +6,11 @@ import lombok.Getter;
 
 @Getter
 public class UpdatePasswordRequestDto {
-    @NotBlank
-    private String password;
-    @Pattern(regexp = "[A-Za-z0-9!@#$%]{8,15}$", message = "비밀번호는 최소 8자 이상, 15자 이하이며 알파벳 대문자(A~Z), 알파벳 소문자(a~z), 숫자(0~9), 특수문자(!@#$%)로 구성되어야 합니다")
-    private String newPassword;
+	@NotBlank private String password;
+
+	@Pattern(
+			regexp = "[A-Za-z0-9!@#$%]{8,15}$",
+			message =
+					"비밀번호는 최소 8자 이상, 15자 이하이며 알파벳 대문자(A~Z), 알파벳 소문자(a~z), 숫자(0~9), 특수문자(!@#$%)로 구성되어야 합니다")
+	private String newPassword;
 }
