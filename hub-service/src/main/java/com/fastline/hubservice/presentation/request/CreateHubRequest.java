@@ -2,14 +2,12 @@ package com.fastline.hubservice.presentation.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,20 +16,15 @@ import java.util.UUID;
 @Builder
 public class CreateHubRequest {
 
-    private UUID centralHubId;
+	private UUID centralHubId;
 
-    @NotNull
-    private Boolean isCentral;
+	@NotNull private Boolean isCentral;
 
-    @NotBlank
-    private String name;
+	@NotBlank private String name;
 
-    @NotBlank
-    private String address;
+	@NotBlank private String address;
 
-    @NotNull
-    private Double latitude;
+	@NotNull private Double latitude;
 
-    @NotNull
-    private Double longitude;
+	@NotNull private Double longitude;
 }

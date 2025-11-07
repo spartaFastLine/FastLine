@@ -9,8 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 public class VendorServiceApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(VendorServiceApplication.class, args);
-    }
-
+	public static void main(String[] args) {
+		SpringApplication.run(VendorServiceApplication.class, args);
+	}
 }

@@ -15,91 +15,87 @@ import com.fastline.vendorservice.presentation.response.vendor.VendorCreateRespo
 import com.fastline.vendorservice.presentation.response.vendor.VendorFindResponse;
 import com.fastline.vendorservice.presentation.response.vendor.VendorUpdateResponse;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/vendor")
 @RequiredArgsConstructor
 public class VendorController {
 
-    private final VendorService service;
+	private final VendorService service;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<VendorCreateResponse>> insertVendor(@RequestBody @Valid VendorCreateRequest createRequest) {
+	@PostMapping
+	public ResponseEntity<ApiResponse<VendorCreateResponse>> insertVendor(
+			@RequestBody @Valid VendorCreateRequest createRequest) {
 
-        CreateVendorCommand createCommand = new CreateVendorCommand(
-                createRequest.name(),
-                createRequest.type(),
-                createRequest.city(),
-                createRequest.district(),
-                createRequest.roadName(),
-                createRequest.zipCode(),
-                createRequest.hubId()
-        );
+		CreateVendorCommand createCommand =
+				new CreateVendorCommand(
+						createRequest.name(),
+						createRequest.type(),
+						createRequest.city(),
+						createRequest.district(),
+						createRequest.roadName(),
+						createRequest.zipCode(),
+						createRequest.hubId());
 
-        Vendor vendor = service.insert(createCommand);
-        VendorCreateResponse response = new VendorCreateResponse(
-                vendor.getId(),
-                vendor.getName(),
-                vendor.getType(),
-                vendor.getAddress(),
-                vendor.getHubId()
-        );
+		Vendor vendor = service.insert(createCommand);
+		VendorCreateResponse response =
+				new VendorCreateResponse(
+						vendor.getId(),
+						vendor.getName(),
+						vendor.getType(),
+						vendor.getAddress(),
+						vendor.getHubId());
 
-        return ResponseUtil.successResponse(SuccessCode.VENDOR_SAVE_SUCCESS , response);
-    }
+		return ResponseUtil.successResponse(SuccessCode.VENDOR_SAVE_SUCCESS, response);
+	}
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<VendorFindResponse>> getVendor(@RequestParam UUID vendorId) {
+	@GetMapping
+	public ResponseEntity<ApiResponse<VendorFindResponse>> getVendor(@RequestParam UUID vendorId) {
 
-        Vendor vendor = service.findByVendorId(vendorId);
-        VendorFindResponse response = new VendorFindResponse(
-                vendor.getId(),
-                vendor.getName(),
-                vendor.getType(),
-                vendor.getAddress(),
-                vendor.getHubId()
-        );
+		Vendor vendor = service.findByVendorId(vendorId);
+		VendorFindResponse response =
+				new VendorFindResponse(
+						vendor.getId(),
+						vendor.getName(),
+						vendor.getType(),
+						vendor.getAddress(),
+						vendor.getHubId());
 
-        return ResponseUtil.successResponse(SuccessCode.VENDOR_FIND_SUCCESS, response);
-    }
+		return ResponseUtil.successResponse(SuccessCode.VENDOR_FIND_SUCCESS, response);
+	}
 
-    @PutMapping
-    public ResponseEntity<ApiResponse<VendorUpdateResponse>> updateVendor(@RequestBody @Valid VendorUpdateRequest updateRequest,
-                                                                          @RequestParam UUID vendorId) {
+	@PutMapping
+	public ResponseEntity<ApiResponse<VendorUpdateResponse>> updateVendor(
+			@RequestBody @Valid VendorUpdateRequest updateRequest, @RequestParam UUID vendorId) {
 
-        if(updateRequest == null)
-            throw new CustomException(ErrorCode.VALIDATION_ERROR);
+		if (updateRequest == null) throw new CustomException(ErrorCode.VALIDATION_ERROR);
 
-        UpdateVendorCommand updateCommand = new UpdateVendorCommand(
-                updateRequest.name(),
-                updateRequest.type(),
-                updateRequest.city(),
-                updateRequest.district(),
-                updateRequest.roadName(),
-                updateRequest.zipCode(),
-                updateRequest.hubId()
-        );
+		UpdateVendorCommand updateCommand =
+				new UpdateVendorCommand(
+						updateRequest.name(),
+						updateRequest.type(),
+						updateRequest.city(),
+						updateRequest.district(),
+						updateRequest.roadName(),
+						updateRequest.zipCode(),
+						updateRequest.hubId());
 
-        Vendor vendor = service.updateVendor(vendorId, updateCommand);
-        VendorUpdateResponse response = new VendorUpdateResponse(
-                vendor.getName(),
-                vendor.getType(),
-                vendor.getAddress(),
-                vendor.getHubId()
-        );
+		Vendor vendor = service.updateVendor(vendorId, updateCommand);
+		VendorUpdateResponse response =
+				new VendorUpdateResponse(
+						vendor.getName(), vendor.getType(), vendor.getAddress(), vendor.getHubId());
 
-        return ResponseUtil.successResponse(SuccessCode.VENDOR_UPDATE_SUCCESS, response);
-    }
+		return ResponseUtil.successResponse(SuccessCode.VENDOR_UPDATE_SUCCESS, response);
+	}
 
-    @DeleteMapping
-    public ResponseEntity<ApiResponse<UUID>> deleteVendor(@RequestParam UUID vendorId) {
+	@DeleteMapping
+	public ResponseEntity<ApiResponse<UUID>> deleteVendor(@RequestParam UUID vendorId) {
 
-        UUID deletedId = service.deleteVendor(vendorId);
-        return ResponseUtil.successResponse(SuccessCode.VENDOR_DELETE_SUCCESS, deletedId);
-    }
+		UUID deletedId = service.deleteVendor(vendorId);
+		return ResponseUtil.successResponse(SuccessCode.VENDOR_DELETE_SUCCESS, deletedId);
+	}
 }

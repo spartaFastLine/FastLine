@@ -5,6 +5,5 @@ import lombok.Getter;
 
 @Getter
 public class UpdateSlackRequestDto {
-    @NotBlank
-    private String slackId;
+	@NotBlank private String slackId;
 }
