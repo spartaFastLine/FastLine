@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				String rawToken = jwtUtil.substringToken(token); // Bearer 제거
 				if (jwtUtil.validateToken(rawToken)) {
 					Claims claims = jwtUtil.getUserInfoFromToken(rawToken);
-					String username = claims.getSubject();
+					String username = claims.get("sub", String.class);
 					if (username != null) {
 						logger.info(username);
 						var userDetails = userDetailsService.loadUserInfo(
@@ -48,6 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			}
 		} catch (Exception ex) {
 			// 인증 실패해도 요청은 다음 필터로 넘겨져서 정상적으로 401/403 처리됨.
+			logger.error(ex.getMessage());
 		}
 
 		filterChain.doFilter(request, response);
@@ -55,7 +56,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private String resolveToken(HttpServletRequest request) {
 		String header = request.getHeader(JwtUtil.AUTHORIZATION_HEADER);
-		if (header != null && header.startsWith(JwtUtil.BEARER_PREFIX)) {
+		logger.info("Header: ".concat(header));
+		if (header.startsWith(JwtUtil.BEARER_PREFIX)) {
 			return header;
 		}
 		// 쿠키에서 토큰 확인 (디코딩 포함된 유틸 사용)

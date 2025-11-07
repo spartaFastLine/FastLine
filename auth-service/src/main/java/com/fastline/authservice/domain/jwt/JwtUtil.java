@@ -79,6 +79,7 @@ public class JwtUtil {
 
 	// JWT 토큰 substring
 	public String substringToken(String tokenValue) {
+		logger.info("subStringToken: ".concat(tokenValue));
 		if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
 			return tokenValue.substring(7);
 		}

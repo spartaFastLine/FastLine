@@ -31,7 +31,7 @@ public class AuthController {
 
 	// 회원가입 승인
 	@PutMapping("/permit/signup")
-	@PreAuthorize("hasAnyRole('ROLE_MASTER', 'ROLE_HUB_MANAGER')")
+	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Void>> permitSignup(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid PermitRequestDto requestDto) {
