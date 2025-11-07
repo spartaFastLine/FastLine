@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: fastline-ai-dev
+    container_name: fastline-messaging-dev
     restart: always
     env_file:
       - .env.dev
@@ -13,7 +13,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       TZ: Asia/Seoul
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres-dev-data:/var/lib/postgresql/data
     healthcheck:

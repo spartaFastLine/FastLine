@@ -84,14 +84,20 @@ project(':ai-service') {
         implementation project(':common')
     }
 }
+
 project(':auth-service') {
     dependencies {
         implementation project(':common')
     }
 }
 
-
 project(':vendor-service') {
+    dependencies {
+        implementation project(':common')
+    }
+}
+
+project(':messaging-service') {
     dependencies {
         implementation project(':common')
     }
