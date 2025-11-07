@@ -13,12 +13,7 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 
 @Entity
-@Table(
-		name = "p_vendor",
-		uniqueConstraints =
-				@UniqueConstraint(
-						name = "addressIsUnique",
-						columnNames = {"city", "district", "roadName", "zipCode"}))
+@Table(name = "p_vendor")
 @Getter
 @FilterDef(
 		name = "softDeleteFilter",
