@@ -35,9 +35,9 @@ public enum ErrorCode {
 	INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호 변경 실패"),
 	ALREADY_DELETED_USER(HttpStatus.CONFLICT, "회원 삭제 실패"),
 
-    // 업체 (vendor)
-    ADDRESS_DUPLICATED(HttpStatus.CONFLICT, "업체 등록 실패"),
-    VENDOR_NOT_FOUND(HttpStatus.NOT_FOUND, "업체 조회 실패"),
+	// 업체 (vendor)
+	ADDRESS_DUPLICATED(HttpStatus.CONFLICT, "업체 등록 실패"),
+	VENDOR_NOT_FOUND(HttpStatus.NOT_FOUND, "업체 조회 실패"),
 
 	// AI
 	GENERATION_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "AI 응답 생성 실패"),

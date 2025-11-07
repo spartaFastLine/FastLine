@@ -23,48 +23,60 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-    private final JwtUtil jwtUtil;
-    private final UserDetailsService userDetailService;
-//    private final AccessDeniedHandler accessDeniedHandler;
+	private final JwtUtil jwtUtil;
+	private final UserDetailsService userDetailService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	//    private final AccessDeniedHandler accessDeniedHandler;
 
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return new CustomAccessDeniedHandlerImpl();
-    }
-    //todo : 인증 실패시 처리도 커스텀 필요
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailService);
-        //CSRF 비활성화 : 사용자가 로그인한 상태에서 의도치 않게 특정 웹사이트에 악성 요청을 보내도록 유도하는 웹 보안 공격을 막음
-        http.csrf(csrf -> csrf.disable());
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler() {
+		return new CustomAccessDeniedHandlerImpl();
+	}
 
-        //filter에서 권한 체크
-        http.authorizeHttpRequests(authorizeHttpRequests ->
-                authorizeHttpRequests.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()  //resources 접근 허용 설정
-                        .requestMatchers("/api/auth/signup", "/api/auth/login").permitAll() // 회원가입, 로그인 접근 허용
-                        .anyRequest().authenticated());// 그 외 모든 요청 인증처리
-        http.exceptionHandling(ex->ex
-                .authenticationEntryPoint((request, response, authException) -> {
-                    String uri = request.getRequestURI();
-//                    log.error("인증 오류 발생::: url : {}, error : {}", uri, authException.getMessage(), authException);
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.setContentType("application/json;charset=UTF-8");
-                    response.getWriter().write("{\"message\":\"Unauthorized\",\"status\":\"401\"}");
-                })
-                .accessDeniedHandler(accessDeniedHandler()));
+	// todo : 인증 실패시 처리도 커스텀 필요
 
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailService);
+		// CSRF 비활성화 : 사용자가 로그인한 상태에서 의도치 않게 특정 웹사이트에 악성 요청을 보내도록 유도하는 웹 보안 공격을 막음
+		http.csrf(csrf -> csrf.disable());
 
-        // jwt(토큰 기반 인증 방식)는 세션을 필요로 하지 않음, STATELESS -> 완전 사용 안함
-        http.sessionManagement(session -> session
-            .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS)
-        );
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+		// filter에서 권한 체크
+		http.authorizeHttpRequests(
+				authorizeHttpRequests ->
+						authorizeHttpRequests
+								.requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+								.permitAll() // resources 접근 허용 설정
+								.requestMatchers("/api/auth/signup", "/api/auth/login")
+								.permitAll() // 회원가입, 로그인 접근 허용
+								.anyRequest()
+								.authenticated()); // 그 외 모든 요청 인증처리
+		http.exceptionHandling(
+				ex ->
+						ex.authenticationEntryPoint(
+										(request, response, authException) -> {
+											String uri = request.getRequestURI();
+											//                    log.error("인증 오류 발생::: url : {}, error : {}", uri,
+											// authException.getMessage(), authException);
+											response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+											response.setContentType("application/json;charset=UTF-8");
+											response
+													.getWriter()
+													.write("{\"message\":\"Unauthorized\",\"status\":\"401\"}");
+										})
+								.accessDeniedHandler(accessDeniedHandler()));
+
+		// jwt(토큰 기반 인증 방식)는 세션을 필요로 하지 않음, STATELESS -> 완전 사용 안함
+		http.sessionManagement(
+				session ->
+						session.sessionCreationPolicy(
+								org.springframework.security.config.http.SessionCreationPolicy.STATELESS));
+		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+		return http.build();
+	}
 }

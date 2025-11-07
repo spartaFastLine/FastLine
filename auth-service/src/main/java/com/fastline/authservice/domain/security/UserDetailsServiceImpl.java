@@ -11,18 +11,21 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-//DB의 회원정보 조회 -> Spring Security의 인증 관리자(UserDetials)에게 전달
+// DB의 회원정보 조회 -> Spring Security의 인증 관리자(UserDetials)에게 전달
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final UserRepository userRepository;
+	private final UserRepository userRepository;
 
-    //pk는 userId인데 바꿀 수 없는지
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        if(user.getStatus()!= UserStatus.APPROVE) throw new CustomException(ErrorCode.USER_NOT_APPROVE);
-        return new UserDetailsImpl(user);
-    }
+	// pk는 userId인데 바꿀 수 없는지
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user =
+				userRepository
+						.findByUsername(username)
+						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		if (user.getStatus() != UserStatus.APPROVE)
+			throw new CustomException(ErrorCode.USER_NOT_APPROVE);
+		return new UserDetailsImpl(user);
+	}
 }

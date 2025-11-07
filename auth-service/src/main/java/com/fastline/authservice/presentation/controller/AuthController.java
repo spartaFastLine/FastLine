@@ -20,27 +20,30 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthService authService;
+	private final AuthService authService;
 
-    //회원가입
-    @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<Void>> signup(@RequestBody @Valid SignupRequestDto requestDto) {
-        authService.signup(requestDto);
-        return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_SUCCESS);
-    }
+	// 회원가입
+	@PostMapping("/signup")
+	public ResponseEntity<ApiResponse<Void>> signup(@RequestBody @Valid SignupRequestDto requestDto) {
+		authService.signup(requestDto);
+		return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_SUCCESS);
+	}
 
-    //회원가입 승인
-    @PutMapping("/permit/signup")
-    @PreAuthorize("hasAnyRole('ROLE_MASTER', 'ROLE_HUB_MANAGER')")
-    public ResponseEntity<ApiResponse<Void>> permitSignup(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid PermitRequestDto requestDto) {
-        authService.permitSignup(userDetails.getUser().getId(), requestDto);
-        return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_PERMIT_SUCCESS);
-    }
+	// 회원가입 승인
+	@PutMapping("/permit/signup")
+	@PreAuthorize("hasAnyRole('ROLE_MASTER', 'ROLE_HUB_MANAGER')")
+	public ResponseEntity<ApiResponse<Void>> permitSignup(
+			@AuthenticationPrincipal UserDetailsImpl userDetails,
+			@RequestBody @Valid PermitRequestDto requestDto) {
+		authService.permitSignup(userDetails.getUser().getId(), requestDto);
+		return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_PERMIT_SUCCESS);
+	}
 
-    //로그인
-    @PostMapping("/login")
-    public ResponseEntity<ApiResponse<Void>> login(@RequestBody @Valid LoginRequestDto requestDto, HttpServletResponse res) {
-        authService.login(requestDto, res);
-        return ResponseUtil.successResponse(SuccessCode.USER_LOGIN_SUCCESS);
-    }
+	// 로그인
+	@PostMapping("/login")
+	public ResponseEntity<ApiResponse<Void>> login(
+			@RequestBody @Valid LoginRequestDto requestDto, HttpServletResponse res) {
+		authService.login(requestDto, res);
+		return ResponseUtil.successResponse(SuccessCode.USER_LOGIN_SUCCESS);
+	}
 }
