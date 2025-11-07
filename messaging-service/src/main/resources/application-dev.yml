@@ -34,7 +34,6 @@ spring:
 logging:
   level:
     root: INFO
-    com.caffeine.gwanghwamun: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.jdbc.core: DEBUG
@@ -43,5 +42,12 @@ webhook:
   slack:
     url: "https://hooks.slack.com/services/${SLACK_API_KEY}"
 
-ai-service:
-  url: "http://localhost:${AI_SERVER_PORT}"
+eureka:
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 30
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:19091/eureka/
