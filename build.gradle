@@ -84,7 +84,6 @@ project(':ai-service') {
         implementation project(':common')
     }
 }
-
 project(':auth-service') {
     dependencies {
         implementation project(':common')
@@ -98,6 +97,12 @@ project(':vendor-service') {
 }
 
 project(':messaging-service') {
+    dependencies {
+        implementation project(':common')
+    }
+}
+
+project(':eureka-service') {
     dependencies {
         implementation project(':common')
     }

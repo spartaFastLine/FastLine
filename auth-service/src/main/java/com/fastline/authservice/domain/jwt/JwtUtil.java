@@ -13,10 +13,12 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
+@ConditionalOnProperty(name = "jwt.secret.key")
 public class JwtUtil {
 	// Header KEY 값
 	public static final String AUTHORIZATION_HEADER = "Authorization";

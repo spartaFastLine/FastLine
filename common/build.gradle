@@ -22,6 +22,14 @@ dependencies {
 
     //spring security
     api "org.springframework.boot:spring-boot-starter-security"
+
+    // bcrypt
+    api 'at.favre.lib:bcrypt:0.10.2'
+
+    //jwt
+    api group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+    api group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+    api group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 }
 
 def querydslDir = layout.buildDirectory.dir("generated/querydsl").get().asFile
