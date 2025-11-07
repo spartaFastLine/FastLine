@@ -28,7 +28,10 @@ public enum ErrorCode {
     VENDOR_NOT_FOUND(HttpStatus.NOT_FOUND, "업체 조회 실패"),
 
 	// AI
-	GENERATION_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "AI 응답 생성 실패");
+	GENERATION_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "AI 응답 생성 실패"),
+
+	// 메세지 (message)
+	SEND_SLACK_MESSAGE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "슬랙 메세지 전송 실패");
 
 	private final HttpStatus httpStatus;
 	private final String message;
