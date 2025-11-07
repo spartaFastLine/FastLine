@@ -40,11 +40,8 @@ public class SlackMessageService {
 	public void sendMessage(SendMessageRequest orderInfo) {
 
 		MessageGenerationRequest aiRequest = MessageGenerationRequest.from(orderInfo);
-
-		String finalDispatchDeadline = aiServiceClient.generate(aiRequest).finalDispatchDeadline();
-		// 테스트용
-		// String finalDispatchDeadline = "위 내용을 기반으로 도출된 최종 발송 시한은 12월 10일 오전 9시 입니다.";
-
+		String finalDispatchDeadline =
+				aiServiceClient.generate(aiRequest).data().finalDispatchDeadline();
 		Attachment attachment = buildSlackAttachment(orderInfo, finalDispatchDeadline);
 
 		try {
