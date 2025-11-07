@@ -1,6 +1,7 @@
 package com.fastline.authservice.infrastructure.configuration;
 
 import com.fastline.authservice.domain.jwt.JwtUtil;
+import com.fastline.authservice.domain.security.UserDetailsServiceImpl;
 import com.fastline.authservice.infrastructure.auth.exception.CustomAccessDeniedHandlerImpl;
 import com.fastline.authservice.infrastructure.filter.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,9 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 	private final JwtUtil jwtUtil;
-	private final UserDetailsService userDetailService;
-
-	//    private final AccessDeniedHandler accessDeniedHandler;
+	private final UserDetailsServiceImpl userDetailService;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {

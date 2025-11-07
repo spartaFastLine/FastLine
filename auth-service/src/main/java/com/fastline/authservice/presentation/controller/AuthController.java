@@ -35,7 +35,7 @@ public class AuthController {
 	public ResponseEntity<ApiResponse<Void>> permitSignup(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid PermitRequestDto requestDto) {
-		authService.permitSignup(userDetails.getUser().getId(), requestDto);
+		authService.permitSignup(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_PERMIT_SUCCESS);
 	}
 

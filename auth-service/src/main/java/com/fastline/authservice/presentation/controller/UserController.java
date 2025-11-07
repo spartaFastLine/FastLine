@@ -27,7 +27,7 @@ public class UserController {
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody UserSearchRequestDto requestDto) {
 		Page<UserResponseDto> responseDto =
-				userService.getUsers(userDetails.getUser().getId(), requestDto);
+				userService.getUsers(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
 	}
 
@@ -35,7 +35,7 @@ public class UserController {
 	@GetMapping("/user")
 	public ResponseEntity<ApiResponse<UserResponseDto>> getUser(
 			@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		UserResponseDto responseDto = userService.getUser(userDetails.getUser().getId());
+		UserResponseDto responseDto = userService.getUser(userDetails.getUserId());
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
 	}
 
@@ -44,7 +44,7 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> updatePassword(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid UpdatePasswordRequestDto requestDto) {
-		userService.updatePassword(userDetails.getUser().getId(), requestDto);
+		userService.updatePassword(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.PASSWORD_UPDATE_SUCCESS);
 	}
 
@@ -53,7 +53,7 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> updateUserSlack(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid UpdateSlackRequestDto requestDto) {
-		userService.updateSlack(userDetails.getUser().getId(), requestDto);
+		userService.updateSlack(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_UPDATE_SUCCESS);
 	}
 
@@ -61,7 +61,7 @@ public class UserController {
 	@PostMapping("/user/withdraw")
 	public ResponseEntity<ApiResponse<Void>> withdrawUser(
 			@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		userService.withdrawUser(userDetails.getUser().getId());
+		userService.withdrawUser(userDetails.getUserId());
 		return ResponseUtil.successResponse(SuccessCode.USER_WITHDRAWAL_REQUEST_SUCCESS);
 	}
 
@@ -71,7 +71,7 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> deleteUserpermit(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid PermitRequestDto requestDto) {
-		userService.deleteUserpermit(userDetails.getUser().getId(), requestDto);
+		userService.deleteUserpermit(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_DELETE_SUCCESS);
 	}
 
