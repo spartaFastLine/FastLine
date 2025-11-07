@@ -19,17 +19,21 @@ public enum SuccessCode {
 	USER_WITHDRAWAL_REQUEST_SUCCESS(HttpStatus.OK, "회원탈퇴 신청 성공"),
 	USER_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "회원 삭제 성공"),
 
-    // 업체 (vendor)
-    VENDOR_SAVE_SUCCESS(HttpStatus.CREATED, "업체 등록 성공"),
-    VENDOR_FIND_SUCCESS(HttpStatus.OK, "업체 조회 성공"),
-    VENDOR_UPDATE_SUCCESS(HttpStatus.OK, "업체 정보 수정 성공"),
-    VENDOR_DELETE_SUCCESS(HttpStatus.OK, "업체 삭제 성공"),
+	// 업체 (vendor)
+	VENDOR_SAVE_SUCCESS(HttpStatus.CREATED, "업체 등록 성공"),
+	VENDOR_FIND_SUCCESS(HttpStatus.OK, "업체 조회 성공"),
+	VENDOR_UPDATE_SUCCESS(HttpStatus.OK, "업체 정보 수정 성공"),
+	VENDOR_DELETE_SUCCESS(HttpStatus.OK, "업체 삭제 성공"),
+	PRODUCT_SAVE_SUCCESS(HttpStatus.CREATED, "상품 등록 성공"),
 
 	// AI
 	MESSAGE_GENERATION_SUCCESS(HttpStatus.OK, "최종 발송 시한 정보 생성 성공"),
 
-    // 배송 (delivery)
-    DELIVERY_SAVE_SUCCESS(HttpStatus.CREATED, "배송 생성 성공");
+	// 메세지 (messaging)
+	SLACK_MESSAGE_SENT_SUCCESS(HttpStatus.OK, "슬랙 메세지 전송 성공"),
+
+	// 배송 (delivery)
+	DELIVERY_SAVE_SUCCESS(HttpStatus.CREATED, "배송 생성 성공");
 
 	private final HttpStatus httpStatus;
 	private final String message;
