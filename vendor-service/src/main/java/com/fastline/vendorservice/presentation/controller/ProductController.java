@@ -1,14 +1,19 @@
 package com.fastline.vendorservice.presentation.controller;
 
+import com.fastline.common.exception.CustomException;
+import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.success.SuccessCode;
 import com.fastline.vendorservice.application.ProductService;
 import com.fastline.vendorservice.application.command.CreateProductCommand;
+import com.fastline.vendorservice.application.command.UpdateProductCommand;
 import com.fastline.vendorservice.domain.entity.Product;
 import com.fastline.vendorservice.presentation.request.ProductCreateRequest;
+import com.fastline.vendorservice.presentation.request.ProductUpdateRequest;
 import com.fastline.vendorservice.presentation.response.product.ProductCreateResponse;
 import com.fastline.vendorservice.presentation.response.product.ProductFindResponse;
+import com.fastline.vendorservice.presentation.response.product.ProductUpdateResponse;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -50,4 +55,21 @@ public class ProductController {
 						product.getId(), product.getStock(), product.getPrice(), product.getVendor().getId());
 		return ResponseUtil.successResponse(SuccessCode.PRODUCT_FIND_SUCCESS, response);
 	}
+
+    @PutMapping
+    public ResponseEntity<ApiResponse<ProductUpdateResponse>> updateProduct(@RequestBody @Valid ProductUpdateRequest updateRequest,
+                                                                            @RequestParam UUID productId) {
+
+        if (updateRequest == null) throw new CustomException(ErrorCode.VALIDATION_ERROR);
+
+        UpdateProductCommand updateCommand = new UpdateProductCommand(
+                updateRequest.name(), updateRequest.stock(), updateRequest.price()
+        );
+
+        Product product = service.updateProduct(updateCommand, productId);
+        ProductUpdateResponse response = new ProductUpdateResponse(
+                product.getName(), product.getStock(), product.getPrice()
+        );
+        return ResponseUtil.successResponse(SuccessCode.PRODUCT_UPDATE_SUCCESS, response);
+    }
 }

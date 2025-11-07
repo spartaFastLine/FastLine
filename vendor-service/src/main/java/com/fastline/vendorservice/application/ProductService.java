@@ -1,6 +1,7 @@
 package com.fastline.vendorservice.application;
 
 import com.fastline.vendorservice.application.command.CreateProductCommand;
+import com.fastline.vendorservice.application.command.UpdateProductCommand;
 import com.fastline.vendorservice.domain.entity.Product;
 import com.fastline.vendorservice.domain.entity.Vendor;
 import com.fastline.vendorservice.domain.repository.ProductRepository;
@@ -30,7 +31,16 @@ public class ProductService {
 		return repository.insert(product);
 	}
 
+    @Transactional(readOnly = true)
 	public Product findByProductId(UUID productId) {
 		return repository.findByProductId(productId);
 	}
+
+    public Product updateProduct(UpdateProductCommand command, UUID productId) {
+
+        Product product = repository.findByProductId(productId);
+        product.update(command.name(), command.stock(), command.price());
+
+        return repository.insert(product);
+    }
 }

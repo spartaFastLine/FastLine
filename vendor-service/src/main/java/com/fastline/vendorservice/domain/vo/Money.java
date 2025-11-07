@@ -5,6 +5,8 @@ import com.fastline.common.exception.ErrorCode;
 import jakarta.persistence.Embeddable;
 import lombok.*;
 
+import java.util.Objects;
+
 @Embeddable
 @Getter
 @EqualsAndHashCode
@@ -31,7 +33,7 @@ public class Money {
 	}
 
 	public static Money of(Double value) {
-		if (value < 0) throw new CustomException(ErrorCode.VALIDATION_ERROR);
+		if (Objects.isNull(value) || value < 0) throw new CustomException(ErrorCode.VALIDATION_ERROR);
 
 		Money money = new Money();
 		money.value = value;

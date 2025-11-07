@@ -52,4 +52,13 @@ public class Product extends TimeBaseEntity {
 		product.vendor = vendor;
 		return product;
 	}
+
+    public Product update(String newName, Integer newStock, Double newPrice) {
+
+        this.name = newName == null ? name : newName;
+        this.stock = newStock == null ? stock : newStock;
+        this.price = newPrice == null ? price : Money.of(newPrice);
+
+        return this;
+    }
 }
