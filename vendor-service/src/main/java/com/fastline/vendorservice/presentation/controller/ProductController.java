@@ -8,13 +8,12 @@ import com.fastline.vendorservice.application.command.CreateProductCommand;
 import com.fastline.vendorservice.domain.entity.Product;
 import com.fastline.vendorservice.presentation.request.ProductCreateRequest;
 import com.fastline.vendorservice.presentation.response.product.ProductCreateResponse;
+import com.fastline.vendorservice.presentation.response.product.ProductFindResponse;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/product")
@@ -39,5 +38,16 @@ public class ProductController {
 				new ProductCreateResponse(
 						product.getId(), product.getStock(), product.getPrice(), product.getVendor().getId());
 		return ResponseUtil.successResponse(SuccessCode.PRODUCT_SAVE_SUCCESS, response);
+	}
+
+	@GetMapping
+	public ResponseEntity<ApiResponse<ProductFindResponse>> findProduct(
+			@RequestParam UUID productId) {
+
+		Product product = service.findByProductId(productId);
+		ProductFindResponse response =
+				new ProductFindResponse(
+						product.getId(), product.getStock(), product.getPrice(), product.getVendor().getId());
+		return ResponseUtil.successResponse(SuccessCode.PRODUCT_FIND_SUCCESS, response);
 	}
 }
