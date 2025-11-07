@@ -47,20 +47,16 @@ public class AiService {
 			GeminiRequest requestBody = buildBody(prompt);
 			GeminiResponse result = geminiClient.generate(requestBody, model, apiKey);
 
-			// --- raw result 받음
 			String raw = result.candidates().get(0).content().parts().get(0).text();
 
-			// --- sanitize
 			String sanitized = sanitizeLLM(raw);
 
-			// --- validate
 			if (!isValidJson(sanitized)) {
 				requestLog.fail(prompt, sanitized);
 				log.error("[AI JSON validation 실패]\n{}", sanitized);
 				throw new CustomException(GENERATION_FAIL);
 			}
 
-			// --- parse
 			MessageGenerationResponse response =
 					objectMapper.readValue(sanitized, MessageGenerationResponse.class);
 

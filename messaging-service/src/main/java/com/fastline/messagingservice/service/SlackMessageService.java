@@ -40,18 +40,15 @@ public class SlackMessageService {
 	public void sendMessage(SendMessageRequest orderInfo) {
 
 		MessageGenerationRequest aiRequest = MessageGenerationRequest.from(orderInfo);
-
-		String finalDispatchDeadline = aiServiceClient.generate(aiRequest).finalDispatchDeadline();
-		// 테스트용
-		// String finalDispatchDeadline = "위 내용을 기반으로 도출된 최종 발송 시한은 12월 10일 오전 9시 입니다.";
-
+		String finalDispatchDeadline =
+				aiServiceClient.generate(aiRequest).data().finalDispatchDeadline();
 		Attachment attachment = buildSlackAttachment(orderInfo, finalDispatchDeadline);
 
 		try {
 			slackClient.send(
 					SLACK_WEBHOOK_URL, payload(p -> p.text(TITLE).attachments(List.of(attachment))));
 		} catch (IOException e) {
-			log.error("Slack 메시지 전송 실패, orderId: {}", orderInfo.orderId(), e);
+			log.error("[Slack 메시지 전송 실패] orderId: {}", orderInfo.orderId(), e);
 			throw new CustomException(SEND_SLACK_MESSAGE_FAIL);
 		}
 
