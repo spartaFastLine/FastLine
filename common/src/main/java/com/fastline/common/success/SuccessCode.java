@@ -25,6 +25,9 @@ public enum SuccessCode {
 	VENDOR_UPDATE_SUCCESS(HttpStatus.OK, "업체 정보 수정 성공"),
 	VENDOR_DELETE_SUCCESS(HttpStatus.OK, "업체 삭제 성공"),
 	PRODUCT_SAVE_SUCCESS(HttpStatus.CREATED, "상품 등록 성공"),
+	PRODUCT_FIND_SUCCESS(HttpStatus.OK, "상품 조회 성공"),
+	PRODUCT_UPDATE_SUCCESS(HttpStatus.OK, "상품 정보 수정 성공"),
+	PRODUCT_DELETE_SUCCESS(HttpStatus.OK, "상품 삭제 성공"),
 
 	// AI
 	MESSAGE_GENERATION_SUCCESS(HttpStatus.OK, "최종 발송 시한 정보 생성 성공"),

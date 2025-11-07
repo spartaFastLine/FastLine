@@ -11,10 +11,12 @@ import java.util.UUID;
 import lombok.Getter;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "p_vendor")
 @Getter
+@SQLDelete(sql = "UPDATE p_vendor SET deleted_at = CURRENT_TIMESTAMP WHERE vendor_id = ?")
 @FilterDef(
 		name = "softDeleteFilter",
 		defaultCondition = "deleted_at IS NULL",

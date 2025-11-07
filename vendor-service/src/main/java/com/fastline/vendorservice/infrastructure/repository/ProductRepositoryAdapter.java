@@ -4,6 +4,7 @@ import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.vendorservice.domain.entity.Product;
 import com.fastline.vendorservice.domain.repository.ProductRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -26,5 +27,20 @@ public class ProductRepositoryAdapter implements ProductRepository {
 		}
 
 		return insertedProduct;
+	}
+
+	@Override
+	public Product findByProductId(UUID productId) {
+
+		return jpaProductRepository
+				.findById(productId)
+				.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+	}
+
+	@Override
+	public UUID deleteByProductId(UUID productId) {
+
+		jpaProductRepository.deleteById(productId);
+		return productId;
 	}
 }
