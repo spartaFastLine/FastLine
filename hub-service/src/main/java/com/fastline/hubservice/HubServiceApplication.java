@@ -2,11 +2,13 @@ package com.fastline.hubservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 @EnableJpaAuditing
-
+@EnableFeignClients
 public class HubServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(HubServiceApplication.class, args);
