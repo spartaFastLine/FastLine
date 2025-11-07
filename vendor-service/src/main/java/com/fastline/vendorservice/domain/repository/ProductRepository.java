@@ -8,4 +8,6 @@ public interface ProductRepository {
 	Product insert(Product product);
 
 	Product findByProductId(UUID productId);
+
+	UUID deleteByProductId(UUID productId);
 }

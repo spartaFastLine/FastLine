@@ -31,16 +31,20 @@ public class ProductService {
 		return repository.insert(product);
 	}
 
-    @Transactional(readOnly = true)
+	@Transactional(readOnly = true)
 	public Product findByProductId(UUID productId) {
 		return repository.findByProductId(productId);
 	}
 
-    public Product updateProduct(UpdateProductCommand command, UUID productId) {
+	public Product updateProduct(UpdateProductCommand command, UUID productId) {
 
-        Product product = repository.findByProductId(productId);
-        product.update(command.name(), command.stock(), command.price());
+		Product product = repository.findByProductId(productId);
+		product.update(command.name(), command.stock(), command.price());
 
-        return repository.insert(product);
-    }
+		return repository.insert(product);
+	}
+
+	public UUID deleteProduct(UUID productId) {
+		return repository.deleteByProductId(productId);
+	}
 }

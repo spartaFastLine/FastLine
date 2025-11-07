@@ -3,9 +3,8 @@ package com.fastline.vendorservice.domain.vo;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import jakarta.persistence.Embeddable;
-import lombok.*;
-
 import java.util.Objects;
+import lombok.*;
 
 @Embeddable
 @Getter

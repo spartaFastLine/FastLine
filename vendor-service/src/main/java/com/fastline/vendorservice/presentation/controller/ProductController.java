@@ -56,20 +56,26 @@ public class ProductController {
 		return ResponseUtil.successResponse(SuccessCode.PRODUCT_FIND_SUCCESS, response);
 	}
 
-    @PutMapping
-    public ResponseEntity<ApiResponse<ProductUpdateResponse>> updateProduct(@RequestBody @Valid ProductUpdateRequest updateRequest,
-                                                                            @RequestParam UUID productId) {
+	@PutMapping
+	public ResponseEntity<ApiResponse<ProductUpdateResponse>> updateProduct(
+			@RequestBody @Valid ProductUpdateRequest updateRequest, @RequestParam UUID productId) {
 
-        if (updateRequest == null) throw new CustomException(ErrorCode.VALIDATION_ERROR);
+		if (updateRequest == null) throw new CustomException(ErrorCode.VALIDATION_ERROR);
 
-        UpdateProductCommand updateCommand = new UpdateProductCommand(
-                updateRequest.name(), updateRequest.stock(), updateRequest.price()
-        );
+		UpdateProductCommand updateCommand =
+				new UpdateProductCommand(
+						updateRequest.name(), updateRequest.stock(), updateRequest.price());
 
-        Product product = service.updateProduct(updateCommand, productId);
-        ProductUpdateResponse response = new ProductUpdateResponse(
-                product.getName(), product.getStock(), product.getPrice()
-        );
-        return ResponseUtil.successResponse(SuccessCode.PRODUCT_UPDATE_SUCCESS, response);
-    }
+		Product product = service.updateProduct(updateCommand, productId);
+		ProductUpdateResponse response =
+				new ProductUpdateResponse(product.getName(), product.getStock(), product.getPrice());
+		return ResponseUtil.successResponse(SuccessCode.PRODUCT_UPDATE_SUCCESS, response);
+	}
+
+	@DeleteMapping
+	public ResponseEntity<ApiResponse<UUID>> deleteProduct(@RequestParam UUID productId) {
+
+		UUID deletedId = service.deleteProduct(productId);
+		return ResponseUtil.successResponse(SuccessCode.PRODUCT_DELETE_SUCCESS, deletedId);
+	}
 }

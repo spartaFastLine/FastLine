@@ -31,8 +31,16 @@ public class ProductRepositoryAdapter implements ProductRepository {
 
 	@Override
 	public Product findByProductId(UUID productId) {
+
 		return jpaProductRepository
 				.findById(productId)
 				.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+	}
+
+	@Override
+	public UUID deleteByProductId(UUID productId) {
+
+		jpaProductRepository.deleteById(productId);
+		return productId;
 	}
 }
