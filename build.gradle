@@ -96,3 +96,8 @@ project(':vendor-service') {
         implementation project(':common')
     }
 }
+project(':eureka-service') {
+    dependencies {
+        implementation project(':common')
+    }
+}

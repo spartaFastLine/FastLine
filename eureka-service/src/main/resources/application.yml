@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: eureka-service
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+server:
+    port: 19091
+eureka:
+  client:
+#    유레카 서버에 등록하지 않음(여기가 서버임)
+    register-with-eureka: false
+    #유레카 서버에서부터 레지스트리를 가져올지 여부(여기가 서버임)
+    fetch-registry: false
+    #유레카 클라이언트가 통신할때 칠요한 유레카 서버 주소
+    service-url:
+      defaultZone: http://localhost:19091/eureka/
+  instance:
+    hostname: localhost
+
