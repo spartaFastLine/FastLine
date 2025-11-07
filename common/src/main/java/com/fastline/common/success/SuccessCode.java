@@ -28,6 +28,9 @@ public enum SuccessCode {
 	// AI
 	MESSAGE_GENERATION_SUCCESS(HttpStatus.OK, "최종 발송 시한 정보 생성 성공"),
 
+	// 메세지 (messaging)
+	SLACK_MESSAGE_SENT_SUCCESS(HttpStatus.OK, "슬랙 메세지 전송 성공"),
+
     // 배송 (delivery)
     DELIVERY_SAVE_SUCCESS(HttpStatus.CREATED, "배송 생성 성공");
 

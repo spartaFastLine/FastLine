@@ -38,3 +38,7 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.jdbc.core: DEBUG
+
+webhook:
+  slack:
+    url: "https://hooks.slack.com/services/${SLACK_API_KEY}"
