@@ -8,15 +8,12 @@ import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.Getter;
 import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
-@Table(
-		name = "p_product",
-		uniqueConstraints =
-				@UniqueConstraint(
-						name = "oneVendorOneName",
-						columnNames = {"name", "vendor_id"}))
+@Table(name = "p_product")
 @Getter
+@SQLDelete(sql = "UPDATE p_product SET deleted_at = CURRENT_TIMESTAMP WHERE product_id = ?")
 @Filter(name = "softDeleteFilter")
 public class Product extends TimeBaseEntity {
 
@@ -35,7 +32,7 @@ public class Product extends TimeBaseEntity {
 	@Column(nullable = false)
 	private Money price;
 
-	@ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "vendor_id")
 	private Vendor vendor;
 
@@ -51,5 +48,14 @@ public class Product extends TimeBaseEntity {
 		product.price = Money.of(price);
 		product.vendor = vendor;
 		return product;
+	}
+
+	public Product update(String newName, Integer newStock, Double newPrice) {
+
+		this.name = newName == null ? name : newName;
+		this.stock = newStock == null ? stock : newStock;
+		this.price = newPrice == null ? price : Money.of(newPrice);
+
+		return this;
 	}
 }
