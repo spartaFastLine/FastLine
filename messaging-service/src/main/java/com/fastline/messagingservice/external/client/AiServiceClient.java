@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "geminiClient", url = "http://localhost:8080")
+@FeignClient(name = "aiServiceClient", url = "${ai-service.url}")
 public interface AiServiceClient {
 
 	@PostMapping("/api/ai/messages")

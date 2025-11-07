@@ -42,3 +42,6 @@ logging:
 webhook:
   slack:
     url: "https://hooks.slack.com/services/${SLACK_API_KEY}"
+
+ai-service:
+  url: "http://localhost:${AI_SERVER_PORT}"
