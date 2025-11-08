@@ -2,7 +2,8 @@ package com.fastline.authservice.domain.service;
 
 import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.model.UserOrderBy;
-import com.fastline.authservice.domain.model.UserRole;
+import com.fastline.common.security.model.UserDetailsImpl;
+import com.fastline.common.security.model.UserRole;
 import com.fastline.authservice.domain.model.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.authservice.presentation.request.*;
@@ -37,20 +38,15 @@ public class UserService {
 
 	// 유저 다건 조회
 	@Transactional(readOnly = true)
-	public Page<UserResponseDto> getUsers(Long userId, UserSearchRequestDto requestDto) {
-		User user =
-				userRepository
-						.findById(userId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+	public Page<UserResponseDto> getUsers(UserDetailsImpl user, UserSearchRequestDto requestDto) {
+        UUID requestHubId = requestDto.getHubId();
 		// 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
-		if (requestDto.getHubId() != null) {
-			if (user.getRole() != UserRole.MASTER && !user.getHubId().equals(requestDto.getHubId()))
+		if (requestHubId != null) {
+			if (user.getRole() != UserRole.MASTER && !user.getHubId().equals(requestHubId))
 				throw new CustomException(ErrorCode.NOT_HUB_MANAGER);
-		}
-		// 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
-		UUID hubId = requestDto.getHubId();
-		if (user.getRole() == UserRole.HUB_MANAGER && hubId == null) {
-			hubId = user.getHubId();
+		}else {
+			// 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
+			if(user.getRole() == UserRole.MASTER) requestHubId = user.getHubId();
 		}
 		// 정렬조건 체크
 		UserOrderBy.checkValid(requestDto.getSortBy());
@@ -66,7 +62,7 @@ public class UserService {
 		Page<User> users =
 				userRepository.findUsers(
 						requestDto.getUsername(),
-						hubId,
+						requestHubId,
 						requestDto.getRole(),
 						requestDto.getStatus(),
 						pageable);

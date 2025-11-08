@@ -1,6 +1,6 @@
 package com.fastline.authservice.presentation.controller;
 
-import com.fastline.authservice.domain.security.UserDetailsImpl;
+import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.authservice.domain.service.AuthService;
 import com.fastline.authservice.presentation.request.LoginRequestDto;
 import com.fastline.authservice.presentation.request.PermitRequestDto;

@@ -1,6 +1,7 @@
 package com.fastline.authservice.domain.model;
 
 import com.fastline.common.jpa.TimeBaseEntity;
+import com.fastline.common.security.model.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import java.util.UUID;

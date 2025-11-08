@@ -1,8 +1,8 @@
 package com.fastline.authservice.infrastructure.configuration;
 
-import com.fastline.authservice.domain.jwt.JwtUtil;
+import com.fastline.common.security.jwt.JwtUtil;
 import com.fastline.authservice.domain.security.UserDetailsServiceImpl;
-import com.fastline.authservice.infrastructure.auth.exception.CustomAccessDeniedHandlerImpl;
+import com.fastline.common.exception.CustomAccessDeniedHandlerImpl;
 import com.fastline.authservice.infrastructure.filter.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

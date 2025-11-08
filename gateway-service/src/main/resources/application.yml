@@ -1,6 +1,8 @@
 spring:
   application:
     name: gateway-service
+  config:
+    import: optional:file:gateway-service/.env[.properties]
   main:
     web-application-type: reactive  # 스프링 애플리케이션이 리액티브 웹 애플리케이션임을 명시
   cloud:
@@ -23,3 +25,6 @@ eureka:
   client:
     service-url:
         defaultZone: http://localhost:19091/eureka/ # Eureka 서버 주소 설정
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}

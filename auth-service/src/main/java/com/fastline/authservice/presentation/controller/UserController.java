@@ -1,6 +1,6 @@
 package com.fastline.authservice.presentation.controller;
 
-import com.fastline.authservice.domain.security.UserDetailsImpl;
+import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.authservice.domain.service.UserService;
 import com.fastline.authservice.presentation.request.*;
 import com.fastline.common.response.ApiResponse;
@@ -27,7 +27,7 @@ public class UserController {
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody UserSearchRequestDto requestDto) {
 		Page<UserResponseDto> responseDto =
-				userService.getUsers(userDetails.getUserId(), requestDto);
+				userService.getUsers(userDetails, requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
 	}
 

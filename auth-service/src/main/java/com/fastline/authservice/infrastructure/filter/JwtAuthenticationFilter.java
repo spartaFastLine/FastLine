@@ -1,6 +1,6 @@
 package com.fastline.authservice.infrastructure.filter;
 
-import com.fastline.authservice.domain.jwt.JwtUtil;
+import com.fastline.common.security.jwt.JwtUtil;
 import com.fastline.authservice.domain.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 
@@ -26,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(
-			HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
 			throws ServletException, IOException {
 		try {
 			String token = resolveToken(request);
@@ -36,9 +37,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 					Claims claims = jwtUtil.getUserInfoFromToken(rawToken);
 					String username = claims.get("sub", String.class);
 					if (username != null) {
-						logger.info(username);
 						var userDetails = userDetailsService.loadUserInfo(
-								claims.get("userId", Long.class), username, claims.get("auth", String.class));
+								claims.get("userId", Long.class),
+								username,
+								claims.get("auth", String.class),
+								claims.get("hubId", String.class),
+								claims.get("slackId", String.class));
+						logger.debug("uerDetails : "+userDetails.toString());
+
 						Authentication auth =
 								new UsernamePasswordAuthenticationToken(
 										userDetails, null, userDetails.getAuthorities());

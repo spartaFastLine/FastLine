@@ -1,8 +1,8 @@
 package com.fastline.authservice.domain.service;
 
-import com.fastline.authservice.domain.jwt.JwtUtil;
+import com.fastline.common.security.jwt.JwtUtil;
 import com.fastline.authservice.domain.model.User;
-import com.fastline.authservice.domain.model.UserRole;
+import com.fastline.common.security.model.UserRole;
 import com.fastline.authservice.domain.model.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.authservice.presentation.request.LoginRequestDto;
@@ -95,7 +95,7 @@ public class AuthService {
 		if (user.getStatus() != UserStatus.APPROVE)
 			throw new CustomException(ErrorCode.USER_NOT_APPROVE);
 		// JWT 토큰 생성 및 응답 헤더에 추가
-		String token = jwtUtil.createToken(user.getId(), username, user.getRole().toString());
+		String token = jwtUtil.createToken(user.getId(), username, user.getRole().toString(), user.getHubId(), user.getSlackId());
 		res.setHeader("Authorization", token);
 	}
 }
