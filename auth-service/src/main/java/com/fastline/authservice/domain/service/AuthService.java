@@ -1,15 +1,14 @@
 package com.fastline.authservice.domain.service;
 
-import com.fastline.common.security.jwt.JwtUtil;
 import com.fastline.authservice.domain.model.User;
-import com.fastline.common.security.model.UserRole;
 import com.fastline.authservice.domain.model.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.authservice.presentation.request.LoginRequestDto;
-import com.fastline.authservice.presentation.request.PermitRequestDto;
 import com.fastline.authservice.presentation.request.SignupRequestDto;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
+import com.fastline.common.security.jwt.JwtUtil;
+import com.fastline.common.security.model.UserRole;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -57,27 +56,6 @@ public class AuthService {
 		userRepository.save(user);
 	}
 
-	@Transactional
-	public void permitSignup(Long userId, @Valid PermitRequestDto requestDto) {
-		User manager =
-				userRepository
-						.findById(userId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		User newUser =
-				userRepository
-						.findById(requestDto.getUserId())
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		// 관리자가 MASTER가 아니거나 HUB_MANAGER인데 승인할 사용자가 다른 허브에 속해있다면 예외 발생
-		if (manager.getRole() != UserRole.MASTER
-				&& !(manager.getRole() == UserRole.HUB_MANAGER
-						&& newUser.getHubId().equals(manager.getHubId())))
-			throw new CustomException(ErrorCode.NO_USER_PERMIT_AUTHORITY);
-
-		if (newUser.getStatus() != UserStatus.PENDING) throw new CustomException(ErrorCode.NOT_PENDING);
-
-		// 회원가입 승인
-		newUser.permitSignup();
-	}
 
 	public void login(@Valid LoginRequestDto requestDto, HttpServletResponse res) {
 		String username = requestDto.getUsername();

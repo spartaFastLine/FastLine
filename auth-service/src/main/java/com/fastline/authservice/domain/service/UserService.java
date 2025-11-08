@@ -10,6 +10,8 @@ import com.fastline.authservice.presentation.request.*;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import java.util.UUID;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +26,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+
+
+	//회원가입 승인
+	@Transactional
+	public void permitSignup(Long userId, @Valid PermitRequestDto requestDto) {
+		User manager =
+				userRepository
+						.findById(userId)
+						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		User newUser =
+				userRepository
+						.findById(requestDto.getUserId())
+						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		// 관리자가 MASTER가 아니거나 HUB_MANAGER인데 승인할 사용자가 다른 허브에 속해있다면 예외 발생
+		if (manager.getRole() != UserRole.MASTER
+				&& !(manager.getRole() == UserRole.HUB_MANAGER
+				&& newUser.getHubId().equals(manager.getHubId())))
+			throw new CustomException(ErrorCode.NO_USER_PERMIT_AUTHORITY);
+
+		if (newUser.getStatus() != UserStatus.PENDING) throw new CustomException(ErrorCode.NOT_PENDING);
+
+		// 회원가입 승인
+		newUser.permitSignup();
+	}
 
 	// 유저 단건 조회
 	@Transactional(readOnly = true)

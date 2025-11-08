@@ -24,7 +24,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
@@ -37,7 +36,4 @@ public class SecurityConfig {
                 //401 Unauthorized 처리필요
                 .build();
     }
-
-
-
 }

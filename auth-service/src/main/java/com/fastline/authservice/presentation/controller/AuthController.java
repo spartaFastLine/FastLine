@@ -1,9 +1,7 @@
 package com.fastline.authservice.presentation.controller;
 
-import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.authservice.domain.service.AuthService;
 import com.fastline.authservice.presentation.request.LoginRequestDto;
-import com.fastline.authservice.presentation.request.PermitRequestDto;
 import com.fastline.authservice.presentation.request.SignupRequestDto;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
@@ -12,9 +10,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -27,16 +26,6 @@ public class AuthController {
 	public ResponseEntity<ApiResponse<Void>> signup(@RequestBody @Valid SignupRequestDto requestDto) {
 		authService.signup(requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_SUCCESS);
-	}
-
-	// 회원가입 승인
-	@PutMapping("/permit/signup")
-	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
-	public ResponseEntity<ApiResponse<Void>> permitSignup(
-			@AuthenticationPrincipal UserDetailsImpl userDetails,
-			@RequestBody @Valid PermitRequestDto requestDto) {
-		authService.permitSignup(userDetails.getUserId(), requestDto);
-		return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_PERMIT_SUCCESS);
 	}
 
 	// 로그인

@@ -20,6 +20,16 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 	private final UserService userService;
 
+	// 회원가입 승인
+	@PutMapping("/permit/signup")
+	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
+	public ResponseEntity<ApiResponse<Void>> permitSignup(
+			@AuthenticationPrincipal UserDetailsImpl userDetails,
+			@RequestBody @Valid PermitRequestDto requestDto) {
+		userService.permitSignup(userDetails.getUserId(), requestDto);
+		return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_PERMIT_SUCCESS);
+	}
+
 	// 유저 다건 조회
 	@PreAuthorize("hasAnyRole('ROLE_MASTER', 'ROLE_HUB_MANAGER')")
 	@GetMapping("/managers/users")
