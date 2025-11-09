@@ -26,7 +26,7 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> permitSignup(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid PermitRequestDto requestDto) {
-		userService.permitSignup(userDetails.getUserId(), requestDto);
+		userService.permitSignup(userDetails, requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_PERMIT_SUCCESS);
 	}
 
@@ -81,7 +81,7 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> deleteUserpermit(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid PermitRequestDto requestDto) {
-		userService.deleteUserpermit(userDetails.getUserId(), requestDto);
+		userService.permitDeleteUser(userDetails, requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_DELETE_SUCCESS);
 	}
 

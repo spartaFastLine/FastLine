@@ -30,19 +30,10 @@ public class UserService {
 
 	//회원가입 승인
 	@Transactional
-	public void permitSignup(Long userId, @Valid PermitRequestDto requestDto) {
-		User manager =
-				userRepository
-						.findById(userId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		User newUser =
-				userRepository
-						.findById(requestDto.getUserId())
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+	public void permitSignup(UserDetailsImpl manager, @Valid PermitRequestDto requestDto) {
+		User newUser = userCheck(requestDto.getUserId());
 		// 관리자가 MASTER가 아니거나 HUB_MANAGER인데 승인할 사용자가 다른 허브에 속해있다면 예외 발생
-		if (manager.getRole() != UserRole.MASTER
-				&& !(manager.getRole() == UserRole.HUB_MANAGER
-				&& newUser.getHubId().equals(manager.getHubId())))
+		if (!(manager.getRole() == UserRole.HUB_MANAGER&& newUser.getHubId().equals(manager.getHubId())))
 			throw new CustomException(ErrorCode.NO_USER_PERMIT_AUTHORITY);
 
 		if (newUser.getStatus() != UserStatus.PENDING) throw new CustomException(ErrorCode.NOT_PENDING);
@@ -55,24 +46,21 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public UserResponseDto getUser(Long userId) {
 		// 유저 확인
-		User user =
-				userRepository
-						.findById(userId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		User user = userCheck(userId);
 		return new UserResponseDto(user);
 	}
 
 	// 유저 다건 조회
 	@Transactional(readOnly = true)
-	public Page<UserResponseDto> getUsers(UserDetailsImpl user, UserSearchRequestDto requestDto) {
+	public Page<UserResponseDto> getUsers(UserDetailsImpl manager, UserSearchRequestDto requestDto) {
         UUID requestHubId = requestDto.getHubId();
 		// 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
 		if (requestHubId != null) {
-			if (user.getRole() != UserRole.MASTER && !user.getHubId().equals(requestHubId))
+			if (manager.getRole() != UserRole.MASTER && !manager.getHubId().equals(requestHubId))
 				throw new CustomException(ErrorCode.NOT_HUB_MANAGER);
 		}else {
 			// 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
-			if(user.getRole() == UserRole.MASTER) requestHubId = user.getHubId();
+			if(manager.getRole() == UserRole.MASTER) requestHubId = manager.getHubId();
 		}
 		// 정렬조건 체크
 		UserOrderBy.checkValid(requestDto.getSortBy());
@@ -99,10 +87,7 @@ public class UserService {
 	@Transactional
 	public void updatePassword(Long userId, UpdatePasswordRequestDto requestDto) {
 		// 유저 확인
-		User user =
-				userRepository
-						.findById(userId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		User user = userCheck(userId);
 		// 현재 비밀번호 확인
 		if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword()))
 			throw new CustomException(ErrorCode.PASSWORD_NOT_MATCHES);
@@ -119,10 +104,7 @@ public class UserService {
 	@Transactional
 	public void updateSlack(Long userId, UpdateSlackRequestDto requestDto) {
 		// 유저 확인
-		User user =
-				userRepository
-						.findById(userId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		User user = userCheck(userId);
 		// 슬랙 아이디 업데이트
 		user.updateSlackId(requestDto.getSlackId());
 	}
@@ -130,30 +112,23 @@ public class UserService {
 	@Transactional
 	public void withdrawUser(Long userId) {
 		// 유저 확인
-		User user =
-				userRepository
-						.findById(userId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		if (user.getStatus() != UserStatus.APPROVE) throw new CustomException(ErrorCode.NOT_APPROVE);
+		User user = userCheck(userId);
 		// 권한 정지
 		user.updateReject();
 	}
 
 	@Transactional
-	public void deleteUserpermit(Long managerId, PermitRequestDto requestDto) {
-		// 해당 허브의 관리자인지 확인
-		User manager =
-				userRepository
-						.findById(managerId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		User user =
-				userRepository
-						.findById(requestDto.getUserId())
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+	public void permitDeleteUser(UserDetailsImpl manager, PermitRequestDto requestDto) {
+		User user = userCheck(requestDto.getUserId());
 		if (manager.getRole() == UserRole.HUB_MANAGER && !manager.getHubId().equals(user.getHubId()))
 			throw new CustomException(ErrorCode.NOT_HUB_MANAGER);
 		if (user.getStatus() != UserStatus.REJECTED) throw new CustomException(ErrorCode.NOT_REJECTED);
 		// 탈퇴 신청한 유저 삭제
 		user.delete();
+	}
+
+	private User userCheck(Long userId) {
+		return userRepository.findById(userId)
+				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 	}
 }
