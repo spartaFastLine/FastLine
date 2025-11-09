@@ -168,4 +168,13 @@ public class Delivery extends TimeBaseEntity {
 			completeDelivery();
 		}
 	}
+
+	public void delete(Long userId) {
+		this.markDeleted();
+		//        this.deletedBy = userId;
+
+		for (DeliveryPath path : this.paths) {
+			path.delete(userId);
+		}
+	}
 }

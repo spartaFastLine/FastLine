@@ -104,4 +104,18 @@ public class DeliveryService {
 
 		log.info("배송 정보 수정 완료: deliveryId={}", command.deliveryId());
 	}
+
+	@Transactional
+	public void deleteDelivery(UUID deliveryId, Long userId) {
+		log.info("배송 정보 삭제 시작: deliveryId={}", deliveryId);
+
+		Delivery delivery =
+				deliveryRepository
+						.findById(deliveryId)
+						.orElseThrow(() -> new IllegalArgumentException("배송을 찾을 수 없습니다."));
+
+		delivery.delete(userId);
+
+		log.info("배송 정보 삭제 완료: deliveryId={}", deliveryId);
+	}
 }
