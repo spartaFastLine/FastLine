@@ -1,13 +1,14 @@
 package com.fastline.deliveryservice.application.dto;
 
 import com.fastline.deliveryservice.domain.entity.Delivery;
+import com.fastline.deliveryservice.domain.entity.DeliveryStatus;
 import java.util.List;
 import java.util.UUID;
 
 public record DeliveryResult(
 		UUID deliveryId,
 		UUID orderId,
-		String status,
+		DeliveryStatus status,
 		UUID vendorSenderId,
 		UUID vendorReceiverId,
 		UUID startHubId,
@@ -21,7 +22,7 @@ public record DeliveryResult(
 		return new DeliveryResult(
 				delivery.getDeliveryId(),
 				delivery.getOrderId(),
-				delivery.getStatus().toString(),
+				delivery.getStatus(),
 				delivery.getVendorSenderId(),
 				delivery.getVendorReceiverId(),
 				delivery.getStartHubId(),

@@ -100,4 +100,9 @@ public class DeliveryPath extends TimeBaseEntity {
 	protected void setDelivery(Delivery delivery) {
 		this.delivery = delivery;
 	}
+
+	public void delete(Long userId) {
+		this.markDeleted();
+		//        this.deletedBy = userId;
+	}
 }

@@ -111,4 +111,17 @@ public class DeliveryController {
 		log.info("배송 수정 성공: deliveryId={}", deliveryId);
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_UPDATE_SUCCESS, response);
 	}
+
+	/* 배송 삭제 */
+	@DeleteMapping("/{deliveryId}")
+	public ResponseEntity<ApiResponse<Void>> deleteDelivery(@PathVariable UUID deliveryId) {
+		log.info("배송 삭제 요청: deliveryId={}", deliveryId);
+
+		Long userId = 1234L; // 추후 로그인 사용자 정보 가져오게 수정 필요
+
+		deliveryService.deleteDelivery(deliveryId, userId);
+
+		log.info("배송 삭제 성공: deliveryId={}", deliveryId);
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_DELETE_SUCCESS);
+	}
 }
