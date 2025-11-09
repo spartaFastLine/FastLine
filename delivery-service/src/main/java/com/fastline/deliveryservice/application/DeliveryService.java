@@ -2,6 +2,7 @@ package com.fastline.deliveryservice.application;
 
 import com.fastline.deliveryservice.application.command.CreateDeliveryCommand;
 import com.fastline.deliveryservice.application.command.CreateDeliveryPathCommand;
+import com.fastline.deliveryservice.application.dto.DeliveryResult;
 import com.fastline.deliveryservice.domain.entity.Delivery;
 import com.fastline.deliveryservice.domain.entity.DeliveryPath;
 import com.fastline.deliveryservice.domain.repository.DeliveryRepository;
@@ -71,5 +72,15 @@ public class DeliveryService {
 										cmd.expDuration(),
 										cmd.deliveryManagerId()))
 				.toList();
+	}
+
+	@Transactional(readOnly = true)
+	public DeliveryResult getDelivery(UUID deliveryId) {
+		Delivery delivery =
+				deliveryRepository
+						.findById(deliveryId)
+						.orElseThrow(() -> new IllegalArgumentException("배송을 찾을 수 없습니다."));
+
+		return DeliveryResult.from(delivery);
 	}
 }
