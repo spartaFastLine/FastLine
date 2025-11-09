@@ -1,19 +1,24 @@
 package com.fastline.authservice.domain.service;
 
-import com.fastline.authservice.domain.model.DeliveryManager;
-import com.fastline.authservice.domain.model.DeliveryManagerType;
-import com.fastline.authservice.domain.model.User;
-import com.fastline.authservice.domain.model.UserStatus;
+import com.fastline.authservice.domain.model.*;
 import com.fastline.authservice.domain.repository.DeliveryManagerRepository;
 import com.fastline.authservice.presentation.request.DeliveryManagerCreateRequestDto;
 import com.fastline.authservice.presentation.request.DeliveryManagerResponseDto;
+import com.fastline.authservice.presentation.request.DeliveryManagerSearchRequestDto;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.common.security.model.UserRole;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -60,5 +65,39 @@ public class DeliveryManagerService {
         DeliveryManager manager = deliveryManagerRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.DELIVERY_MANAGER_NOT_FOUND));
         return new DeliveryManagerResponseDto(manager);
+    }
+
+    //배달 매니저 검색
+    public Page<DeliveryManagerResponseDto> getDeliveryManagers(UserDetailsImpl userDetails, @Valid DeliveryManagerSearchRequestDto requestDto) {
+        User manager = checkUser.userCheck(userDetails.getUserId());
+        UUID hubId = requestDto.getHubId();
+        // 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
+        if(hubId != null) checkUser.checkHubManager(userDetails, hubId);
+        else{
+            //허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
+            if(manager.getRole()== UserRole.HUB_MANAGER) hubId = userDetails.getHubId();
+        }
+        //정렬조건 체크
+        ManagerOrderBy.checkValid(requestDto.getSortBy());
+
+        // 오름차순/내림차순
+        Sort.Direction directions =
+                requestDto.isSortAscending() ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Pageable pageable =
+                PageRequest.of(
+                        requestDto.getPage() - 1,
+                        requestDto.getSize(),
+                        Sort.by(directions, requestDto.getSortBy()));
+
+        Page<DeliveryManager> deliveryManagers =
+                deliveryManagerRepository.findDeliveryManagers(
+                        requestDto.getUsername(),
+                        hubId,
+                        requestDto.getType(),
+                        requestDto.getNumber(),
+                        requestDto.getStatus(),
+                        pageable);
+        return deliveryManagers.map(DeliveryManagerResponseDto::new);
     }
 }

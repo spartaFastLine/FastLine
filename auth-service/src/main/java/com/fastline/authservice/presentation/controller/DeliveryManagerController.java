@@ -2,6 +2,7 @@ package com.fastline.authservice.presentation.controller;
 
 import com.fastline.authservice.domain.service.DeliveryManagerService;
 import com.fastline.authservice.presentation.request.DeliveryManagerCreateRequestDto;
+import com.fastline.authservice.presentation.request.DeliveryManagerSearchRequestDto;
 import com.fastline.authservice.presentation.request.DeliveryManagerResponseDto;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
@@ -9,6 +10,7 @@ import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.common.success.SuccessCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,6 +36,15 @@ public class DeliveryManagerController {
     @PreAuthorize("hasAnyRole('DELIVERY_MANAGER')")
     public ResponseEntity<ApiResponse<DeliveryManagerResponseDto>> getDeliveryManager(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         DeliveryManagerResponseDto responseDto = deliveryManagerService.getDeliveryManager(userDetails.getUserId());
+        return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_READ_SUCCESS, responseDto);
+    }
+
+    //다건 조회 - 마스터, 허브 관리자만 가능
+    @GetMapping("/managers")
+    @PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
+    public ResponseEntity<ApiResponse<Page<DeliveryManagerResponseDto>>> getDeliveryManagers(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                                             @RequestBody @Valid DeliveryManagerSearchRequestDto requestDto) {
+        Page<DeliveryManagerResponseDto> responseDto = deliveryManagerService.getDeliveryManagers(userDetails, requestDto);
         return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_READ_SUCCESS, responseDto);
     }
 }

@@ -60,7 +60,7 @@ public class UserService {
 			checkUser.checkHubManager(manager, requestHubId);
 		}else {
 			// 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
-			if(manager.getRole() == UserRole.MASTER) requestHubId = manager.getHubId();
+			if(manager.getRole() == UserRole.HUB_MANAGER) requestHubId = manager.getHubId();
 		}
 		// 정렬조건 체크
 		UserOrderBy.checkValid(requestDto.getSortBy());
