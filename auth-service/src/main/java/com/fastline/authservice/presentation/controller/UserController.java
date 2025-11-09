@@ -31,8 +31,8 @@ public class UserController {
 	}
 
 	// 유저 다건 조회
-	@PreAuthorize("hasAnyRole('ROLE_MASTER', 'ROLE_HUB_MANAGER')")
 	@GetMapping("/managers/users")
+	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Page<UserResponseDto>>> getUsers(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody UserSearchRequestDto requestDto) {
@@ -76,8 +76,8 @@ public class UserController {
 	}
 
 	// 회원 탈퇴 승인
-	@PreAuthorize("hasAnyRole('ROLE_MASTER', 'ROLE_HUB_MANAGER')")
 	@DeleteMapping("/managers/withdraw/permit")
+	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Void>> deleteUserpermit(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid PermitRequestDto requestDto) {

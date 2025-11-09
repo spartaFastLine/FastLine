@@ -27,13 +27,12 @@ public enum ErrorCode {
 	NO_USER_PERMIT_AUTHORITY(HttpStatus.BAD_REQUEST, "사용자 승인 권한이 없습니다."),
 	NO_AUTHORITY(HttpStatus.FORBIDDEN, "특정 권한을 가진 사용자만 가능합니다."),
 	INVALID_SORYBY(HttpStatus.BAD_REQUEST, "잘못된 정렬 조건입니다"),
-	DUPLICATED(HttpStatus.CONFLICT, "회원가입 실패"),
 	FORBIDDEN(HttpStatus.FORBIDDEN, "인가 실패"),
-	UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증 실패"),
-	LOGIN_FAIL(HttpStatus.UNAUTHORIZED, "로그인 실패"),
-	LOGOUT_FAIL(HttpStatus.UNAUTHORIZED, "로그아웃 실패"),
-	INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호 변경 실패"),
-	ALREADY_DELETED_USER(HttpStatus.CONFLICT, "회원 삭제 실패"),
+
+	// 배송 매니저 (delivery manager)
+	DELIVERY_MANAGER_NOT_FOUND(HttpStatus.NOT_FOUND, "배송 매니저 조회 실패"),
+	NOT_DELIVERY_MANAGER(HttpStatus.BAD_REQUEST, "배송 매니저만 등록이 가능합니다"),
+	EXIST_DELIVERY_MANAGER(HttpStatus.BAD_REQUEST, "이미 배송 매니저로 등록되어 있습니다."),
 
 	// 업체 (vendor)
 	ADDRESS_DUPLICATED(HttpStatus.CONFLICT, "업체 등록 실패"),

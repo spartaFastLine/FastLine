@@ -40,6 +40,9 @@ public class User extends TimeBaseEntity {
 
 	private UUID hubId;
 
+	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY, optional = true, cascade = CascadeType.PERSIST)
+	private DeliveryManager deliveryManager;
+
 	public User(
 			String email, String username, String password, UserRole role, UUID hubId, String slackId) {
 		this.email = email;
