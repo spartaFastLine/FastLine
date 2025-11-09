@@ -3,7 +3,6 @@ package com.fastline.common.security.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +11,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -63,17 +60,14 @@ public class JwtUtil {
 						.compact();
 	}
 
-	// 헤더에서 JWT 토큰 가져오기
-	public String getTokenFromRequest(HttpServletRequest req) {
-		Cookie[] cookies = req.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
-                    return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8); // 성공시 디코딩 된 토큰 반환
-                }
-			}
+	// Request의 Header에서 토큰 정보 가져오기
+	public String resolveToken(HttpServletRequest request) {
+		String header = request.getHeader(JwtUtil.AUTHORIZATION_HEADER);
+		logger.info("Header: ".concat(header));
+		if (header.startsWith(JwtUtil.BEARER_PREFIX)) {
+			return header;
 		}
-		return null; // 실패시 null 반환
+		return null;
 	}
 
 	// JWT 토큰 substring

@@ -1,7 +1,7 @@
 package com.fastline.gatewayservice.filter;
 
 import com.fastline.common.security.jwt.JwtUtil;
-import com.fastline.gatewayservice.security.ReaciveUserDetailsServiceImpl;
+import com.fastline.gatewayservice.security.CustomReaciveUserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import org.springframework.lang.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -20,32 +20,30 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter implements WebFilter {
     private final JwtUtil jwtUtil;
-    private final ReaciveUserDetailsServiceImpl userDetailsService;
+    private final CustomReaciveUserDetailsServiceImpl userDetailsService;
 
     @Override
     public @NonNull Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
         String token = resolveToken(exchange);
-        if(token != null) {
-            String rawToken = jwtUtil.substringToken(token); // Bearer 제거
-            if (jwtUtil.validateToken(rawToken)) {
-                Claims claims = jwtUtil.getUserInfoFromToken(rawToken);
-                String username = claims.get("sub", String.class);
-                if (username != null) {
-                    var userDetails = userDetailsService.loadUserInfo(
-                            claims.get("userId", Long.class),
-                            username,
-                            claims.get("auth", String.class),
-                            claims.get("hubId", String.class),
-                            claims.get("slackId", String.class));
-                    Authentication authentication = new UsernamePasswordAuthenticationToken(
+        if(token == null) return chain.filter(exchange);  //토큰이 없으면 인증필터 통과
+
+        String rawToken = jwtUtil.substringToken(token); // Bearer 제거
+        if (!jwtUtil.validateToken(rawToken))  return chain.filter(exchange);  //토큰이 유효하지 않으면 인증필터 통과
+
+        //토큰이 유효하면 사용자 정보 조회 및 인증 컨텍스트 설정
+        Claims claims = jwtUtil.getUserInfoFromToken(rawToken);
+        String username = claims.get("sub", String.class);
+        if (username == null) return chain.filter(exchange);   //username이 없으면 인증필터 통과
+
+        return userDetailsService.loadUserInfo(claims)
+                .flatMap(userDetails -> {
+                    Authentication auth = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
-                    SecurityContext securityContext = new SecurityContextImpl(authentication);
+                    SecurityContext securityContext = new SecurityContextImpl(auth);
                     return chain.filter(exchange)
-                        .contextWrite(ReactiveSecurityContextHolder.withSecurityContext(Mono.just(securityContext)));
-                }
-            }
-        }
-        return chain.filter(exchange);
+                            .contextWrite(ReactiveSecurityContextHolder.withSecurityContext(Mono.just(securityContext)));
+                })
+                .switchIfEmpty(chain.filter(exchange));  //사용자 정보 조회 실패 시 인증필터 통과
     }
     private String resolveToken(ServerWebExchange request) {
         String header = request.getRequest().getHeaders().getFirst(JwtUtil.AUTHORIZATION_HEADER);

@@ -1,9 +1,10 @@
 package com.fastline.authservice.domain.security;
 
+import com.fastline.common.security.model.CustomUserDetailsService;
 import com.fastline.common.security.model.UserDetailsImpl;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +14,17 @@ import java.util.UUID;
 //각 서비스마다 특별한 권한이 필요한 경우가 있으므로 각 서비스에 맞게 UserDetailsService를 구현
 @Slf4j
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements CustomUserDetailsService {
 
-	// pk는 userId인데 바꿀 수 없는지
+	// JWT 토큰의 Claims 정보를 이용하여 UserDetails 생성
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return null;
-	}
-	public UserDetails loadUserInfo(Long userId, String username, String role, String hubId, String slackId) throws UsernameNotFoundException {
+	public UserDetails loadUserInfo(Claims claims) throws UsernameNotFoundException {
+		Long userId = claims.get("userId", Long.class);
+		String username = claims.get("sub", String.class);
+		String role = claims.get("auth", String.class);
+		String hubId = claims.get("hubId", String.class);
+//		String slackId = claims.get("slackId", String.class);  //slackId가 필요한 경우만 활성화 및 생성자에 입력
 		UUID hubUUID = (hubId==null)? null:UUID.fromString(hubId);
-        return new UserDetailsImpl(userId, username, "", role, hubUUID, slackId);
+		return new UserDetailsImpl(userId, username, "", role, hubUUID, null);
 	}
 }
