@@ -1,6 +1,7 @@
 package com.fastline.deliveryservice.domain.entity;
 
 import com.fastline.common.jpa.TimeBaseEntity;
+import com.fastline.deliveryservice.application.command.UpdateDeliveryPathCommand;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,26 +88,84 @@ public class Delivery extends TimeBaseEntity {
 		return delivery;
 	}
 
+	/* 경로 기록 추가 */
 	public void addPath(DeliveryPath path) {
 		this.paths.add(path);
 		path.setDelivery(this);
 	}
 
+	/* 배송 정보 수정 */
+	public void updateDeliveryInfo(
+			String address,
+			String recipientUsername,
+			String recipientSlackId,
+			Long vendorDeliveryManagerId) {
+
+		if (address != null) this.address = address;
+		if (recipientUsername != null) this.recipientUsername = recipientUsername;
+		if (recipientSlackId != null) this.recipientSlackId = recipientSlackId;
+		if (vendorDeliveryManagerId != null) this.vendorDeliveryManagerId = vendorDeliveryManagerId;
+	}
+
+	/* 배송 상태 변경 */
+	public void changeStatus(DeliveryStatus newStatus) {
+		if (newStatus == null || this.status == newStatus) return;
+
+		switch (newStatus) {
+			case DELIVERY_TRANSIT -> startDelivery();
+			case DELIVERED -> completeDelivery();
+			default -> this.status = newStatus;
+		}
+	}
+
 	public void startDelivery() {
 		if (status != DeliveryStatus.DELIVERY_PENDING)
 			throw new IllegalStateException("대기 상태에서만 배송을 시작할 수 있습니다.");
-		status = DeliveryStatus.DELIVERY_TRANSIT;
+		this.status = DeliveryStatus.DELIVERY_TRANSIT;
 	}
 
 	public void completeDelivery() {
 		if (status != DeliveryStatus.DELIVERY_TRANSIT)
 			throw new IllegalStateException("배송 중 상태에서만 완료할 수 있습니다.");
-		status = DeliveryStatus.DELIVERED;
+		this.status = DeliveryStatus.DELIVERED;
 	}
 
 	private static void validateDeliveryPaths(List<DeliveryPath> paths) {
 		if (paths == null || paths.isEmpty()) {
 			throw new IllegalArgumentException("배달 경로는 최소 1개 이상이어야 합니다");
+		}
+	}
+
+	/* 경로 기록 전체 수정 */
+	public void updatePaths(List<UpdateDeliveryPathCommand> commands) {
+		if (commands == null || commands.isEmpty()) return;
+
+		for (UpdateDeliveryPathCommand cmd : commands) {
+			DeliveryPath targetPath =
+					this.paths.stream()
+							.filter(p -> p.getSequence() == cmd.sequence())
+							.findFirst()
+							.orElseThrow(
+									() ->
+											new IllegalArgumentException("해당 시퀀스의 배송 경로를 찾을 수 없습니다: " + cmd.sequence()));
+
+			targetPath.update(cmd.actDistance(), cmd.actDuration(), cmd.deliveryManagerId());
+
+			if (cmd.status() != null) {
+				targetPath.changeStatus(cmd.status());
+			}
+		}
+
+		checkAndCompleteIfAllPathsArrived();
+	}
+
+	/* 모든 경로가 도착 -> 배송 완료 처리 */
+	private void checkAndCompleteIfAllPathsArrived() {
+		boolean allArrived =
+				paths.stream().allMatch(p -> p.getStatus() == DeliveryPathStatus.HUB_ARRIVED);
+
+		if (allArrived && this.status == DeliveryStatus.DELIVERY_TRANSIT) {
+			completeDelivery();
 		}
 	}
 }
