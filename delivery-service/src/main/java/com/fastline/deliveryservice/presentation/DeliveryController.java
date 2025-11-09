@@ -6,9 +6,13 @@ import com.fastline.common.success.SuccessCode;
 import com.fastline.deliveryservice.application.DeliveryService;
 import com.fastline.deliveryservice.application.command.CreateDeliveryCommand;
 import com.fastline.deliveryservice.application.command.CreateDeliveryPathCommand;
+import com.fastline.deliveryservice.application.command.UpdateDeliveryCommand;
+import com.fastline.deliveryservice.application.command.UpdateDeliveryPathCommand;
 import com.fastline.deliveryservice.presentation.dto.request.CreateDeliveryRequest;
+import com.fastline.deliveryservice.presentation.dto.request.UpdateDeliveryRequest;
 import com.fastline.deliveryservice.presentation.dto.response.DeliveryCreateResponse;
 import com.fastline.deliveryservice.presentation.dto.response.DeliveryDetailResponse;
+import com.fastline.deliveryservice.presentation.dto.response.DeliveryUpdateResponse;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -71,5 +75,40 @@ public class DeliveryController {
 
 		log.info("배송 조회 성공: deliveryId={}", deliveryId);
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_FIND_SUCCESS, response);
+	}
+
+	/* 배송 수정 */
+	@PutMapping("/{deliveryId}")
+	public ResponseEntity<ApiResponse<DeliveryUpdateResponse>> updateDelivery(
+			@PathVariable UUID deliveryId, @Valid @RequestBody UpdateDeliveryRequest request) {
+		log.info("배송 수정 요청: deliveryId={}", deliveryId);
+
+		UpdateDeliveryCommand command =
+				new UpdateDeliveryCommand(
+						deliveryId,
+						request.status(),
+						request.address(),
+						request.recipientUsername(),
+						request.recipientSlackId(),
+						request.vendorDeliveryManagerId(),
+						request.paths() != null
+								? request.paths().stream()
+										.map(
+												p ->
+														new UpdateDeliveryPathCommand(
+																p.sequence(),
+																p.actDistance(),
+																p.actDuration(),
+																p.status(),
+																p.deliveryManagerId()))
+										.toList()
+								: null);
+
+		deliveryService.updateDelivery(command);
+
+		DeliveryUpdateResponse response = new DeliveryUpdateResponse(deliveryId);
+
+		log.info("배송 수정 성공: deliveryId={}", deliveryId);
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_UPDATE_SUCCESS, response);
 	}
 }

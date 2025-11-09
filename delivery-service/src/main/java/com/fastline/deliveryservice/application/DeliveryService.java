@@ -2,6 +2,7 @@ package com.fastline.deliveryservice.application;
 
 import com.fastline.deliveryservice.application.command.CreateDeliveryCommand;
 import com.fastline.deliveryservice.application.command.CreateDeliveryPathCommand;
+import com.fastline.deliveryservice.application.command.UpdateDeliveryCommand;
 import com.fastline.deliveryservice.application.dto.DeliveryResult;
 import com.fastline.deliveryservice.domain.entity.Delivery;
 import com.fastline.deliveryservice.domain.entity.DeliveryPath;
@@ -82,5 +83,25 @@ public class DeliveryService {
 						.orElseThrow(() -> new IllegalArgumentException("배송을 찾을 수 없습니다."));
 
 		return DeliveryResult.from(delivery);
+	}
+
+	@Transactional
+	public void updateDelivery(UpdateDeliveryCommand command) {
+		log.info("배송 정보 수정 시작: deliveryId={}", command.deliveryId());
+
+		Delivery delivery =
+				deliveryRepository
+						.findById(command.deliveryId())
+						.orElseThrow(() -> new IllegalArgumentException("배송을 찾을 수 없습니다."));
+
+		delivery.changeStatus(command.status());
+		delivery.updateDeliveryInfo(
+				command.address(),
+				command.recipientUsername(),
+				command.recipientSlackId(),
+				command.vendorDeliveryManagerId());
+		delivery.updatePaths(command.paths());
+
+		log.info("배송 정보 수정 완료: deliveryId={}", command.deliveryId());
 	}
 }

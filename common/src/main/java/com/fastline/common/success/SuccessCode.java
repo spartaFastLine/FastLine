@@ -37,7 +37,8 @@ public enum SuccessCode {
 
 	// 배송 (delivery)
 	DELIVERY_SAVE_SUCCESS(HttpStatus.CREATED, "배송 생성 성공"),
-	DELIVERY_FIND_SUCCESS(HttpStatus.OK, "배송 조회 성공");
+	DELIVERY_FIND_SUCCESS(HttpStatus.OK, "배송 조회 성공"),
+	DELIVERY_UPDATE_SUCCESS(HttpStatus.OK, "배송 수정 성공");
 
 	private final HttpStatus httpStatus;
 	private final String message;
