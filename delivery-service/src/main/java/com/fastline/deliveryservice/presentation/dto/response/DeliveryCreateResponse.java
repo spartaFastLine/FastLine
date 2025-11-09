@@ -1,4 +1,4 @@
-package com.fastline.deliveryservice.application.dto;
+package com.fastline.deliveryservice.presentation.dto.response;
 
 import java.util.UUID;
 

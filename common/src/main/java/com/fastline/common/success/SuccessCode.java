@@ -36,7 +36,8 @@ public enum SuccessCode {
 	SLACK_MESSAGE_SENT_SUCCESS(HttpStatus.OK, "슬랙 메세지 전송 성공"),
 
 	// 배송 (delivery)
-	DELIVERY_SAVE_SUCCESS(HttpStatus.CREATED, "배송 생성 성공");
+	DELIVERY_SAVE_SUCCESS(HttpStatus.CREATED, "배송 생성 성공"),
+	DELIVERY_FIND_SUCCESS(HttpStatus.OK, "배송 조회 성공");
 
 	private final HttpStatus httpStatus;
 	private final String message;
