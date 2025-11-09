@@ -32,4 +32,7 @@ public class DeliveryManager {
         this.number = number;
     }
 
+    public void updateType(DeliveryManagerType type) {
+        this.type = type;
+    }
 }

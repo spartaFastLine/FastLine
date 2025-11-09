@@ -44,7 +44,7 @@ public class DeliveryManagerService {
             throw new CustomException(ErrorCode.NOT_PENDING);
 
         //회원이 배달매니저인지 확인
-        if(user.getRole() != UserRole.DELIVERY_MANAGER)throw new CustomException(ErrorCode.NOT_DELIVERY_MANAGER);
+        checkDeliveryManager(user);
 
 
         //배송 순번은 현재 배달 매니저 수 +1
@@ -62,8 +62,7 @@ public class DeliveryManagerService {
     @Transactional(readOnly = true)
     public DeliveryManagerResponseDto getDeliveryManager(Long userId) {
         //정보 확인
-        DeliveryManager manager = deliveryManagerRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.DELIVERY_MANAGER_NOT_FOUND));
+        DeliveryManager manager = findDeliveryManager(userId);
         return new DeliveryManagerResponseDto(manager);
     }
 
@@ -99,5 +98,30 @@ public class DeliveryManagerService {
                         requestDto.getStatus(),
                         pageable);
         return deliveryManagers.map(DeliveryManagerResponseDto::new);
+    }
+
+    @Transactional
+    public void updateDeliveryManager(UserDetailsImpl manager, @Valid DeliveryManagerCreateRequestDto requestDto) {
+        // 승인 대상 유저 확인
+        User user = checkUser.userCheck(requestDto.getUserId());
+
+        // 관리자가 MASTER가 아니거나 HUB_MANAGER인데 승인할 사용자가 다른 허브에 속해있다면 예외 발생
+        checkUser.checkHubManager(manager, user.getHubId());
+
+        //회원이 배달매니저인지 확인
+        checkDeliveryManager(user);
+
+        //배달 매니저 타입 변경
+        DeliveryManager deliveryManager = findDeliveryManager(user.getId());
+        deliveryManager.updateType(DeliveryManagerType.valueOf(requestDto.getType()));
+    }
+
+
+    private static void checkDeliveryManager(User user) {
+        if(user.getRole() != UserRole.DELIVERY_MANAGER) throw new CustomException(ErrorCode.NOT_DELIVERY_MANAGER);
+    }
+    private DeliveryManager findDeliveryManager(Long userId) {
+        return deliveryManagerRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.DELIVERY_MANAGER_NOT_FOUND));
     }
 }

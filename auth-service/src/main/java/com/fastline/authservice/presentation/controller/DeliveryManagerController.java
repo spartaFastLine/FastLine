@@ -47,4 +47,11 @@ public class DeliveryManagerController {
         Page<DeliveryManagerResponseDto> responseDto = deliveryManagerService.getDeliveryManagers(userDetails, requestDto);
         return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_READ_SUCCESS, responseDto);
     }
+
+    @PutMapping
+    @PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
+    public ResponseEntity<ApiResponse<Void>> updateDeliveryManager(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid DeliveryManagerCreateRequestDto requestDto) {
+        deliveryManagerService.updateDeliveryManager(userDetails, requestDto);
+        return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_UPDATE_SUCCESS);
+    }
 }
