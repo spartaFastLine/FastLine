@@ -1,13 +1,14 @@
 package com.fastline.deliveryservice.presentation.dto.response;
 
 import com.fastline.deliveryservice.application.dto.DeliveryResult;
+import com.fastline.deliveryservice.domain.entity.DeliveryStatus;
 import java.util.List;
 import java.util.UUID;
 
 public record DeliveryDetailResponse(
 		UUID deliveryId,
 		UUID orderId,
-		String status,
+		DeliveryStatus status,
 		UUID vendorSenderId,
 		UUID vendorReceiverId,
 		UUID startHubId,
