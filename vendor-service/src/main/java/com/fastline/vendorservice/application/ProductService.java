@@ -5,6 +5,7 @@ import com.fastline.vendorservice.application.command.UpdateProductCommand;
 import com.fastline.vendorservice.domain.entity.Product;
 import com.fastline.vendorservice.domain.entity.Vendor;
 import com.fastline.vendorservice.domain.repository.ProductRepository;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,11 @@ public class ProductService {
 	@Transactional(readOnly = true)
 	public Product findByProductId(UUID productId) {
 		return repository.findByProductId(productId);
+	}
+
+	@Transactional(readOnly = true)
+	public List<Product> findAllById(List<UUID> productIds) {
+		return repository.findAllById(productIds);
 	}
 
 	public Product updateProduct(UpdateProductCommand command, UUID productId) {

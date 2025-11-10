@@ -40,6 +40,7 @@ public enum ErrorCode {
 	VENDOR_NOT_FOUND(HttpStatus.NOT_FOUND, "업체 조회 실패"),
 	PRODUCT_NAME_DUPLICATED(HttpStatus.CONFLICT, "상품 등록 실패"),
 	PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "상품 조회 실패"),
+	PRODUCT_STOCK_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "상품 재고 부족"),
 
 	// AI
 	GENERATION_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "AI 응답 생성 실패"),
