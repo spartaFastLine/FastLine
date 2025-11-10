@@ -1,4 +1,4 @@
-package com.fastline.aiservice.dto.gemini;
+package com.fastline.aiservice.infrastructure.gemini.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;

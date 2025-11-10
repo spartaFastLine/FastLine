@@ -1,4 +1,4 @@
-package com.fastline.aiservice.domain;
+package com.fastline.aiservice.domain.entity;
 
 import com.fastline.common.auditing.BaseEntity;
 import jakarta.persistence.*;

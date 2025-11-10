@@ -1,4 +1,4 @@
-package com.fastline.aiservice.domain;
+package com.fastline.aiservice.domain.entity;
 
 import lombok.Getter;
 
