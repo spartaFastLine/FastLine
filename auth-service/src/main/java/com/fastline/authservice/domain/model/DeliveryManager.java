@@ -1,5 +1,6 @@
 package com.fastline.authservice.domain.model;
 
+import com.fastline.common.jpa.TimeBaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name="p_delivery_manager")
 @NoArgsConstructor
-public class DeliveryManager {
+public class DeliveryManager extends TimeBaseEntity{
     @Id
     @Column(name = "manager_id")
     private Long id;
@@ -35,4 +36,5 @@ public class DeliveryManager {
     public void updateType(DeliveryManagerType type) {
         this.type = type;
     }
+
 }
