@@ -68,19 +68,41 @@ public class DeliveryPath extends TimeBaseEntity {
 		return path;
 	}
 
+	/* 경로 기록 수정 */
+	public void update(Integer actDistance, Integer actDuration, Long managerId) {
+		if (actDistance != null) this.actDistance = actDistance;
+		if (actDuration != null) this.actDuration = actDuration;
+		if (managerId != null) this.deliveryManagerId = managerId;
+	}
+
+	public void changeStatus(DeliveryPathStatus newStatus) {
+		if (newStatus == null || this.status == newStatus) return;
+
+		switch (newStatus) {
+			case HUB_TRANSIT -> startTransit();
+			case HUB_ARRIVED -> arriveHub();
+			default -> throw new IllegalStateException("허용되지 않은 상태 전이입니다: " + newStatus);
+		}
+	}
+
 	public void startTransit() {
 		if (status != DeliveryPathStatus.HUB_PENDING)
 			throw new IllegalStateException("허브 대기 상태에서만 이동 시작이 가능합니다.");
-		status = DeliveryPathStatus.HUB_TRANSIT;
+		this.status = DeliveryPathStatus.HUB_TRANSIT;
 	}
 
 	public void arriveHub() {
 		if (status != DeliveryPathStatus.HUB_TRANSIT)
 			throw new IllegalStateException("이동 중 상태에서만 도착할 수 있습니다.");
-		status = DeliveryPathStatus.HUB_ARRIVED;
+		this.status = DeliveryPathStatus.HUB_ARRIVED;
 	}
 
 	protected void setDelivery(Delivery delivery) {
 		this.delivery = delivery;
+	}
+
+	public void delete(Long userId) {
+		this.markDeleted();
+		//        this.deletedBy = userId;
 	}
 }
