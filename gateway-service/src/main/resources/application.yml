@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: gateway-service
+  config:
+    import: optional:file:gateway-service/.env[.properties]
+  main:
+    web-application-type: reactive  # 스프링 애플리케이션이 리액티브 웹 애플리케이션임을 명시
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes: # 게이트웨이 라우트 설정
+            - id: auth-service  # 라우트 식별자
+              uri: lb://auth-service  # 서비스 디스커버리를 통한 user-service로 라우팅
+              predicates:
+                - Path=/api/users/**  # /users/** 경로에 대한 요청을 auth-service로 라우팅
+                - Path=/api/auth/**  # /auth/** 경로에 대한 요청을 auth-service로 라우팅
+
+          discovery:
+            locator:
+              enabled: true  # 서비스 디스커버리 기반 동적라우팅 활성화
+server:
+  port: 19092  # 게이트웨이 서비스 포트 설정
+eureka:
+  client:
+    service-url:
+        defaultZone: http://localhost:19091/eureka/ # Eureka 서버 주소 설정
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}

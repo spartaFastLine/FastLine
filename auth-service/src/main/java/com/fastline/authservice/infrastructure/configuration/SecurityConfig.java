@@ -1,9 +1,9 @@
 package com.fastline.authservice.infrastructure.configuration;
 
-import com.fastline.authservice.domain.jwt.JwtUtil;
-import com.fastline.authservice.infrastructure.auth.exception.CustomAccessDeniedHandlerImpl;
-import com.fastline.authservice.infrastructure.filter.JwtAuthenticationFilter;
-import jakarta.servlet.http.HttpServletResponse;
+import com.fastline.authservice.domain.security.UserDetailsServiceImpl;
+import com.fastline.common.security.filter.AuthoriztionFilter;
+import com.fastline.common.exception.CustomAccessDeniedHandlerImpl;
+import com.fastline.common.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,9 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 	private final JwtUtil jwtUtil;
-	private final UserDetailsService userDetailService;
-
-	//    private final AccessDeniedHandler accessDeniedHandler;
+	private final UserDetailsServiceImpl userDetailService;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -42,7 +39,7 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailService);
+		AuthoriztionFilter jwtFilter = new AuthoriztionFilter(jwtUtil, userDetailService);
 		// CSRF 비활성화 : 사용자가 로그인한 상태에서 의도치 않게 특정 웹사이트에 악성 요청을 보내도록 유도하는 웹 보안 공격을 막음
 		http.csrf(csrf -> csrf.disable());
 
@@ -56,20 +53,6 @@ public class SecurityConfig {
 								.permitAll() // 회원가입, 로그인 접근 허용
 								.anyRequest()
 								.authenticated()); // 그 외 모든 요청 인증처리
-		http.exceptionHandling(
-				ex ->
-						ex.authenticationEntryPoint(
-										(request, response, authException) -> {
-											String uri = request.getRequestURI();
-											//                    log.error("인증 오류 발생::: url : {}, error : {}", uri,
-											// authException.getMessage(), authException);
-											response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-											response.setContentType("application/json;charset=UTF-8");
-											response
-													.getWriter()
-													.write("{\"message\":\"Unauthorized\",\"status\":\"401\"}");
-										})
-								.accessDeniedHandler(accessDeniedHandler()));
 
 		// jwt(토큰 기반 인증 방식)는 세션을 필요로 하지 않음, STATELESS -> 완전 사용 안함
 		http.sessionManagement(

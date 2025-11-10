@@ -1,21 +1,20 @@
-package com.fastline.authservice.domain.jwt;
+package com.fastline.common.security.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.security.Key;
-import java.util.Base64;
-import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import java.security.Key;
+import java.util.Base64;
+import java.util.Date;
+import java.util.UUID;
 
 @Component
 @ConditionalOnProperty(name = "jwt.secret.key")
@@ -45,7 +44,7 @@ public class JwtUtil {
 	}
 
 	// 토큰 생성
-	public String createToken(Long userId, String username, String role) {
+	public String createToken(Long userId, String username, String role, UUID hubId, String slackId) {
 		Date date = new Date();
 
 		return BEARER_PREFIX
@@ -53,32 +52,27 @@ public class JwtUtil {
 						.setSubject(username)
 						.claim("userId", userId)
 						.claim(AUTHORIZATION_KEY, role)
+						.claim("hubId", hubId)
+						.claim("slackId", slackId)
 						.setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료시간
 						.setIssuedAt(date) // 발급일
 						.signWith(key, signatureAlgorithm)
 						.compact();
 	}
 
-	// 헤더에서 JWT 토큰 가져오기
-	public String getTokenFromRequest(HttpServletRequest req) {
-		Cookie[] cookies = req.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
-					try {
-						return URLDecoder.decode(cookie.getValue(), "UTF-8"); // 성공시 디코딩 된 토큰 반환
-					} catch (UnsupportedEncodingException e) {
-						logger.error(e.getMessage());
-						return null;
-					}
-				}
-			}
+	// Request의 Header에서 토큰 정보 가져오기
+	public String resolveToken(HttpServletRequest request) {
+		String header = request.getHeader(JwtUtil.AUTHORIZATION_HEADER);
+		logger.info("Header: ".concat(header));
+		if (header.startsWith(JwtUtil.BEARER_PREFIX)) {
+			return header;
 		}
-		return null; // 실패시 null 반환
+		return null;
 	}
 
 	// JWT 토큰 substring
 	public String substringToken(String tokenValue) {
+		logger.info("subStringToken: ".concat(tokenValue));
 		if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
 			return tokenValue.substring(7);
 		}
@@ -91,7 +85,7 @@ public class JwtUtil {
 		try {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return true;
-		} catch (SecurityException | MalformedJwtException | SignatureException e) {
+		} catch (SecurityException | MalformedJwtException e) {
 			logger.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
 		} catch (ExpiredJwtException e) {
 			logger.error("Expired JWT token, 만료된 JWT token 입니다.");

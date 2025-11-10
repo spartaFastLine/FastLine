@@ -107,3 +107,9 @@ project(':eureka-service') {
         implementation project(':common')
     }
 }
+
+project(':gateway-service') {
+    dependencies {
+        implementation project(':common')
+    }
+}

@@ -1,6 +1,7 @@
 package com.fastline.authservice.domain.model;
 
 import com.fastline.common.jpa.TimeBaseEntity;
+import com.fastline.common.security.model.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import java.util.UUID;
@@ -38,6 +39,9 @@ public class User extends TimeBaseEntity {
 	private UserStatus status;
 
 	private UUID hubId;
+
+	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY, optional = true, cascade = CascadeType.PERSIST)
+	private DeliveryManager deliveryManager;
 
 	public User(
 			String email, String username, String password, UserRole role, UUID hubId, String slackId) {

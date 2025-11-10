@@ -2,13 +2,16 @@ package com.fastline.authservice.domain.service;
 
 import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.model.UserOrderBy;
-import com.fastline.authservice.domain.model.UserRole;
+import com.fastline.common.security.model.UserDetailsImpl;
+import com.fastline.common.security.model.UserRole;
 import com.fastline.authservice.domain.model.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.authservice.presentation.request.*;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import java.util.UUID;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,34 +26,41 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final CheckUser checkUser;
+
+
+	//회원가입 승인
+	@Transactional
+	public void permitSignup(UserDetailsImpl manager, @Valid PermitRequestDto requestDto) {
+		User newUser = checkUser.userCheck(requestDto.getUserId());
+
+		// 허브 매니저라면 소속 허브 아이디 체크
+		checkUser.checkHubManager(manager, newUser.getHubId());
+		// 승인 대기 상태가 아닌 경우 예외 발생
+		if (newUser.getStatus() != UserStatus.PENDING) throw new CustomException(ErrorCode.NOT_PENDING);
+
+		// 회원가입 승인
+		newUser.permitSignup();
+	}
 
 	// 유저 단건 조회
 	@Transactional(readOnly = true)
 	public UserResponseDto getUser(Long userId) {
 		// 유저 확인
-		User user =
-				userRepository
-						.findById(userId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		User user = checkUser.userCheck(userId);
 		return new UserResponseDto(user);
 	}
 
 	// 유저 다건 조회
 	@Transactional(readOnly = true)
-	public Page<UserResponseDto> getUsers(Long userId, UserSearchRequestDto requestDto) {
-		User user =
-				userRepository
-						.findById(userId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+	public Page<UserResponseDto> getUsers(UserDetailsImpl manager, UserSearchRequestDto requestDto) {
+        UUID requestHubId = requestDto.getHubId();
 		// 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
-		if (requestDto.getHubId() != null) {
-			if (user.getRole() != UserRole.MASTER && !user.getHubId().equals(requestDto.getHubId()))
-				throw new CustomException(ErrorCode.NOT_HUB_MANAGER);
-		}
-		// 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
-		UUID hubId = requestDto.getHubId();
-		if (user.getRole() == UserRole.HUB_MANAGER && hubId == null) {
-			hubId = user.getHubId();
+		if (requestHubId != null) {
+			checkUser.checkHubManager(manager, requestHubId);
+		}else {
+			// 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
+			if(manager.getRole() == UserRole.HUB_MANAGER) requestHubId = manager.getHubId();
 		}
 		// 정렬조건 체크
 		UserOrderBy.checkValid(requestDto.getSortBy());
@@ -66,7 +76,7 @@ public class UserService {
 		Page<User> users =
 				userRepository.findUsers(
 						requestDto.getUsername(),
-						hubId,
+						requestHubId,
 						requestDto.getRole(),
 						requestDto.getStatus(),
 						pageable);
@@ -77,10 +87,7 @@ public class UserService {
 	@Transactional
 	public void updatePassword(Long userId, UpdatePasswordRequestDto requestDto) {
 		// 유저 확인
-		User user =
-				userRepository
-						.findById(userId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		User user = checkUser.userCheck(userId);
 		// 현재 비밀번호 확인
 		if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword()))
 			throw new CustomException(ErrorCode.PASSWORD_NOT_MATCHES);
@@ -97,10 +104,7 @@ public class UserService {
 	@Transactional
 	public void updateSlack(Long userId, UpdateSlackRequestDto requestDto) {
 		// 유저 확인
-		User user =
-				userRepository
-						.findById(userId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		User user = checkUser.userCheck(userId);
 		// 슬랙 아이디 업데이트
 		user.updateSlackId(requestDto.getSlackId());
 	}
@@ -108,30 +112,27 @@ public class UserService {
 	@Transactional
 	public void withdrawUser(Long userId) {
 		// 유저 확인
-		User user =
-				userRepository
-						.findById(userId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		if (user.getStatus() != UserStatus.APPROVE) throw new CustomException(ErrorCode.NOT_APPROVE);
+		User user = checkUser.userCheck(userId);
 		// 권한 정지
 		user.updateReject();
 	}
 
+	//  회원 탈퇴 승인
 	@Transactional
-	public void deleteUserpermit(Long managerId, PermitRequestDto requestDto) {
-		// 해당 허브의 관리자인지 확인
-		User manager =
-				userRepository
-						.findById(managerId)
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		User user =
-				userRepository
-						.findById(requestDto.getUserId())
-						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		if (manager.getRole() == UserRole.HUB_MANAGER && !manager.getHubId().equals(user.getHubId()))
-			throw new CustomException(ErrorCode.NOT_HUB_MANAGER);
+	public void permitDeleteUser(UserDetailsImpl manager, PermitRequestDto requestDto) {
+		//승인 대상 유저 확인
+		User user = checkUser.userCheck(requestDto.getUserId());
+
+		// 허브 매니저라면 소속 허브 아이디 체크
+		checkUser.checkHubManager(manager, user.getHubId());
+
+		// 권한 정지 상태가 아니라면 예외 발생
 		if (user.getStatus() != UserStatus.REJECTED) throw new CustomException(ErrorCode.NOT_REJECTED);
 		// 탈퇴 신청한 유저 삭제
 		user.delete();
 	}
+
+
+
+
 }

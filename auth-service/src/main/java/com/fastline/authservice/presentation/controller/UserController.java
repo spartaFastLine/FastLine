@@ -1,6 +1,6 @@
 package com.fastline.authservice.presentation.controller;
 
-import com.fastline.authservice.domain.security.UserDetailsImpl;
+import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.authservice.domain.service.UserService;
 import com.fastline.authservice.presentation.request.*;
 import com.fastline.common.response.ApiResponse;
@@ -20,14 +20,24 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 	private final UserService userService;
 
+	// 회원가입 승인
+	@PutMapping("/permit/signup")
+	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
+	public ResponseEntity<ApiResponse<Void>> permitSignup(
+			@AuthenticationPrincipal UserDetailsImpl userDetails,
+			@RequestBody @Valid PermitRequestDto requestDto) {
+		userService.permitSignup(userDetails, requestDto);
+		return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_PERMIT_SUCCESS);
+	}
+
 	// 유저 다건 조회
-	@PreAuthorize("hasAnyRole('ROLE_MASTER', 'ROLE_HUB_MANAGER')")
 	@GetMapping("/managers/users")
+	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Page<UserResponseDto>>> getUsers(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody UserSearchRequestDto requestDto) {
 		Page<UserResponseDto> responseDto =
-				userService.getUsers(userDetails.getUser().getId(), requestDto);
+				userService.getUsers(userDetails, requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
 	}
 
@@ -35,7 +45,7 @@ public class UserController {
 	@GetMapping("/user")
 	public ResponseEntity<ApiResponse<UserResponseDto>> getUser(
 			@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		UserResponseDto responseDto = userService.getUser(userDetails.getUser().getId());
+		UserResponseDto responseDto = userService.getUser(userDetails.getUserId());
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
 	}
 
@@ -44,7 +54,7 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> updatePassword(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid UpdatePasswordRequestDto requestDto) {
-		userService.updatePassword(userDetails.getUser().getId(), requestDto);
+		userService.updatePassword(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.PASSWORD_UPDATE_SUCCESS);
 	}
 
@@ -53,7 +63,7 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> updateUserSlack(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid UpdateSlackRequestDto requestDto) {
-		userService.updateSlack(userDetails.getUser().getId(), requestDto);
+		userService.updateSlack(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_UPDATE_SUCCESS);
 	}
 
@@ -61,17 +71,17 @@ public class UserController {
 	@PostMapping("/user/withdraw")
 	public ResponseEntity<ApiResponse<Void>> withdrawUser(
 			@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		userService.withdrawUser(userDetails.getUser().getId());
+		userService.withdrawUser(userDetails.getUserId());
 		return ResponseUtil.successResponse(SuccessCode.USER_WITHDRAWAL_REQUEST_SUCCESS);
 	}
 
 	// 회원 탈퇴 승인
-	@PreAuthorize("hasAnyRole('ROLE_MASTER', 'ROLE_HUB_MANAGER')")
 	@DeleteMapping("/managers/withdraw/permit")
+	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Void>> deleteUserpermit(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid PermitRequestDto requestDto) {
-		userService.deleteUserpermit(userDetails.getUser().getId(), requestDto);
+		userService.permitDeleteUser(userDetails, requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_DELETE_SUCCESS);
 	}
 

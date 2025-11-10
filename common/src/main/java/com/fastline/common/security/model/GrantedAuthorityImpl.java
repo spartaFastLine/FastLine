@@ -1,4 +1,4 @@
-package com.fastline.authservice.domain.security;
+package com.fastline.common.security.model;
 
 import org.springframework.security.core.GrantedAuthority;
 
