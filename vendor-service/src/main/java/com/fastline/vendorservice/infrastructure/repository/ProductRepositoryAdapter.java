@@ -4,6 +4,7 @@ import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.vendorservice.domain.entity.Product;
 import com.fastline.vendorservice.domain.repository.ProductRepository;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -35,6 +36,11 @@ public class ProductRepositoryAdapter implements ProductRepository {
 		return jpaProductRepository
 				.findById(productId)
 				.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+	}
+
+	@Override
+	public List<Product> findAllById(List<UUID> productIds) {
+		return jpaProductRepository.findAllById(productIds);
 	}
 
 	@Override

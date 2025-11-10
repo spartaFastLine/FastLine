@@ -32,7 +32,10 @@ public class VendorDummyDataInit implements ApplicationRunner {
 								UUID.randomUUID()));
 
 		Product product = productRepository.insert(Product.create("testProduct", 1000, 5000.0, vendor));
+		Product product1 =
+				productRepository.insert(Product.create("testProduct1", 2000, 2000.0, vendor));
 		log.info("vendorId = {}", vendor.getId());
 		log.info("productId = {}", product.getId());
+		log.info("product1Id = {}", product1.getId());
 	}
 }
