@@ -1,8 +1,8 @@
 package com.fastline.authservice.infrastructure.configuration;
 
 import com.fastline.authservice.domain.security.UserDetailsServiceImpl;
-import com.fastline.common.security.filter.AuthoriztionFilter;
 import com.fastline.common.exception.CustomAccessDeniedHandlerImpl;
+import com.fastline.common.security.filter.AuthoriztionFilter;
 import com.fastline.common.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;

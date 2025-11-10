@@ -3,9 +3,9 @@ package com.fastline.authservice.infrastructure.repository;
 import static com.fastline.authservice.domain.model.QUser.user;
 
 import com.fastline.authservice.domain.model.User;
-import com.fastline.common.security.model.UserRole;
 import com.fastline.authservice.domain.model.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
+import com.fastline.common.security.model.UserRole;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -100,43 +100,43 @@ public class UserRepositoryImpl implements UserRepository {
 							String property = order.getProperty();
 							boolean isAscending = order.isAscending();
 
-                            switch (property) {
-                                case "username" ->
-                                        orderSpecifier = isAscending ? user.username.asc() : user.username.desc();
-                                case "role" -> {
-                                    NumberExpression<Integer> rolePriority =
-                                            new CaseBuilder()
-                                                    .when(user.role.eq(UserRole.MASTER))
-                                                    .then(0)
-                                                    .when(user.role.eq(UserRole.HUB_MANAGER))
-                                                    .then(1)
-                                                    .when(user.role.eq(UserRole.DELIVERY_MANAGER))
-                                                    .then(2)
-                                                    .when(user.role.eq(UserRole.VENDOR_MANAGER))
-                                                    .then(3)
-                                                    .otherwise(99);
-                                    orderSpecifier = isAscending ? rolePriority.asc() : rolePriority.desc();
-                                }
-                                case "status" -> {
-                                    NumberExpression<Integer> statusPriority =
-                                            new CaseBuilder()
-                                                    .when(user.status.eq(UserStatus.PENDING))
-                                                    .then(0)
-                                                    .when(user.status.eq(UserStatus.APPROVE))
-                                                    .then(1)
-                                                    .when(user.status.eq(UserStatus.REJECTED))
-                                                    .then(2)
-                                                    .when(user.status.eq(UserStatus.SUSPENSION))
-                                                    .then(3)
-                                                    .when(user.status.eq(UserStatus.DELETED))
-                                                    .then(4)
-                                                    .otherwise(99);
-                                    orderSpecifier = isAscending ? statusPriority.asc() : statusPriority.desc();
-                                }
-                                default ->
-                                    // 정렬조건은 이미 체크했으니 남은건 hubId로 간주
-                                        orderSpecifier = isAscending ? user.hubId.asc() : user.hubId.desc();
-                            }
+							switch (property) {
+								case "username" -> orderSpecifier =
+										isAscending ? user.username.asc() : user.username.desc();
+								case "role" -> {
+									NumberExpression<Integer> rolePriority =
+											new CaseBuilder()
+													.when(user.role.eq(UserRole.MASTER))
+													.then(0)
+													.when(user.role.eq(UserRole.HUB_MANAGER))
+													.then(1)
+													.when(user.role.eq(UserRole.DELIVERY_MANAGER))
+													.then(2)
+													.when(user.role.eq(UserRole.VENDOR_MANAGER))
+													.then(3)
+													.otherwise(99);
+									orderSpecifier = isAscending ? rolePriority.asc() : rolePriority.desc();
+								}
+								case "status" -> {
+									NumberExpression<Integer> statusPriority =
+											new CaseBuilder()
+													.when(user.status.eq(UserStatus.PENDING))
+													.then(0)
+													.when(user.status.eq(UserStatus.APPROVE))
+													.then(1)
+													.when(user.status.eq(UserStatus.REJECTED))
+													.then(2)
+													.when(user.status.eq(UserStatus.SUSPENSION))
+													.then(3)
+													.when(user.status.eq(UserStatus.DELETED))
+													.then(4)
+													.otherwise(99);
+									orderSpecifier = isAscending ? statusPriority.asc() : statusPriority.desc();
+								}
+								default ->
+								// 정렬조건은 이미 체크했으니 남은건 hubId로 간주
+								orderSpecifier = isAscending ? user.hubId.asc() : user.hubId.desc();
+							}
 							specs.add(orderSpecifier);
 						});
 		return specs.toArray(new OrderSpecifier<?>[0]);

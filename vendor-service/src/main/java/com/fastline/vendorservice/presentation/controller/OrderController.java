@@ -9,15 +9,15 @@ import com.fastline.vendorservice.application.command.CreateOrderProductCommand;
 import com.fastline.vendorservice.domain.entity.Order;
 import com.fastline.vendorservice.presentation.request.OrderCreateRequest;
 import com.fastline.vendorservice.presentation.response.order.OrderCreateResponse;
+import com.fastline.vendorservice.presentation.response.order.OrderFindResponse;
 import com.fastline.vendorservice.presentation.response.order.OrderItemCreateResponse;
+import com.fastline.vendorservice.presentation.response.order.OrderItemFindResponse;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/order")
@@ -46,6 +46,7 @@ public class OrderController {
 				order.getOrderProducts().stream()
 						.map(op -> new OrderItemCreateResponse(op.getProduct().getId(), op.getQuantity()))
 						.toList();
+
 		OrderCreateResponse response =
 				new OrderCreateResponse(
 						order.getId(),
@@ -54,6 +55,28 @@ public class OrderController {
 						order.getStatus(),
 						order.getRequest(),
 						orderItemCreateResponses,
+						order.getDeliveryId());
+
+		return ResponseUtil.successResponse(SuccessCode.ORDER_SAVE_SUCCESS, response);
+	}
+
+	@GetMapping
+	public ResponseEntity<ApiResponse<OrderFindResponse>> findOrder(@RequestParam UUID orderId) {
+
+		Order order = service.findByOrderId(orderId);
+		List<OrderItemFindResponse> orderItemFindResponses =
+				order.getOrderProducts().stream()
+						.map(op -> new OrderItemFindResponse(op.getProduct().getId(), op.getQuantity()))
+						.toList();
+
+		OrderFindResponse response =
+				new OrderFindResponse(
+						order.getId(),
+						order.getVendorProducerId(),
+						order.getVendorConsumerId(),
+						order.getStatus(),
+						order.getRequest(),
+						orderItemFindResponses,
 						order.getDeliveryId());
 
 		return ResponseUtil.successResponse(SuccessCode.ORDER_SAVE_SUCCESS, response);

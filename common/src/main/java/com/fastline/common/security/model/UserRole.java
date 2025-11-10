@@ -15,7 +15,7 @@ public enum UserRole {
 		this.authority = authority;
 	}
 
-    public static class Authority {
+	public static class Authority {
 		public static final String MASTER = "ROLE_MASTER";
 		public static final String HUB_MANAGER = "ROLE_HUB_MANAGER";
 		public static final String DELIVERY_MANAGER = "ROLE_DELIVERY_MANAGER";

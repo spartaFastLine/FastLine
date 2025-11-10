@@ -2,16 +2,15 @@ package com.fastline.authservice.domain.service;
 
 import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.model.UserOrderBy;
-import com.fastline.common.security.model.UserDetailsImpl;
-import com.fastline.common.security.model.UserRole;
 import com.fastline.authservice.domain.model.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.authservice.presentation.request.*;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
-import java.util.UUID;
-
+import com.fastline.common.security.model.UserDetailsImpl;
+import com.fastline.common.security.model.UserRole;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,8 +27,7 @@ public class UserService {
 	private final PasswordEncoder passwordEncoder;
 	private final CheckUser checkUser;
 
-
-	//회원가입 승인
+	// 회원가입 승인
 	@Transactional
 	public void permitSignup(UserDetailsImpl manager, @Valid PermitRequestDto requestDto) {
 		User newUser = checkUser.userCheck(requestDto.getUserId());
@@ -54,13 +52,13 @@ public class UserService {
 	// 유저 다건 조회
 	@Transactional(readOnly = true)
 	public Page<UserResponseDto> getUsers(UserDetailsImpl manager, UserSearchRequestDto requestDto) {
-        UUID requestHubId = requestDto.getHubId();
+		UUID requestHubId = requestDto.getHubId();
 		// 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
 		if (requestHubId != null) {
 			checkUser.checkHubManager(manager, requestHubId);
-		}else {
+		} else {
 			// 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
-			if(manager.getRole() == UserRole.HUB_MANAGER) requestHubId = manager.getHubId();
+			if (manager.getRole() == UserRole.HUB_MANAGER) requestHubId = manager.getHubId();
 		}
 		// 정렬조건 체크
 		UserOrderBy.checkValid(requestDto.getSortBy());
@@ -120,7 +118,7 @@ public class UserService {
 	//  회원 탈퇴 승인
 	@Transactional
 	public void permitDeleteUser(UserDetailsImpl manager, PermitRequestDto requestDto) {
-		//승인 대상 유저 확인
+		// 승인 대상 유저 확인
 		User user = checkUser.userCheck(requestDto.getUserId());
 
 		// 허브 매니저라면 소속 허브 아이디 체크
@@ -131,8 +129,4 @@ public class UserService {
 		// 탈퇴 신청한 유저 삭제
 		user.delete();
 	}
-
-
-
-
 }

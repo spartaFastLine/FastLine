@@ -1,7 +1,10 @@
 package com.fastline.vendorservice.infrastructure.repository;
 
+import com.fastline.common.exception.CustomException;
+import com.fastline.common.exception.ErrorCode;
 import com.fastline.vendorservice.domain.entity.Order;
 import com.fastline.vendorservice.domain.repository.OrderRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,5 +17,12 @@ public class OrderRepositoryAdapter implements OrderRepository {
 	@Override
 	public Order insert(Order order) {
 		return jpaOrderRepository.save(order);
+	}
+
+	@Override
+	public Order findByOrderId(UUID orderId) {
+		return jpaOrderRepository
+				.findByOrderIdFetchJoin(orderId)
+				.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 	}
 }

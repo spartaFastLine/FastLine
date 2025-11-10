@@ -33,4 +33,9 @@ public class OrderService {
 		order.mappingDeliveryId(UUID.randomUUID());
 		return repository.insert(order);
 	}
+
+	@Transactional(readOnly = true)
+	public Order findByOrderId(UUID orderId) {
+		return repository.findByOrderId(orderId);
+	}
 }
