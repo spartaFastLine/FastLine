@@ -1,5 +1,6 @@
 package com.fastline.authservice.presentation.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -13,6 +14,12 @@ public class DeliveryManagerSearchRequestDto {
     private String type;
     private Long number;
     private String status;   // 사용자 상태
+
+    @JsonProperty("isActive")
+    private boolean isActive = false; // 현재 재직 여부
+
     private String sortBy = "hubId";
+
+    @JsonProperty("sortAscending")
     private boolean sortAscending = true;
 }

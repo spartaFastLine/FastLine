@@ -97,6 +97,7 @@ public class DeliveryManagerService {
                         requestDto.getType(),
                         requestDto.getNumber(),
                         requestDto.getStatus(),
+                        requestDto.isActive(),
                         pageable);
         return deliveryManagers.map(DeliveryManagerResponseDto::new);
     }

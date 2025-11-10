@@ -46,12 +46,12 @@ public class DeliveryManagerRepositoryImpl implements DeliveryManagerRepository 
     }
 
     @Override
-    public Page<DeliveryManager> findDeliveryManagers(String username, UUID hubId, String type, Long number, String userStatus, Pageable pageable) {
+    public Page<DeliveryManager> findDeliveryManagers(String username, UUID hubId, String type, Long number, String userStatus, boolean isActive, Pageable pageable) {
         //결과 데이터
         List<DeliveryManager> deliveryManagers = jpaQueryFactory
                 .selectFrom(deliveryManager)
                 .innerJoin(deliveryManager.user, user)
-                .where(eqUsername(username), eqhubId(hubId), eqType(type), eqNumber(number), eqStatus(userStatus))
+                .where(eqUsername(username), eqhubId(hubId), eqType(type), eqNumber(number), eqStatus(userStatus),eqIsActive(isActive))
                 .orderBy(builderOrderSepifier(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -62,7 +62,7 @@ public class DeliveryManagerRepositoryImpl implements DeliveryManagerRepository 
                 .select(deliveryManager.count())
                 .from(deliveryManager)
                 .innerJoin(deliveryManager.user, user)
-                .where(eqUsername(username), eqhubId(hubId), eqType(type), eqNumber(number), eqStatus(userStatus))
+                .where(eqUsername(username), eqhubId(hubId), eqType(type), eqNumber(number), eqStatus(userStatus),eqIsActive(isActive))
                 .fetchOne();
         total = total != null ? total : 0L; // 결과개수가 0이면 null이 반환되므로 0으로 처리
         //페이지 객체 반환
@@ -84,6 +84,9 @@ public class DeliveryManagerRepositoryImpl implements DeliveryManagerRepository 
     }
     private BooleanExpression eqNumber(Long number) {
         return number != null ? deliveryManager.number.eq(number) : null;
+    }
+    private BooleanExpression eqIsActive(boolean isActive) {
+        return isActive? deliveryManager.deletedAt.isNull() : null;
     }
 
     //정렬조건 빌더

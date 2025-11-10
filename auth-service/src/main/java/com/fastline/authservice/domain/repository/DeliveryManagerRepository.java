@@ -13,5 +13,5 @@ public interface DeliveryManagerRepository {
 
     Optional<DeliveryManager> findById(Long userId);
 
-    Page<DeliveryManager> findDeliveryManagers(String username, UUID hubId, String deliveryManagerType, Long number, String userStatus, Pageable pageable);
+    Page<DeliveryManager> findDeliveryManagers(String username, UUID hubId, String deliveryManagerType, Long number, String userStatus, boolean isActive, Pageable pageable);
 }
