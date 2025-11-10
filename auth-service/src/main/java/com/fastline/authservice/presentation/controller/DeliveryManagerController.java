@@ -2,6 +2,7 @@ package com.fastline.authservice.presentation.controller;
 
 import com.fastline.authservice.domain.service.DeliveryManagerService;
 import com.fastline.authservice.presentation.request.DeliveryManagerCreateRequestDto;
+import com.fastline.authservice.presentation.request.DeliveryManagerDeleteRequestDto;
 import com.fastline.authservice.presentation.request.DeliveryManagerSearchRequestDto;
 import com.fastline.authservice.presentation.request.DeliveryManagerResponseDto;
 import com.fastline.common.response.ApiResponse;
@@ -53,5 +54,12 @@ public class DeliveryManagerController {
     public ResponseEntity<ApiResponse<Void>> updateDeliveryManager(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid DeliveryManagerCreateRequestDto requestDto) {
         deliveryManagerService.updateDeliveryManager(userDetails, requestDto);
         return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_UPDATE_SUCCESS);
+    }
+
+    @DeleteMapping
+    @PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
+    public ResponseEntity<ApiResponse<Void>> deleteDeliveryManager(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid DeliveryManagerDeleteRequestDto requestDto) {
+        deliveryManagerService.deleteDeliveryManager(userDetails, requestDto);
+        return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_DELETE_SUCCESS);
     }
 }

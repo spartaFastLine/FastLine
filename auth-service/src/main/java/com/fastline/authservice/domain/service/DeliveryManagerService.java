@@ -3,6 +3,7 @@ package com.fastline.authservice.domain.service;
 import com.fastline.authservice.domain.model.*;
 import com.fastline.authservice.domain.repository.DeliveryManagerRepository;
 import com.fastline.authservice.presentation.request.DeliveryManagerCreateRequestDto;
+import com.fastline.authservice.presentation.request.DeliveryManagerDeleteRequestDto;
 import com.fastline.authservice.presentation.request.DeliveryManagerResponseDto;
 import com.fastline.authservice.presentation.request.DeliveryManagerSearchRequestDto;
 import com.fastline.common.exception.CustomException;
@@ -116,6 +117,19 @@ public class DeliveryManagerService {
         deliveryManager.updateType(DeliveryManagerType.valueOf(requestDto.getType()));
     }
 
+
+    @Transactional
+    public void deleteDeliveryManager(UserDetailsImpl manager, @Valid DeliveryManagerDeleteRequestDto requestDto) {
+        // 승인 대상 유저 확인
+        User user = checkUser.userCheck(requestDto.getUserId());
+
+        // 관리자가 MASTER가 아니거나 HUB_MANAGER인데 승인할 사용자가 다른 허브에 속해있다면 예외 발생
+        checkUser.checkHubManager(manager, user.getHubId());
+
+        //배달 매니저 삭제
+        DeliveryManager deliveryManager = findDeliveryManager(user.getId());
+        deliveryManager.delete();
+    }
 
     private static void checkDeliveryManager(User user) {
         if(user.getRole() != UserRole.DELIVERY_MANAGER) throw new CustomException(ErrorCode.NOT_DELIVERY_MANAGER);

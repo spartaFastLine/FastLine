@@ -37,4 +37,7 @@ public class DeliveryManager extends TimeBaseEntity{
         this.type = type;
     }
 
+    public void delete() {
+        markDeleted();
+    }
 }
