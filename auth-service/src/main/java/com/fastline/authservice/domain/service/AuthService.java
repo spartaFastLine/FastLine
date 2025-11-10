@@ -56,7 +56,6 @@ public class AuthService {
 		userRepository.save(user);
 	}
 
-
 	public void login(@Valid LoginRequestDto requestDto, HttpServletResponse res) {
 		String username = requestDto.getUsername();
 		String password = requestDto.getPassword();
@@ -73,7 +72,9 @@ public class AuthService {
 		if (user.getStatus() != UserStatus.APPROVE)
 			throw new CustomException(ErrorCode.USER_NOT_APPROVE);
 		// JWT 토큰 생성 및 응답 헤더에 추가
-		String token = jwtUtil.createToken(user.getId(), username, user.getRole().toString(), user.getHubId(), user.getSlackId());
+		String token =
+				jwtUtil.createToken(
+						user.getId(), username, user.getRole().toString(), user.getHubId(), user.getSlackId());
 		res.setHeader("Authorization", token);
 	}
 }

@@ -34,6 +34,9 @@ public enum SuccessCode {
 	PRODUCT_UPDATE_SUCCESS(HttpStatus.OK, "상품 정보 수정 성공"),
 	PRODUCT_DELETE_SUCCESS(HttpStatus.OK, "상품 삭제 성공"),
 	ORDER_SAVE_SUCCESS(HttpStatus.OK, "주문 등록 성공"),
+	ORDER_FIND_SUCCESS(HttpStatus.OK, "주문 조회 성공"),
+	ORDER_STATUS_UPDATE_SUCCESS(HttpStatus.OK, "주문 상태 변경 성공"),
+	ORDER_DELETE_SUCCESS(HttpStatus.OK, "주문 삭제 성공"),
 
 	// AI
 	MESSAGE_GENERATION_SUCCESS(HttpStatus.OK, "최종 발송 시한 정보 생성 성공"),

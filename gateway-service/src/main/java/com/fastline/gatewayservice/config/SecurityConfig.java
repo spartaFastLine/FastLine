@@ -14,26 +14,29 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(@Lazy JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	public SecurityConfig(@Lazy JwtAuthenticationFilter jwtAuthenticationFilter) {
+		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+	}
 
-    @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        return http
-                .csrf(csrf -> csrf.disable())  // CSRF 비활성화
-                .authorizeExchange(auth -> auth
-                        .pathMatchers("/api/auth/signup", "/api/auth/login").permitAll()
-                        .anyExchange().authenticated()
-                )
-                .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)  // JWT 필터 추가
-                //401 Unauthorized 처리필요
-                .build();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+		return http.csrf(csrf -> csrf.disable()) // CSRF 비활성화
+				.authorizeExchange(
+						auth ->
+								auth.pathMatchers("/api/auth/signup", "/api/auth/login")
+										.permitAll()
+										.anyExchange()
+										.authenticated())
+				.addFilterBefore(
+						jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION) // JWT 필터 추가
+				// 401 Unauthorized 처리필요
+				.build();
+	}
 }

@@ -5,6 +5,5 @@ import lombok.Getter;
 
 @Getter
 public class DeliveryManagerDeleteRequestDto {
-    @NotNull
-    private Long userId;
+	@NotNull private Long userId;
 }

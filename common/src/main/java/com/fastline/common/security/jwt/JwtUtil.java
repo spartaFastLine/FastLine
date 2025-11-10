@@ -4,17 +4,16 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import java.security.Key;
+import java.util.Base64;
+import java.util.Date;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
-import java.security.Key;
-import java.util.Base64;
-import java.util.Date;
-import java.util.UUID;
 
 @Component
 @ConditionalOnProperty(name = "jwt.secret.key")

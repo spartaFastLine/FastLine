@@ -5,5 +5,5 @@ import io.jsonwebtoken.Claims;
 import reactor.core.publisher.Mono;
 
 public interface CustomReactiveUserDetailsService {
-    Mono<UserDetailsImpl> loadUserInfo(Claims claims);
+	Mono<UserDetailsImpl> loadUserInfo(Claims claims);
 }

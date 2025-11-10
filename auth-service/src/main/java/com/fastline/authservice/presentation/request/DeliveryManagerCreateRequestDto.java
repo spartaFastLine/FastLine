@@ -6,10 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class DeliveryManagerCreateRequestDto {
-    @NotNull
-    private Long userId;
+	@NotNull private Long userId;
 
-    @NotBlank
-    private String type;
-
+	@NotBlank private String type;
 }
