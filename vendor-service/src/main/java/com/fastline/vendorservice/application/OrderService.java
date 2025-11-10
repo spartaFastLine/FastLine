@@ -1,10 +1,13 @@
 package com.fastline.vendorservice.application;
 
+import com.fastline.common.exception.CustomException;
+import com.fastline.common.exception.ErrorCode;
 import com.fastline.vendorservice.application.command.CreateOrderCommand;
 import com.fastline.vendorservice.domain.entity.Order;
 import com.fastline.vendorservice.domain.entity.OrderProduct;
 import com.fastline.vendorservice.domain.repository.OrderRepository;
 import com.fastline.vendorservice.domain.service.OrderProductService;
+import com.fastline.vendorservice.domain.vo.OrderStatus;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,24 @@ public class OrderService {
 
 	@Transactional(readOnly = true)
 	public Order findByOrderId(UUID orderId) {
-		return repository.findByOrderId(orderId);
+		return repository.findByOrderIdWithProducts(orderId);
+	}
+
+	public Order updateStatus(UUID orderId, String status) {
+
+		OrderStatus newStatus = OrderStatus.fromString(status);
+		Order order = repository.findByOrderId(orderId);
+
+		if (order.getStatus() == OrderStatus.COMPLETED || order.getStatus() == OrderStatus.CANCELLED) {
+			throw new CustomException(ErrorCode.ORDER_STATUS_UPDATE_FAIL);
+		}
+
+		if (newStatus == OrderStatus.CANCELLED) {
+			orderProductService.adjustQuantity(order, order.getOrderProducts());
+		}
+
+		order.updateStatus(newStatus);
+
+		return order;
 	}
 }

@@ -8,10 +8,7 @@ import com.fastline.vendorservice.application.command.CreateOrderCommand;
 import com.fastline.vendorservice.application.command.CreateOrderProductCommand;
 import com.fastline.vendorservice.domain.entity.Order;
 import com.fastline.vendorservice.presentation.request.OrderCreateRequest;
-import com.fastline.vendorservice.presentation.response.order.OrderCreateResponse;
-import com.fastline.vendorservice.presentation.response.order.OrderFindResponse;
-import com.fastline.vendorservice.presentation.response.order.OrderItemCreateResponse;
-import com.fastline.vendorservice.presentation.response.order.OrderItemFindResponse;
+import com.fastline.vendorservice.presentation.response.order.*;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -80,5 +77,15 @@ public class OrderController {
 						order.getDeliveryId());
 
 		return ResponseUtil.successResponse(SuccessCode.ORDER_SAVE_SUCCESS, response);
+	}
+
+	@PutMapping
+	public ResponseEntity<ApiResponse<OrderStatusUpdateResponse>> updateStatus(
+			@RequestParam UUID orderId, @RequestParam String status) {
+		Order order = service.updateStatus(orderId, status);
+		OrderStatusUpdateResponse response =
+				new OrderStatusUpdateResponse(order.getId(), order.getStatus());
+
+		return ResponseUtil.successResponse(SuccessCode.ORDER_STATUS_UPDATE_SUCCESS, response);
 	}
 }

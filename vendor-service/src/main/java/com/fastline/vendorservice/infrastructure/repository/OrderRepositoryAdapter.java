@@ -20,9 +20,16 @@ public class OrderRepositoryAdapter implements OrderRepository {
 	}
 
 	@Override
-	public Order findByOrderId(UUID orderId) {
+	public Order findByOrderIdWithProducts(UUID orderId) {
 		return jpaOrderRepository
 				.findByOrderIdFetchJoin(orderId)
+				.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+	}
+
+	@Override
+	public Order findByOrderId(UUID orderId) {
+		return jpaOrderRepository
+				.findById(orderId)
 				.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 	}
 }

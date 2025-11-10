@@ -7,5 +7,7 @@ public interface OrderRepository {
 
 	Order insert(Order order);
 
+	Order findByOrderIdWithProducts(UUID orderId);
+
 	Order findByOrderId(UUID orderId);
 }

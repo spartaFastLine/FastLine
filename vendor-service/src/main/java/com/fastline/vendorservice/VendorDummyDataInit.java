@@ -9,6 +9,7 @@ import com.fastline.vendorservice.domain.entity.Vendor;
 import com.fastline.vendorservice.domain.repository.OrderRepository;
 import com.fastline.vendorservice.domain.repository.ProductRepository;
 import com.fastline.vendorservice.domain.repository.VendorRepository;
+import com.fastline.vendorservice.domain.vo.Stock;
 import com.fastline.vendorservice.domain.vo.VendorAddress;
 import com.fastline.vendorservice.domain.vo.VendorType;
 import java.util.List;
@@ -38,9 +39,10 @@ public class VendorDummyDataInit implements ApplicationRunner {
 								VendorAddress.create("경기도", "분당구", "정자동", "12385"),
 								UUID.randomUUID()));
 
-		Product product = productRepository.insert(Product.create("testProduct", 1000, 5000.0, vendor));
+		Product product =
+				productRepository.insert(Product.create("testProduct", Stock.of(1000), 5000.0, vendor));
 		Product product1 =
-				productRepository.insert(Product.create("testProduct1", 2000, 2000.0, vendor));
+				productRepository.insert(Product.create("testProduct1", Stock.of(2000), 2000.0, vendor));
 
 		Order order =
 				Order.create(

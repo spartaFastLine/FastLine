@@ -4,6 +4,7 @@ import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.jpa.TimeBaseEntity;
 import com.fastline.vendorservice.domain.vo.Money;
+import com.fastline.vendorservice.domain.vo.Stock;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.Getter;
@@ -25,8 +26,9 @@ public class Product extends TimeBaseEntity {
 	@Column(nullable = false, length = 30)
 	private String name;
 
+	@Embedded
 	@Column(nullable = false)
-	private Integer stock;
+	private Stock stock;
 
 	@Embedded
 	@Column(nullable = false)
@@ -38,7 +40,7 @@ public class Product extends TimeBaseEntity {
 
 	protected Product() {}
 
-	public static Product create(String name, Integer stock, Double price, Vendor vendor) {
+	public static Product create(String name, Stock stock, Double price, Vendor vendor) {
 		if (name == null || stock == null || price == null)
 			throw new CustomException(ErrorCode.VALIDATION_ERROR);
 
@@ -53,7 +55,7 @@ public class Product extends TimeBaseEntity {
 	public Product update(String newName, Integer newStock, Double newPrice) {
 
 		this.name = newName == null ? name : newName;
-		this.stock = newStock == null ? stock : newStock;
+		this.stock = newStock == null ? stock : stock.adjust(Stock.of(newStock));
 		this.price = newPrice == null ? price : Money.of(newPrice);
 
 		return this;
