@@ -10,4 +10,6 @@ public interface OrderRepository {
 	Order findByOrderIdWithProducts(UUID orderId);
 
 	Order findByOrderId(UUID orderId);
+
+	UUID deleteByOrderId(UUID orderId);
 }

@@ -88,4 +88,12 @@ public class OrderController {
 
 		return ResponseUtil.successResponse(SuccessCode.ORDER_STATUS_UPDATE_SUCCESS, response);
 	}
+
+	@DeleteMapping
+	public ResponseEntity<ApiResponse<UUID>> deletedOrder(@RequestParam UUID orderId) {
+
+		UUID deletedId = service.deleteOrder(orderId);
+
+		return ResponseUtil.successResponse(SuccessCode.ORDER_DELETE_SUCCESS, deletedId);
+	}
 }

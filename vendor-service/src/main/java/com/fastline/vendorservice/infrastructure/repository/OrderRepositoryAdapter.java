@@ -32,4 +32,10 @@ public class OrderRepositoryAdapter implements OrderRepository {
 				.findById(orderId)
 				.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 	}
+
+	@Override
+	public UUID deleteByOrderId(UUID orderId) {
+		jpaOrderRepository.deleteById(orderId);
+		return orderId;
+	}
 }

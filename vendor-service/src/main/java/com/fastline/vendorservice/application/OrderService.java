@@ -59,4 +59,9 @@ public class OrderService {
 
 		return order;
 	}
+
+	public UUID deleteOrder(UUID orderId) {
+
+		return repository.deleteByOrderId(orderId);
+	}
 }

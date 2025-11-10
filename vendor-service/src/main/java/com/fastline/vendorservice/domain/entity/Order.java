@@ -1,5 +1,6 @@
 package com.fastline.vendorservice.domain.entity;
 
+import com.fastline.common.jpa.TimeBaseEntity;
 import com.fastline.vendorservice.application.command.CreateOrderCommand;
 import com.fastline.vendorservice.domain.vo.OrderStatus;
 import jakarta.persistence.*;
@@ -8,11 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "p_order")
 @Getter
-public class Order {
+@SQLDelete(sql = "UPDATE p_order SET deleted_at = CURRENT_TIMESTAMP WHERE order_id = ?")
+@Filter(name = "softDeleteFilter")
+public class Order extends TimeBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
