@@ -2,7 +2,6 @@ package com.fastline.authservice.domain.service;
 
 import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.model.UserOrderBy;
-import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.common.security.model.UserRole;
 import com.fastline.authservice.domain.model.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
@@ -31,8 +30,10 @@ public class UserService {
 
 	//회원가입 승인
 	@Transactional
-	public void permitSignup(UserDetailsImpl manager, @Valid PermitRequestDto requestDto) {
+	public void permitSignup(Long managerId, @Valid PermitRequestDto requestDto) {
 		User newUser = checkUser.userCheck(requestDto.getUserId());
+		//매니저 유저 확인
+		User manager = checkUser.userCheck(managerId);
 
 		// 허브 매니저라면 소속 허브 아이디 체크
 		checkUser.checkHubManager(manager, newUser.getHubId());
@@ -53,7 +54,9 @@ public class UserService {
 
 	// 유저 다건 조회
 	@Transactional(readOnly = true)
-	public Page<UserResponseDto> getUsers(UserDetailsImpl manager, UserSearchRequestDto requestDto) {
+	public Page<UserResponseDto> getUsers(Long managerId, UserSearchRequestDto requestDto) {
+		//매니저 유저 확인
+		User manager = checkUser.userCheck(managerId);
         UUID requestHubId = requestDto.getHubId();
 		// 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
 		if (requestHubId != null) {
@@ -119,7 +122,9 @@ public class UserService {
 
 	//  회원 탈퇴 승인
 	@Transactional
-	public void permitDeleteUser(UserDetailsImpl manager, PermitRequestDto requestDto) {
+	public void permitDeleteUser(Long managerId, PermitRequestDto requestDto) {
+		//매니저 유저 확인
+		User manager = checkUser.userCheck(managerId);
 		//승인 대상 유저 확인
 		User user = checkUser.userCheck(requestDto.getUserId());
 

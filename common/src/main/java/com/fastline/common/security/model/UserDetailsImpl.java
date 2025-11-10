@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 //일종의 UserDto
 public class UserDetailsImpl implements UserDetails {
@@ -16,18 +15,12 @@ public class UserDetailsImpl implements UserDetails {
 	private final String password;
 	@Getter
     private final UserRole role;
-	@Getter
-    private final UUID hubId;
-	@Getter
-    private final String slackId;
 
-	public UserDetailsImpl(Long userId, String username, String password, String role, UUID hubId, String slackId) {
+	public UserDetailsImpl(Long userId, String username, String password, String role) {
 		this.userId = userId;
 		this.username = username;
 		this.password = password;
 		this.role = UserRole.valueOf(role);
-		this.hubId = hubId;
-		this.slackId = slackId;
 
 	}
 

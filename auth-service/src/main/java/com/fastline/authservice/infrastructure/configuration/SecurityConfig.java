@@ -1,7 +1,6 @@
 package com.fastline.authservice.infrastructure.configuration;
-
-import com.fastline.authservice.domain.security.UserDetailsServiceImpl;
-import com.fastline.common.security.filter.AuthoriztionFilter;
+import com.fastline.common.security.filter.AuthorizationFilter;
+import com.fastline.common.security.model.CustomUserDetailsService;
 import com.fastline.common.exception.CustomAccessDeniedHandlerImpl;
 import com.fastline.common.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-	private final JwtUtil jwtUtil;
-	private final UserDetailsServiceImpl userDetailService;
+	private final AuthorizationFilter jwtFilter;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -39,7 +37,6 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		AuthoriztionFilter jwtFilter = new AuthoriztionFilter(jwtUtil, userDetailService);
 		// CSRF 비활성화 : 사용자가 로그인한 상태에서 의도치 않게 특정 웹사이트에 악성 요청을 보내도록 유도하는 웹 보안 공격을 막음
 		http.csrf(csrf -> csrf.disable());
 

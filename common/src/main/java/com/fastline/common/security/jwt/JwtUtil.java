@@ -44,16 +44,13 @@ public class JwtUtil {
 	}
 
 	// 토큰 생성
-	public String createToken(Long userId, String username, String role, UUID hubId, String slackId) {
+	public String createToken(Long userId, String role) {
 		Date date = new Date();
 
 		return BEARER_PREFIX
 				+ Jwts.builder()
-						.setSubject(username)
-						.claim("userId", userId)
+						.setSubject(userId.toString())  //sub
 						.claim(AUTHORIZATION_KEY, role)
-						.claim("hubId", hubId)
-						.claim("slackId", slackId)
 						.setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료시간
 						.setIssuedAt(date) // 발급일
 						.signWith(key, signatureAlgorithm)

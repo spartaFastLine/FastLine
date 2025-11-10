@@ -8,7 +8,6 @@ import com.fastline.authservice.presentation.request.DeliveryManagerResponseDto;
 import com.fastline.authservice.presentation.request.DeliveryManagerSearchRequestDto;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
-import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.common.security.model.UserRole;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +31,11 @@ public class DeliveryManagerService {
     //todo : 사용자 승인시 동시 진행 - redis
     //todo  : requestDto의 배달 가능한 허브 아이디가 진짜 허브 아이디가 맞는지 확인
     @Transactional
-    public void createDeliveryManager(UserDetailsImpl manager, DeliveryManagerCreateRequestDto requestDto) {
+    public void createDeliveryManager(Long managerId, DeliveryManagerCreateRequestDto requestDto) {
         // 승인 대상 유저 확인
         User user = checkUser.userCheck(requestDto.getUserId());
+        //매니저 유저 확인
+        User manager = checkUser.userCheck(managerId);
 
         //이미 배달 매니저로 등록된 유저인지 확인
         if(deliveryManagerRepository.findById(user.getId()).isPresent()) throw new CustomException(ErrorCode.EXIST_DELIVERY_MANAGER);
@@ -68,14 +69,15 @@ public class DeliveryManagerService {
     }
 
     //배달 매니저 검색
-    public Page<DeliveryManagerResponseDto> getDeliveryManagers(UserDetailsImpl userDetails, @Valid DeliveryManagerSearchRequestDto requestDto) {
-        User manager = checkUser.userCheck(userDetails.getUserId());
+    public Page<DeliveryManagerResponseDto> getDeliveryManagers(Long managerId, @Valid DeliveryManagerSearchRequestDto requestDto) {
+        //매니저 유저 확인
+        User manager = checkUser.userCheck(managerId);
         UUID hubId = requestDto.getHubId();
         // 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
-        if(hubId != null) checkUser.checkHubManager(userDetails, hubId);
+        if(hubId != null) checkUser.checkHubManager(manager, hubId);
         else{
             //허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
-            if(manager.getRole()== UserRole.HUB_MANAGER) hubId = userDetails.getHubId();
+            if(manager.getRole()== UserRole.HUB_MANAGER) hubId = manager.getHubId();
         }
         //정렬조건 체크
         ManagerOrderBy.checkValid(requestDto.getSortBy());
@@ -103,7 +105,9 @@ public class DeliveryManagerService {
     }
 
     @Transactional
-    public void updateDeliveryManager(UserDetailsImpl manager, @Valid DeliveryManagerCreateRequestDto requestDto) {
+    public void updateDeliveryManager(Long managerId, @Valid DeliveryManagerCreateRequestDto requestDto) {
+        //매니저 유저 확인
+        User manager = checkUser.userCheck(managerId);
         // 승인 대상 유저 확인
         User user = checkUser.userCheck(requestDto.getUserId());
 
@@ -120,7 +124,9 @@ public class DeliveryManagerService {
 
 
     @Transactional
-    public void deleteDeliveryManager(UserDetailsImpl manager, @Valid DeliveryManagerDeleteRequestDto requestDto) {
+    public void deleteDeliveryManager(Long managerId, @Valid DeliveryManagerDeleteRequestDto requestDto) {
+        //매니저 유저 확인
+        User manager = checkUser.userCheck(managerId);
         // 승인 대상 유저 확인
         User user = checkUser.userCheck(requestDto.getUserId());
 

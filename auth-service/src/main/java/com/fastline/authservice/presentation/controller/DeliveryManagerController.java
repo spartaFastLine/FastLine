@@ -28,7 +28,7 @@ public class DeliveryManagerController {
     @PostMapping()
     @PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
     public ResponseEntity<ApiResponse<Void>> createDeliveryManager(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid DeliveryManagerCreateRequestDto requestDto) {
-        deliveryManagerService.createDeliveryManager(userDetails, requestDto);
+        deliveryManagerService.createDeliveryManager(userDetails.getUserId(), requestDto);
         return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_CREATE_SUCCESS);
     }
 
@@ -45,21 +45,21 @@ public class DeliveryManagerController {
     @PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
     public ResponseEntity<ApiResponse<Page<DeliveryManagerResponseDto>>> getDeliveryManagers(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                                                              @RequestBody @Valid DeliveryManagerSearchRequestDto requestDto) {
-        Page<DeliveryManagerResponseDto> responseDto = deliveryManagerService.getDeliveryManagers(userDetails, requestDto);
+        Page<DeliveryManagerResponseDto> responseDto = deliveryManagerService.getDeliveryManagers(userDetails.getUserId(), requestDto);
         return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_READ_SUCCESS, responseDto);
     }
 
     @PutMapping
     @PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
     public ResponseEntity<ApiResponse<Void>> updateDeliveryManager(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid DeliveryManagerCreateRequestDto requestDto) {
-        deliveryManagerService.updateDeliveryManager(userDetails, requestDto);
+        deliveryManagerService.updateDeliveryManager(userDetails.getUserId(), requestDto);
         return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_UPDATE_SUCCESS);
     }
 
     @DeleteMapping
     @PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
     public ResponseEntity<ApiResponse<Void>> deleteDeliveryManager(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid DeliveryManagerDeleteRequestDto requestDto) {
-        deliveryManagerService.deleteDeliveryManager(userDetails, requestDto);
+        deliveryManagerService.deleteDeliveryManager(userDetails.getUserId(), requestDto);
         return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_DELETE_SUCCESS);
     }
 }
