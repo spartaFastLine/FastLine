@@ -18,7 +18,7 @@ public enum SuccessCode {
 	PASSWORD_UPDATE_SUCCESS(HttpStatus.OK, "비밀번호 수정 성공"),
 	USER_WITHDRAWAL_REQUEST_SUCCESS(HttpStatus.OK, "회원탈퇴 신청 성공"),
 	USER_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "회원 삭제 성공"),
-	//배달 매니저(delivery manager)
+	// 배달 매니저(delivery manager)
 	DELIVERY_MANAGER_CREATE_SUCCESS(HttpStatus.CREATED, "배달 매니저 생성 성공"),
 	DELIVERY_MANAGER_READ_SUCCESS(HttpStatus.OK, "배달 매니저 조회 성공"),
 	DELIVERY_MANAGER_UPDATE_SUCCESS(HttpStatus.CREATED, "배달 매니저 수정 성공"),
@@ -45,7 +45,8 @@ public enum SuccessCode {
 	DELIVERY_SAVE_SUCCESS(HttpStatus.CREATED, "배송 생성 성공"),
 	DELIVERY_FIND_SUCCESS(HttpStatus.OK, "배송 조회 성공"),
 	DELIVERY_UPDATE_SUCCESS(HttpStatus.OK, "배송 수정 성공"),
-	DELIVERY_DELETE_SUCCESS(HttpStatus.OK, "배송 삭제 성공");
+	DELIVERY_DELETE_SUCCESS(HttpStatus.OK, "배송 삭제 성공"),
+	DELIVERY_PATH_DELETE_SUCCESS(HttpStatus.OK, "배송 경로 기록 삭제 성공");
 
 	private final HttpStatus httpStatus;
 	private final String message;

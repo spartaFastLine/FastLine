@@ -124,4 +124,18 @@ public class DeliveryController {
 		log.info("배송 삭제 성공: deliveryId={}", deliveryId);
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_DELETE_SUCCESS);
 	}
+
+	/* 배송 경로 기록 삭제 */
+	@DeleteMapping("/{deliveryId}/paths/{pathId}")
+	public ResponseEntity<ApiResponse<Void>> deleteDeliveryPath(
+			@PathVariable UUID deliveryId, @PathVariable UUID pathId) {
+		log.info("배송 경로 기록 삭제 요청: deliveryId={}, pathId={}", deliveryId, pathId);
+
+		Long userId = 1234L; // 추후 인증 연동 예정
+
+		deliveryService.deletePath(deliveryId, pathId, userId);
+
+		log.info("배송 경로 기록 삭제 성공: deliveryId={}, pathId={}", deliveryId, pathId);
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_DELETE_SUCCESS);
+	}
 }
