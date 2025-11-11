@@ -1,4 +1,4 @@
-package com.fastline.messagingservice.domain;
+package com.fastline.messagingservice.domain.entity;
 
 import com.fastline.common.jpa.TimeBaseEntity;
 import jakarta.persistence.*;

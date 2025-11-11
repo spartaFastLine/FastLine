@@ -1,6 +1,5 @@
-package com.fastline.messagingservice.dto;
+package com.fastline.messagingservice.presentation.dto;
 
-import com.fastline.messagingservice.external.dto.MessageGenerationRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -10,7 +9,7 @@ public record SendMessageRequest(
 		String customerName,
 		String customerEmail,
 		LocalDateTime orderDateTime,
-		List<MessageGenerationRequest.Item> items,
+		List<Item> items,
 		String requestNote,
 		String sourceHub,
 		List<String> viaHubs,
