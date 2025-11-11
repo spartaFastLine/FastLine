@@ -135,7 +135,7 @@ public class DeliveryManagerService {
 
         //배달 매니저 삭제
         DeliveryManager deliveryManager = findDeliveryManager(user.getId());
-        deliveryManager.delete();
+        deliveryManager.delete(manager.getId());
     }
 
     private static void checkDeliveryManager(User user) {

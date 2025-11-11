@@ -1,6 +1,6 @@
 package com.fastline.authservice.domain.model;
 
-import com.fastline.common.jpa.TimeBaseEntity;
+import com.fastline.common.jpa.ActorBaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name="p_delivery_manager")
 @NoArgsConstructor
-public class DeliveryManager extends TimeBaseEntity{
+public class DeliveryManager extends ActorBaseEntity {
     @Id
     @Column(name = "manager_id")
     private Long id;
@@ -37,7 +37,8 @@ public class DeliveryManager extends TimeBaseEntity{
         this.type = type;
     }
 
-    public void delete() {
+    public void delete(Long managerId) {
         markDeleted();
+        this.deletedBy = managerId;
     }
 }

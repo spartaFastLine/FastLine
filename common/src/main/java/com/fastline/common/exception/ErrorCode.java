@@ -27,7 +27,8 @@ public enum ErrorCode {
 	NO_USER_PERMIT_AUTHORITY(HttpStatus.BAD_REQUEST, "사용자 승인 권한이 없습니다."),
 	NO_AUTHORITY(HttpStatus.FORBIDDEN, "특정 권한을 가진 사용자만 가능합니다."),
 	INVALID_SORYBY(HttpStatus.BAD_REQUEST, "잘못된 정렬 조건입니다"),
-	FORBIDDEN(HttpStatus.FORBIDDEN, "인가 실패"),
+	FORBIDDEN(HttpStatus.FORBIDDEN, "인가에 실패하였습니다"),
+	UNAUTHORIZED_MEMBER(HttpStatus.FORBIDDEN, "데이터 저장:::인가에 실패하였습니다"),
 
 	// 배송 매니저 (delivery manager)
 	DELIVERY_MANAGER_NOT_FOUND(HttpStatus.NOT_FOUND, "배송 매니저 조회 실패"),
