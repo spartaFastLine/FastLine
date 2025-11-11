@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: fastline-postgres-dev
+    container_name: fastline-delivery-dev
     restart: always
     env_file:
       - .env.dev
@@ -15,12 +15,12 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres-dev-data:/var/lib/postgresql/data
+      - postgres-delivery-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U fastlinedelivery"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
 
 volumes:
-  postgres-dev-data:
+  postgres-delivery-data:
