@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RepositoryConfig {
 
-    @Bean
-    public DeliveryRepository deliveryRepository(JpaDeliveryRepository jpaDeliveryRepository) {
-        return new DeliveryRepositoryAdapter(jpaDeliveryRepository);
-    }
+	@Bean
+	public DeliveryRepository deliveryRepository(JpaDeliveryRepository jpaDeliveryRepository) {
+		return new DeliveryRepositoryAdapter(jpaDeliveryRepository);
+	}
 }
