@@ -29,8 +29,17 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService userDetailsService;
 
     @Override
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        //특정 경로에 대해서는 필터를 적용하지 않음 (예: 로그인, 회원가입 등)
+        return path.startsWith("/api/auth/") || path.startsWith("/actuator");
+    }
+
+    @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         try {
+            logger.debug("URI:" + request.getRequestURL());
+            System.out.println("URI:" + request.getRequestURL());
             String token = jwtUtil.resolveToken(request);
             if(token == null) filterChain.doFilter(request, response);  //토큰이 없으면 인증필터 통과
 
