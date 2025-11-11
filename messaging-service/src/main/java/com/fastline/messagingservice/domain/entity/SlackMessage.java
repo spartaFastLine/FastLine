@@ -1,5 +1,6 @@
 package com.fastline.messagingservice.domain.entity;
 
+import com.fastline.common.auditing.BaseEntity;
 import com.fastline.common.jpa.TimeBaseEntity;
 import jakarta.persistence.*;
 import java.time.Instant;
@@ -7,7 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "p_slack_messages")
-public class SlackMessage extends TimeBaseEntity {
+public class SlackMessage extends BaseEntity<SlackMessage> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
