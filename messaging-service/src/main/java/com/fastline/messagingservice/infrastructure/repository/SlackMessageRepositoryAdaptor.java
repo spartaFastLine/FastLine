@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SlackMessageRepositoryAdaptor implements SlackMessageRepository {
 
-    private final JpaSlackMessageRepository jpaSlackMessageRepository;
+	private final JpaSlackMessageRepository jpaSlackMessageRepository;
 
-    @Override
-    public void save(SlackMessage slackMessage) {
-        jpaSlackMessageRepository.save(slackMessage);
-    }
+	@Override
+	public void save(SlackMessage slackMessage) {
+		jpaSlackMessageRepository.save(slackMessage);
+	}
 }

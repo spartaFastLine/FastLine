@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AiClientImpl implements AiClient {
 
-    private final AiServiceFeignClient feignClient;
+	private final AiServiceFeignClient feignClient;
 
-    @Override
-    public String generate(SendMessageCommand command) {
-        MessageGenerationRequest request = MessageGenerationRequest.from(command);
-        MessageGenerationResponse response = feignClient.generate(request);
+	@Override
+	public String generate(SendMessageCommand command) {
+		MessageGenerationRequest request = MessageGenerationRequest.from(command);
+		MessageGenerationResponse response = feignClient.generate(request);
 
-        return response.data().finalDispatchDeadline();
-    }
+		return response.data().finalDispatchDeadline();
+	}
 }

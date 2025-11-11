@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RepositoryConfig {
 	@Bean
-	public SlackMessageRepository orderRepository(JpaSlackMessageRepository jpaSlackMessageRepository) {
+	public SlackMessageRepository orderRepository(
+			JpaSlackMessageRepository jpaSlackMessageRepository) {
 		return new SlackMessageRepositoryAdaptor(jpaSlackMessageRepository);
 	}
 }

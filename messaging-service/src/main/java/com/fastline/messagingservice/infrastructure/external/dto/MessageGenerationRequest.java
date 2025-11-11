@@ -2,7 +2,6 @@ package com.fastline.messagingservice.infrastructure.external.dto;
 
 import com.fastline.messagingservice.application.command.SendMessageCommand;
 import com.fastline.messagingservice.presentation.dto.SendMessageRequest;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;

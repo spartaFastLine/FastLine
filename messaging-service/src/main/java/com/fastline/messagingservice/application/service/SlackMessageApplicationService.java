@@ -13,19 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SlackMessageApplicationService {
 
-    private final AiClient aiClient;
-    private final SlackWebhookClient slackWebhookClient;
-    private final SlackMessageRepository slackMessageRepository;
+	private final AiClient aiClient;
+	private final SlackWebhookClient slackWebhookClient;
+	private final SlackMessageRepository slackMessageRepository;
 
-    @Transactional
-    public void send(SendMessageCommand cmd) {
+	@Transactional
+	public void send(SendMessageCommand cmd) {
 
-        String finalDispatchDeadline = aiClient.generate(cmd);
+		String finalDispatchDeadline = aiClient.generate(cmd);
 
-        String messageText = SlackMessageFormatter.format(cmd, finalDispatchDeadline);
+		String messageText = SlackMessageFormatter.format(cmd, finalDispatchDeadline);
 
-        slackWebhookClient.send(messageText);
+		slackWebhookClient.send(messageText);
 
-        slackMessageRepository.save(SlackMessage.of(cmd.orderId(), messageText, cmd.customerEmail()));
-    }
+		slackMessageRepository.save(SlackMessage.of(cmd.orderId(), messageText, cmd.customerEmail()));
+	}
 }
