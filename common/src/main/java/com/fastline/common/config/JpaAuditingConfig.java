@@ -7,9 +7,8 @@ import org.springframework.data.domain.AuditorAware;
 
 @Configuration
 public class JpaAuditingConfig {
-    @Bean
-    public AuditorAware<Long> auditorAware(){
-        return new SecurityAuditorAware();
-    }
-
+	@Bean
+	public AuditorAware<Long> auditorAware() {
+		return new SecurityAuditorAware();
+	}
 }

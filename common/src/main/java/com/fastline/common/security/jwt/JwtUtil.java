@@ -4,16 +4,15 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import java.security.Key;
+import java.util.Base64;
+import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
-import java.security.Key;
-import java.util.Base64;
-import java.util.Date;
 
 @Component
 @ConditionalOnProperty(name = "jwt.secret.key")
@@ -48,7 +47,7 @@ public class JwtUtil {
 
 		return BEARER_PREFIX
 				+ Jwts.builder()
-						.setSubject(userId.toString())  //sub
+						.setSubject(userId.toString()) // sub
 						.claim(AUTHORIZATION_KEY, role)
 						.setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료시간
 						.setIssuedAt(date) // 발급일
@@ -60,7 +59,7 @@ public class JwtUtil {
 	public String resolveToken(HttpServletRequest request) {
 		String header = request.getHeader(JwtUtil.AUTHORIZATION_HEADER);
 		logger.info("Header: ".concat(header));
-		if (StringUtils.hasText(header)&&header.startsWith(JwtUtil.BEARER_PREFIX)) {
+		if (StringUtils.hasText(header) && header.startsWith(JwtUtil.BEARER_PREFIX)) {
 			return header;
 		}
 		return null;

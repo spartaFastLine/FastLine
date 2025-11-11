@@ -1,8 +1,7 @@
 package com.fastline.authservice.presentation.request;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.UUID;
 import lombok.Getter;
 
 @Getter
@@ -14,6 +13,7 @@ public class UserSearchRequestDto {
 	private String role;
 	private String status;
 	private String sortBy = "username";
+
 	@JsonProperty("sortAscending")
 	private boolean sortAscending = true;
 }
