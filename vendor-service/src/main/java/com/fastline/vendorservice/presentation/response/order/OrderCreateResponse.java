@@ -8,6 +8,7 @@ public record OrderCreateResponse(
 		UUID orderId,
 		UUID vendorProducerId,
 		UUID vendorConsumerId,
+		String consumerName,
 		OrderStatus status,
 		String request,
 		List<OrderItemCreateResponse> orderItems,

@@ -31,6 +31,7 @@ public class OrderController {
 				new CreateOrderCommand(
 						createRequest.vendorProducerId(),
 						createRequest.vendorConsumerId(),
+						createRequest.consumerName(),
 						createRequest.request(),
 						createRequest.orderProductRequests().stream()
 								.map(
@@ -49,6 +50,7 @@ public class OrderController {
 						order.getId(),
 						order.getVendorProducerId(),
 						order.getVendorConsumerId(),
+						order.getConsumerName(),
 						order.getStatus(),
 						order.getRequest(),
 						orderItemCreateResponses,
@@ -71,6 +73,7 @@ public class OrderController {
 						order.getId(),
 						order.getVendorProducerId(),
 						order.getVendorConsumerId(),
+						order.getConsumerName(),
 						order.getStatus(),
 						order.getRequest(),
 						orderItemFindResponses,

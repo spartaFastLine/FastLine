@@ -30,6 +30,9 @@ public class Order extends TimeBaseEntity {
 	@Column(nullable = false)
 	private UUID vendorConsumerId;
 
+	@Column(nullable = false)
+	private String consumerName;
+
 	@Enumerated(value = EnumType.STRING)
 	@Column(nullable = false)
 	private OrderStatus status;
@@ -51,6 +54,7 @@ public class Order extends TimeBaseEntity {
 		Order order = new Order();
 		order.vendorProducerId = createCommand.vendorProducerId();
 		order.vendorConsumerId = createCommand.vendorConsumerId();
+		order.consumerName = createCommand.consumerName();
 		order.status = OrderStatus.READY;
 		order.request = createCommand.request();
 
