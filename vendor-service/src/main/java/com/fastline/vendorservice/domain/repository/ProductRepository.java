@@ -3,6 +3,7 @@ package com.fastline.vendorservice.domain.repository;
 import com.fastline.vendorservice.domain.entity.Product;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductRepository {
 
@@ -13,4 +14,6 @@ public interface ProductRepository {
 	UUID deleteByProductId(UUID productId);
 
 	List<Product> findAllById(List<UUID> productIds);
+
+	List<Product> findAllByVendorId(UUID vendorId, Pageable pageable);
 }

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -41,6 +43,12 @@ public class ProductRepositoryAdapter implements ProductRepository {
 	@Override
 	public List<Product> findAllById(List<UUID> productIds) {
 		return jpaProductRepository.findAllById(productIds);
+	}
+
+	@Override
+	public List<Product> findAllByVendorId(UUID vendorId, Pageable pageable) {
+		Page<Product> pagedProduct = jpaProductRepository.findAllByVendorId(vendorId, pageable);
+		return pagedProduct.getContent();
 	}
 
 	@Override

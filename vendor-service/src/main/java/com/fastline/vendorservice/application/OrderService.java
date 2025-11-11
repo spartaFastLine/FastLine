@@ -9,12 +9,11 @@ import com.fastline.vendorservice.domain.service.OrderProductService;
 import com.fastline.vendorservice.domain.vo.OrderStatus;
 import com.fastline.vendorservice.infrastructure.external.MessageClient;
 import com.fastline.vendorservice.infrastructure.external.dto.message.MessageRequestDto;
+import com.fastline.vendorservice.presentation.request.OrderCreateRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import com.fastline.vendorservice.presentation.request.OrderCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +41,7 @@ public class OrderService {
 		order.mappingDeliveryId(UUID.randomUUID());
 		Order result = repository.insert(order);
 
-//		messageClient.sendMassage(createMessageRequestDto(result));
+		//		messageClient.sendMassage(createMessageRequestDto(result));
 
 		return result;
 	}
@@ -61,8 +60,8 @@ public class OrderService {
 			throw new CustomException(ErrorCode.ORDER_STATUS_UPDATE_FAIL);
 		}
 
-        order.updateStatus(newStatus);
-        orderProductService.adjustQuantity(order, order.getOrderProducts());
+		order.updateStatus(newStatus);
+		orderProductService.adjustQuantity(order, order.getOrderProducts());
 
 		return order;
 	}
