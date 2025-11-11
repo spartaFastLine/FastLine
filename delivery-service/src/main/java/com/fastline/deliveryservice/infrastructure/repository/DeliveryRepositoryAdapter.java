@@ -5,11 +5,13 @@ import com.fastline.deliveryservice.domain.repository.DeliveryRepository;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class DeliveryRepositoryImpl implements DeliveryRepository {
+public class DeliveryRepositoryAdapter implements DeliveryRepository {
 
 	private final JpaDeliveryRepository jpaDeliveryRepository;
 
@@ -21,5 +23,10 @@ public class DeliveryRepositoryImpl implements DeliveryRepository {
 	@Override
 	public Optional<Delivery> findById(UUID deliveryId) {
 		return jpaDeliveryRepository.findById(deliveryId);
+	}
+
+	@Override
+	public Page<Delivery> searchDeliveries(Pageable pageable) {
+		return jpaDeliveryRepository.findByDeletedAtIsNull(pageable);
 	}
 }

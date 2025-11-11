@@ -46,7 +46,8 @@ public enum SuccessCode {
 
 	// 배송 (delivery)
 	DELIVERY_SAVE_SUCCESS(HttpStatus.CREATED, "배송 생성 성공"),
-	DELIVERY_FIND_SUCCESS(HttpStatus.OK, "배송 조회 성공"),
+	DELIVERY_FIND_SUCCESS(HttpStatus.OK, "배송 단건 조회 성공"),
+    DELIVERY_SEARCH_SUCCESS(HttpStatus.OK, "배송 검색 성공"),
 	DELIVERY_UPDATE_SUCCESS(HttpStatus.OK, "배송 수정 성공"),
 	DELIVERY_DELETE_SUCCESS(HttpStatus.OK, "배송 삭제 성공"),
 	DELIVERY_PATH_DELETE_SUCCESS(HttpStatus.OK, "배송 경로 기록 삭제 성공");

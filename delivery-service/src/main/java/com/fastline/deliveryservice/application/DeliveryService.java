@@ -2,6 +2,7 @@ package com.fastline.deliveryservice.application;
 
 import com.fastline.deliveryservice.application.command.CreateDeliveryCommand;
 import com.fastline.deliveryservice.application.command.CreateDeliveryPathCommand;
+import com.fastline.deliveryservice.application.command.SearchDeliveryCommand;
 import com.fastline.deliveryservice.application.command.UpdateDeliveryCommand;
 import com.fastline.deliveryservice.application.dto.DeliveryResult;
 import com.fastline.deliveryservice.domain.entity.Delivery;
@@ -9,10 +10,16 @@ import com.fastline.deliveryservice.domain.entity.DeliveryPath;
 import com.fastline.deliveryservice.domain.repository.DeliveryRepository;
 import com.fastline.deliveryservice.domain.service.DeliveryDomainService;
 import com.fastline.deliveryservice.domain.vo.OrderId;
+import com.fastline.deliveryservice.presentation.dto.PageResponse;
+import com.fastline.deliveryservice.presentation.dto.response.DeliverySummaryResponse;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,6 +124,27 @@ public class DeliveryService {
 		delivery.delete(userId);
 
 		log.info("배송 정보 삭제 완료: deliveryId={}", deliveryId);
+	}
+
+	@Transactional(readOnly = true)
+	public PageResponse<DeliverySummaryResponse> searchDeliveries(SearchDeliveryCommand command) {
+		log.info(
+				"배송 검색 시작: page={}, size={}, sortBy={}, direction={}",
+				command.page(),
+				command.size(),
+				command.sortBy(),
+				command.direction());
+
+		Sort.Direction direction =
+				Sort.Direction.fromOptionalString(command.direction()).orElse(Sort.Direction.DESC);
+
+		Pageable pageable =
+				PageRequest.of(command.page(), command.size(), Sort.by(direction, command.sortBy()));
+
+		Page<Delivery> deliveries = deliveryRepository.searchDeliveries(pageable);
+
+		log.info("배송 검색 완료: page={}, totalElements={}", command.page(), deliveries.getTotalElements());
+		return PageResponse.from(deliveries.map(DeliverySummaryResponse::from));
 	}
 
 	@Transactional
