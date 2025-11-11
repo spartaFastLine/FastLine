@@ -1,10 +1,10 @@
 package com.fastline.authservice.presentation.controller;
 
+import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.authservice.domain.service.UserService;
 import com.fastline.authservice.presentation.request.*;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
-import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.common.success.SuccessCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> permitSignup(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid PermitRequestDto requestDto) {
-		userService.permitSignup(userDetails, requestDto);
+		userService.permitSignup(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_PERMIT_SUCCESS);
 	}
 
@@ -36,7 +36,8 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Page<UserResponseDto>>> getUsers(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody UserSearchRequestDto requestDto) {
-		Page<UserResponseDto> responseDto = userService.getUsers(userDetails, requestDto);
+		Page<UserResponseDto> responseDto =
+				userService.getUsers(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
 	}
 
@@ -80,7 +81,7 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> deleteUserpermit(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid PermitRequestDto requestDto) {
-		userService.permitDeleteUser(userDetails, requestDto);
+		userService.permitDeleteUser(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_DELETE_SUCCESS);
 	}
 

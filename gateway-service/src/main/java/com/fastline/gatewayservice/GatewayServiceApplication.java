@@ -4,10 +4,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-@SpringBootApplication(
-		scanBasePackages = "com.fastline",
-		exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@SpringBootApplication(scanBasePackages = "com.fastline", exclude = {
+		DataSourceAutoConfiguration.class,
+		HibernateJpaAutoConfiguration.class
+})
+@EnableDiscoveryClient
 public class GatewayServiceApplication {
 
 	public static void main(String[] args) {

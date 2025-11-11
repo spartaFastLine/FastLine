@@ -72,9 +72,7 @@ public class AuthService {
 		if (user.getStatus() != UserStatus.APPROVE)
 			throw new CustomException(ErrorCode.USER_NOT_APPROVE);
 		// JWT 토큰 생성 및 응답 헤더에 추가
-		String token =
-				jwtUtil.createToken(
-						user.getId(), username, user.getRole().toString(), user.getHubId(), user.getSlackId());
+		String token = jwtUtil.createToken(user.getId(), user.getRole().toString());
 		res.setHeader("Authorization", token);
 	}
 }

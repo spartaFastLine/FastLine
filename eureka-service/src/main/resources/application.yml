@@ -16,4 +16,8 @@ eureka:
       defaultZone: http://localhost:19091/eureka/
   instance:
     hostname: localhost
+#    유레카 서버에서 authorization-filter을 비활성화
+security:
+  authorization-filter:
+    enabled: false
 
