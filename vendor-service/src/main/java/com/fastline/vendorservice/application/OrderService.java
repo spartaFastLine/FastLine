@@ -8,8 +8,12 @@ import com.fastline.vendorservice.domain.entity.OrderProduct;
 import com.fastline.vendorservice.domain.repository.OrderRepository;
 import com.fastline.vendorservice.domain.service.OrderProductService;
 import com.fastline.vendorservice.domain.vo.OrderStatus;
+import com.fastline.vendorservice.infrastructure.external.MessageClient;
+import com.fastline.vendorservice.infrastructure.external.dto.message.MessageRequestDto;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +27,7 @@ public class OrderService {
 	private final OrderProductService orderProductService;
 
 	//    private final DeliveryClient deliveryClient;
+	private final MessageClient messageClient;
 
 	/** TODO: 배송서비스에 배송 생성을 요청하는 흐름 필요. */
 	public Order insert(CreateOrderCommand createCommand) {
@@ -32,9 +37,13 @@ public class OrderService {
 				orderProductService.createOrderProducts(order, createCommand.orderProductCreateRequests());
 		orderProducts.forEach(order::mappingOrderProduct);
 
-		//        UUID deliveryId = deliveryClient.
+		//        UUID deliveryId = deliveryClient. 받아와서 다시 해당 배송정보를 요청
 		order.mappingDeliveryId(UUID.randomUUID());
-		return repository.insert(order);
+		Order result = repository.insert(order);
+
+		messageClient.sendMassage(createMessageRequestDto(result));
+
+		return result;
 	}
 
 	@Transactional(readOnly = true)
@@ -63,5 +72,30 @@ public class OrderService {
 	public UUID deleteOrder(UUID orderId) {
 
 		return repository.deleteByOrderId(orderId);
+	}
+
+	private MessageRequestDto createMessageRequestDto(Order order) {
+
+		List<OrderProduct> orderProducts = order.getOrderProducts();
+		ArrayList<MessageRequestDto.MessageItem> messageItems =
+				orderProducts.stream()
+						.map(
+								product ->
+										new MessageRequestDto.MessageItem(
+												product.getProduct().getName(), product.getQuantity()))
+						.collect(Collectors.toCollection(ArrayList::new));
+
+		return new MessageRequestDto(
+				order.getId(),
+				order.getConsumerName(),
+				"test123@gmail.com",
+				order.getCreatedAt(),
+				messageItems,
+				order.getRequest(),
+				"testHub",
+				List.of("hub1, hub2"),
+				"도착지",
+				"매니저",
+				"manager@gmail.com");
 	}
 }

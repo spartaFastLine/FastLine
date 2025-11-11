@@ -8,6 +8,7 @@ public record OrderFindResponse(
 		UUID orderId,
 		UUID vendorProducerId,
 		UUID vendorConsumerId,
+		String consumerName,
 		OrderStatus status,
 		String request,
 		List<OrderItemFindResponse> orderItems,

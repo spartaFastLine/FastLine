@@ -49,6 +49,7 @@ public class VendorDummyDataInit implements ApplicationRunner {
 						new CreateOrderCommand(
 								vendor.getId(),
 								vendor.getId(),
+								"홍길동",
 								"리퀘스트",
 								List.of(
 										new CreateOrderProductCommand(product.getId(), 1),

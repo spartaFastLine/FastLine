@@ -2,9 +2,9 @@ spring:
   application:
     name: vendor-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: 1234
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -20,3 +20,16 @@ spring:
   sql:
     init:
       mode: always
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19091/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
+server:
+  port: 19099

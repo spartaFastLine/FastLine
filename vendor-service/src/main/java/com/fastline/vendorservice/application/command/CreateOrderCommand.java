@@ -6,5 +6,6 @@ import java.util.UUID;
 public record CreateOrderCommand(
 		UUID vendorProducerId,
 		UUID vendorConsumerId,
+		String consumerName,
 		String request,
 		List<CreateOrderProductCommand> orderProductCreateRequests) {}
