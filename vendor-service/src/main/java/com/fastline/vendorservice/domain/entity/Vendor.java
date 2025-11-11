@@ -1,8 +1,8 @@
 package com.fastline.vendorservice.domain.entity;
 
+import com.fastline.common.auditing.TimeBaseEntity;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
-import com.fastline.common.jpa.TimeBaseEntity;
 import com.fastline.vendorservice.domain.vo.VendorAddress;
 import com.fastline.vendorservice.domain.vo.VendorType;
 import com.fastline.vendorservice.presentation.request.VendorUpdateRequest;
@@ -23,7 +23,7 @@ import org.hibernate.annotations.SQLDelete;
 		autoEnabled = true,
 		applyToLoadByKey = true)
 @Filter(name = "softDeleteFilter")
-public class Vendor extends TimeBaseEntity {
+public class Vendor extends TimeBaseEntity<Vendor> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
