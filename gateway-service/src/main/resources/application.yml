@@ -11,8 +11,7 @@ spring:
             - id: auth-service  # 라우트 식별자
               uri: lb://auth-service  # 서비스 디스커버리를 통한 user-service로 라우팅
               predicates:
-                - Path=/api/users/**  # /users/** 경로에 대한 요청을 auth-service로 라우팅
-                - Path=/api/auth/**  # /auth/** 경로에 대한 요청을 auth-service로 라우팅
+                - Path=/api/users/**,/api/auth/**  # /users/** 경로에 대한 요청을 auth-service로 라우팅
 server:
   port: 19092  # 게이트웨이 서비스 포트 설정
 eureka:
