@@ -41,3 +41,11 @@ logging:
 
 server:
   port: 8089
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+
+security:
+  authorization-filter:
+    enabled: false
