@@ -2,14 +2,12 @@ package com.fastline.authservice.domain.service;
 
 import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.model.UserOrderBy;
-import com.fastline.common.security.model.UserRole;
 import com.fastline.authservice.domain.model.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.authservice.presentation.request.*;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
-import java.util.UUID;
-
+import com.fastline.common.security.model.UserRole;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -138,6 +138,8 @@ public class UserService {
 	}
 
 
-
-
+    public SlackResponseDto getSlackId(Long userId) {
+		User user = checkUser.userCheck(userId);
+		return new SlackResponseDto(user.getSlackId());
+    }
 }

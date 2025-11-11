@@ -22,6 +22,7 @@ public class AuthService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtUtil jwtUtil;
+	private final CheckUser checkUser;
 
 	@Transactional
 	public void signup(SignupRequestDto requestDto) {
@@ -49,6 +50,7 @@ public class AuthService {
 		String password = passwordEncoder.encode(requestDto.getPassword());
 
 		// 소속된 허브아이디 확인
+		checkUser.checkHubExist(requestDto.getHubId());
 
 		// 새로운 사용자 생성 및 저장
 		User user =

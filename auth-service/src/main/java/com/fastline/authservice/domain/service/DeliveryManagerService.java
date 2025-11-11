@@ -28,7 +28,7 @@ public class DeliveryManagerService {
     private final CheckUser checkUser;
 
     //배달 매니저 생성 - 마스터, 허브 관리자만 가능
-    //todo : 사용자 승인시 동시 진행 - redis
+    //todo : 사용자 승인시 동시 진행
     //todo  : requestDto의 배달 가능한 허브 아이디가 진짜 허브 아이디가 맞는지 확인
     @Transactional
     public void createDeliveryManager(Long managerId, DeliveryManagerCreateRequestDto requestDto) {
