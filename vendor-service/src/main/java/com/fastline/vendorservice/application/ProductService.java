@@ -5,6 +5,7 @@ import com.fastline.vendorservice.application.command.UpdateProductCommand;
 import com.fastline.vendorservice.domain.entity.Product;
 import com.fastline.vendorservice.domain.entity.Vendor;
 import com.fastline.vendorservice.domain.repository.ProductRepository;
+import com.fastline.vendorservice.domain.vo.Stock;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,8 @@ public class ProductService {
 		Vendor vendor = vendorService.findByVendorId(command.vendorId());
 		//        hubClient.findHub();
 
-		Product product = Product.create(command.name(), command.stock(), command.price(), vendor);
+		Product product =
+				Product.create(command.name(), Stock.of(command.stock()), command.price(), vendor);
 
 		return repository.insert(product);
 	}

@@ -8,6 +8,8 @@ import com.fastline.vendorservice.application.command.UpdateProductCommand;
 import com.fastline.vendorservice.domain.entity.Order;
 import com.fastline.vendorservice.domain.entity.OrderProduct;
 import com.fastline.vendorservice.domain.entity.Product;
+import com.fastline.vendorservice.domain.vo.OrderStatus;
+import com.fastline.vendorservice.domain.vo.Stock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +41,7 @@ public class OrderProductService {
 						orderProducts.add(
 								OrderProduct.create(
 										order, productIdMap.get(command.productId()), command.quantity())));
-		adjustQuantity(orderProducts);
+		adjustQuantity(order, orderProducts);
 		return orderProducts;
 	}
 
@@ -48,20 +50,22 @@ public class OrderProductService {
 
 		for (CreateOrderProductCommand command : createCommands) {
 			Product product = productStocks.get(command.productId());
-			if (product.getStock() < command.quantity())
+			Stock stock = product.getStock();
+			if (stock.isLessThan(command.quantity()))
 				throw new CustomException(ErrorCode.PRODUCT_STOCK_NOT_ENOUGH);
 		}
 	}
 
-	public void adjustQuantity(List<OrderProduct> orderProducts) {
+	public void adjustQuantity(Order order, List<OrderProduct> orderProducts) {
 
 		for (OrderProduct orderProduct : orderProducts) {
 			Product product = orderProduct.getProduct();
+			Integer quantity = orderProduct.getQuantity();
+
+			if (order.getStatus() == OrderStatus.CANCELLED) quantity *= -1;
+
 			productService.updateProduct(
-					new UpdateProductCommand(
-							product.getName(),
-							product.getStock() - orderProduct.getQuantity(),
-							product.getPrice().getValue()),
+					new UpdateProductCommand(product.getName(), quantity, product.getPrice().getPrice()),
 					product.getId());
 		}
 	}

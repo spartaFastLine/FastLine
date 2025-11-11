@@ -40,7 +40,11 @@ public class User extends TimeBaseEntity {
 
 	private UUID hubId;
 
-	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY, optional = true, cascade = CascadeType.PERSIST)
+	@OneToOne(
+			mappedBy = "user",
+			fetch = FetchType.LAZY,
+			optional = true,
+			cascade = CascadeType.PERSIST)
 	private DeliveryManager deliveryManager;
 
 	public User(

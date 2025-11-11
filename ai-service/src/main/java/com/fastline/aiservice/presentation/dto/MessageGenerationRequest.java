@@ -1,4 +1,4 @@
-package com.fastline.aiservice.dto;
+package com.fastline.aiservice.presentation.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;

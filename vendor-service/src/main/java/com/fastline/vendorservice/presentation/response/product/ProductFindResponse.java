@@ -1,6 +1,7 @@
 package com.fastline.vendorservice.presentation.response.product;
 
 import com.fastline.vendorservice.domain.vo.Money;
+import com.fastline.vendorservice.domain.vo.Stock;
 import java.util.UUID;
 
-public record ProductFindResponse(UUID productId, Integer stock, Money price, UUID vendorId) {}
+public record ProductFindResponse(UUID productId, Stock stock, Money price, UUID vendorId) {}

@@ -1,4 +1,4 @@
-package com.fastline.aiservice.config;
+package com.fastline.aiservice.infrastructure.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

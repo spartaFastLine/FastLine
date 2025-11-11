@@ -13,29 +13,29 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Money {
 
-	private Double value;
+	private Double price;
 
 	public Money plus(Double newValue) {
-		return Money.of(this.value + newValue);
+		return Money.of(this.price + newValue);
 	}
 
 	public Money minus(Double newValue) {
-		return Money.of(this.value - newValue);
+		return Money.of(this.price - newValue);
 	}
 
 	public Money multiplication(Double newValue) {
-		return Money.of(this.value * newValue);
+		return Money.of(this.price * newValue);
 	}
 
 	public Money division(Double newValue) {
-		return Money.of(this.value / newValue);
+		return Money.of(this.price / newValue);
 	}
 
 	public static Money of(Double value) {
 		if (Objects.isNull(value) || value < 0) throw new CustomException(ErrorCode.VALIDATION_ERROR);
 
 		Money money = new Money();
-		money.value = value;
+		money.price = value;
 		return money;
 	}
 }

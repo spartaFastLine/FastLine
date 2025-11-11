@@ -56,7 +56,6 @@ public class AuthService {
 		userRepository.save(user);
 	}
 
-
 	public void login(@Valid LoginRequestDto requestDto, HttpServletResponse res) {
 		String username = requestDto.getUsername();
 		String password = requestDto.getPassword();

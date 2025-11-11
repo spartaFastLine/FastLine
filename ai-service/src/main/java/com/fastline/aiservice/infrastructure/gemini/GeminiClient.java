@@ -1,7 +1,7 @@
-package com.fastline.aiservice.client;
+package com.fastline.aiservice.infrastructure.gemini;
 
-import com.fastline.aiservice.dto.gemini.GeminiRequest;
-import com.fastline.aiservice.dto.gemini.GeminiResponse;
+import com.fastline.aiservice.infrastructure.gemini.dto.GeminiRequest;
+import com.fastline.aiservice.infrastructure.gemini.dto.GeminiResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
