@@ -3,15 +3,16 @@ package com.fastline.vendorservice.domain.entity;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.jpa.TimeBaseEntity;
-import com.fastline.vendorservice.application.command.UpdateVendorCommand;
 import com.fastline.vendorservice.domain.vo.VendorAddress;
 import com.fastline.vendorservice.domain.vo.VendorType;
+import com.fastline.vendorservice.presentation.request.VendorUpdateRequest;
 import jakarta.persistence.*;
-import java.util.UUID;
 import lombok.Getter;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.SQLDelete;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "p_vendor")
@@ -58,7 +59,7 @@ public class Vendor extends TimeBaseEntity {
 		return vendor;
 	}
 
-	public Vendor update(UpdateVendorCommand updateCommand) {
+	public Vendor update(VendorUpdateRequest updateCommand) {
 
 		this.name = updateCommand.name() == null ? name : updateCommand.name();
 		this.type = updateCommand.type() == null ? type : VendorType.fromString(updateCommand.type());

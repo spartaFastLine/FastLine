@@ -1,16 +1,17 @@
 package com.fastline.vendorservice.domain.entity;
 
 import com.fastline.common.jpa.TimeBaseEntity;
-import com.fastline.vendorservice.application.command.CreateOrderCommand;
 import com.fastline.vendorservice.domain.vo.OrderStatus;
+import com.fastline.vendorservice.presentation.request.OrderCreateRequest;
 import jakarta.persistence.*;
+import lombok.Getter;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.SQLDelete;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import lombok.Getter;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "p_order")
@@ -49,14 +50,14 @@ public class Order extends TimeBaseEntity {
 	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private List<OrderProduct> orderProducts = new ArrayList<>();
 
-	public static Order create(CreateOrderCommand createCommand) {
+	public static Order create(OrderCreateRequest createRequest) {
 
 		Order order = new Order();
-		order.vendorProducerId = createCommand.vendorProducerId();
-		order.vendorConsumerId = createCommand.vendorConsumerId();
-		order.consumerName = createCommand.consumerName();
+		order.vendorProducerId = createRequest.vendorProducerId();
+		order.vendorConsumerId = createRequest.vendorConsumerId();
+		order.consumerName = createRequest.consumerName();
 		order.status = OrderStatus.READY;
-		order.request = createCommand.request();
+		order.request = createRequest.request();
 
 		return order;
 	}

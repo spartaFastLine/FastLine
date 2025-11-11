@@ -1,16 +1,17 @@
 package com.fastline.vendorservice.application;
 
-import com.fastline.vendorservice.application.command.CreateProductCommand;
-import com.fastline.vendorservice.application.command.UpdateProductCommand;
 import com.fastline.vendorservice.domain.entity.Product;
 import com.fastline.vendorservice.domain.entity.Vendor;
 import com.fastline.vendorservice.domain.repository.ProductRepository;
 import com.fastline.vendorservice.domain.vo.Stock;
-import java.util.List;
-import java.util.UUID;
+import com.fastline.vendorservice.presentation.request.ProductCreateRequest;
+import com.fastline.vendorservice.presentation.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,13 +24,13 @@ public class ProductService {
 	//    private final HubClient hubClient
 
 	/** TODO: vendor의 hubId가 유효한지 확인하는 흐름 작성 필요. */
-	public Product insert(CreateProductCommand command) {
+	public Product insert(ProductCreateRequest request) {
 
-		Vendor vendor = vendorService.findByVendorId(command.vendorId());
+		Vendor vendor = vendorService.findByVendorId(request.vendorId());
 		//        hubClient.findHub();
 
 		Product product =
-				Product.create(command.name(), Stock.of(command.stock()), command.price(), vendor);
+				Product.create(request.name(), Stock.of(request.stock()), request.price(), vendor);
 
 		return repository.insert(product);
 	}
@@ -44,10 +45,10 @@ public class ProductService {
 		return repository.findAllById(productIds);
 	}
 
-	public Product updateProduct(UpdateProductCommand command, UUID productId) {
+	public Product updateProduct(ProductUpdateRequest request, UUID productId) {
 
 		Product product = repository.findByProductId(productId);
-		product.update(command.name(), command.stock(), command.price());
+		product.update(request.name(), request.stock(), request.price());
 
 		return repository.insert(product);
 	}
