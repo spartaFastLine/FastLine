@@ -4,14 +4,13 @@ import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.success.SuccessCode;
 import com.fastline.deliveryservice.application.DeliveryService;
-import com.fastline.deliveryservice.application.command.CreateDeliveryCommand;
-import com.fastline.deliveryservice.application.command.CreateDeliveryPathCommand;
-import com.fastline.deliveryservice.application.command.UpdateDeliveryCommand;
-import com.fastline.deliveryservice.application.command.UpdateDeliveryPathCommand;
+import com.fastline.deliveryservice.application.command.*;
+import com.fastline.deliveryservice.presentation.dto.PageResponse;
 import com.fastline.deliveryservice.presentation.dto.request.CreateDeliveryRequest;
 import com.fastline.deliveryservice.presentation.dto.request.UpdateDeliveryRequest;
 import com.fastline.deliveryservice.presentation.dto.response.DeliveryCreateResponse;
 import com.fastline.deliveryservice.presentation.dto.response.DeliveryDetailResponse;
+import com.fastline.deliveryservice.presentation.dto.response.DeliverySummaryResponse;
 import com.fastline.deliveryservice.presentation.dto.response.DeliveryUpdateResponse;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -123,6 +122,24 @@ public class DeliveryController {
 
 		log.info("배송 삭제 성공: deliveryId={}", deliveryId);
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_DELETE_SUCCESS);
+	}
+
+	/* 배송 검색 */
+	@GetMapping
+	public ResponseEntity<ApiResponse<PageResponse<DeliverySummaryResponse>>> searchDeliveries(
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size,
+			@RequestParam(defaultValue = "createdAt") String sortBy,
+			@RequestParam(defaultValue = "desc") String direction) {
+		log.info("배송 검색 요청: page={}, size={}, sortBy={}, direction={}", page, size, sortBy, direction);
+
+		if (size != 10 && size != 30 && size != 50) size = 10;
+
+		SearchDeliveryCommand command = new SearchDeliveryCommand(page, size, sortBy, direction);
+		PageResponse<DeliverySummaryResponse> response = deliveryService.searchDeliveries(command);
+
+		log.info("배송 검색 성공: page={}, totalElements={}", page, response.totalElements());
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_SEARCH_SUCCESS, response);
 	}
 
 	/* 배송 경로 기록 삭제 */

@@ -25,8 +25,8 @@ public class DeliveryRepositoryAdapter implements DeliveryRepository {
 		return jpaDeliveryRepository.findById(deliveryId);
 	}
 
-    @Override
-    public Page<Delivery> searchDeliveries(Pageable pageable) {
-        return jpaDeliveryRepository.findByDeletedAtIsNull(pageable);
-    }
+	@Override
+	public Page<Delivery> searchDeliveries(Pageable pageable) {
+		return jpaDeliveryRepository.findByDeletedAtIsNull(pageable);
+	}
 }
