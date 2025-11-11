@@ -4,14 +4,13 @@ import com.fastline.common.jpa.TimeBaseEntity;
 import com.fastline.vendorservice.domain.vo.OrderStatus;
 import com.fastline.vendorservice.presentation.request.OrderCreateRequest;
 import jakarta.persistence.*;
-import lombok.Getter;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.SQLDelete;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import lombok.Getter;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "p_order")

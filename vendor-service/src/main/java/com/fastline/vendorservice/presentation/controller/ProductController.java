@@ -13,11 +13,10 @@ import com.fastline.vendorservice.presentation.response.product.ProductCreateRes
 import com.fastline.vendorservice.presentation.response.product.ProductFindResponse;
 import com.fastline.vendorservice.presentation.response.product.ProductUpdateResponse;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/product")

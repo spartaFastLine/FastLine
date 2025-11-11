@@ -4,8 +4,11 @@ import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.vendorservice.domain.entity.Order;
 import com.fastline.vendorservice.domain.repository.OrderRepository;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -37,5 +40,13 @@ public class OrderRepositoryAdapter implements OrderRepository {
 	public UUID deleteByOrderId(UUID orderId) {
 		jpaOrderRepository.deleteById(orderId);
 		return orderId;
+	}
+
+	@Override
+	public List<Order> findAllByVendorId(UUID vendorId, Pageable pageable) {
+		Page<Order> pagedOrders =
+				jpaOrderRepository.findAllByVendorProducerIdAndVendorConsumerId(
+						vendorId, vendorId, pageable);
+		return pagedOrders.getContent();
 	}
 }

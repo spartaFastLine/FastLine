@@ -61,8 +61,8 @@ public class Product extends TimeBaseEntity {
 		return this;
 	}
 
-    public Product adjustStock(Stock newStock) {
-    	this.stock = stock.adjust(newStock);
-        return this;
-    }
+	public Product adjustStock(Stock newStock) {
+		this.stock = stock.adjust(newStock);
+		return this;
+	}
 }

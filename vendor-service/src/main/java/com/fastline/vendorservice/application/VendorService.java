@@ -1,16 +1,21 @@
 package com.fastline.vendorservice.application;
 
+import com.fastline.vendorservice.domain.entity.Order;
+import com.fastline.vendorservice.domain.entity.Product;
 import com.fastline.vendorservice.domain.entity.Vendor;
 import com.fastline.vendorservice.domain.repository.VendorRepository;
+import com.fastline.vendorservice.domain.service.VendorOrderService;
+import com.fastline.vendorservice.domain.service.VendorProductService;
 import com.fastline.vendorservice.domain.vo.VendorAddress;
 import com.fastline.vendorservice.domain.vo.VendorType;
 import com.fastline.vendorservice.presentation.request.VendorCreateRequest;
 import com.fastline.vendorservice.presentation.request.VendorUpdateRequest;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +23,8 @@ import java.util.UUID;
 public class VendorService {
 
 	private final VendorRepository repository;
+	private final VendorProductService vendorProductService;
+	private final VendorOrderService vendorOrderService;
 
 	//    private final HubClient hubClient; -- 허브 서비스로 API 호출을 보낼 책임을 갖음
 
@@ -48,6 +55,16 @@ public class VendorService {
 	public Vendor findByVendorId(UUID vendorId) {
 
 		return repository.findByVendorId(vendorId);
+	}
+
+	@Transactional(readOnly = true)
+	public List<Product> findProductInVendor(UUID vendorId, Pageable pageable) {
+		return vendorProductService.findProductInVendor(vendorId, pageable);
+	}
+
+	@Transactional(readOnly = true)
+	public List<Order> findOrdersInVendor(UUID vendorId, Pageable pageable) {
+		return vendorOrderService.findOrdersInVendor(vendorId, pageable);
 	}
 
 	/** TODO: hubId 업데이트 시도시, 유효한 Id인지 허브서비스로의 API요청 흐름 필요. TODO: 성공시 그대로 진행, 실패시 적절한 예외처리 */

@@ -8,12 +8,11 @@ import com.fastline.vendorservice.domain.entity.Order;
 import com.fastline.vendorservice.presentation.request.OrderCreateRequest;
 import com.fastline.vendorservice.presentation.response.order.*;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/order")

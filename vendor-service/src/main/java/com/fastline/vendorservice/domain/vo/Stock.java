@@ -18,9 +18,9 @@ public class Stock {
 		return of(newValue);
 	}
 
-    public Stock change(Integer value) {
-    	return of(value);
-    }
+	public Stock change(Integer value) {
+		return of(value);
+	}
 
 	public boolean isLessThan(Integer quantity) {
 		return stock < quantity;

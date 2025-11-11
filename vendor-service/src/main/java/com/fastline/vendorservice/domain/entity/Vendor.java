@@ -7,12 +7,11 @@ import com.fastline.vendorservice.domain.vo.VendorAddress;
 import com.fastline.vendorservice.domain.vo.VendorType;
 import com.fastline.vendorservice.presentation.request.VendorUpdateRequest;
 import jakarta.persistence.*;
+import java.util.UUID;
 import lombok.Getter;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.SQLDelete;
-
-import java.util.UUID;
 
 @Entity
 @Table(name = "p_vendor")

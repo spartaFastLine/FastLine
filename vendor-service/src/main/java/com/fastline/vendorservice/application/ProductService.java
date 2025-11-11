@@ -6,12 +6,10 @@ import com.fastline.vendorservice.domain.repository.ProductRepository;
 import com.fastline.vendorservice.domain.vo.Stock;
 import com.fastline.vendorservice.presentation.request.ProductCreateRequest;
 import com.fastline.vendorservice.presentation.request.ProductUpdateRequest;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,11 +36,6 @@ public class ProductService {
 	@Transactional(readOnly = true)
 	public Product findByProductId(UUID productId) {
 		return repository.findByProductId(productId);
-	}
-
-	@Transactional(readOnly = true)
-	public List<Product> findAllById(List<UUID> productIds) {
-		return repository.findAllById(productIds);
 	}
 
 	public Product updateProduct(ProductUpdateRequest request, UUID productId) {
