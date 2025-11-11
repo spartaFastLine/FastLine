@@ -1,9 +1,8 @@
 package com.fastline.gatewayservice.config;
 
-import com.fastline.common.exception.CustomAccessDeniedHandlerImpl;
+import com.fastline.common.exception.CustomAccessDeniedHandler;
+import com.fastline.common.exception.CustomAuthenticationEntryPoint;
 import com.fastline.common.security.filter.AuthorizationFilter;
-import com.fastline.common.security.jwt.JwtUtil;
-import com.fastline.common.security.model.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -20,8 +19,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtUtil jwtUtil;
-    private final CustomUserDetailsService userDetailService;
+    private final AuthorizationFilter jwtFilter;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -30,14 +30,11 @@ public class SecurityConfig {
 
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
-        return new CustomAccessDeniedHandlerImpl();
+        return new CustomAccessDeniedHandler();
     }
-
-    // todo : 인증 실패시 처리도 커스텀 필요
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        AuthorizationFilter jwtFilter = new AuthorizationFilter(jwtUtil, userDetailService);
         // CSRF 비활성화 : 사용자가 로그인한 상태에서 의도치 않게 특정 웹사이트에 악성 요청을 보내도록 유도하는 웹 보안 공격을 막음
         http.csrf(csrf -> csrf.disable());
 
@@ -51,6 +48,11 @@ public class SecurityConfig {
                                 .permitAll() // 회원가입, 로그인 접근 허용
                                 .anyRequest()
                                 .authenticated()); // 그 외 모든 요청 인증처리
+
+        // 예외 처리 핸들러 등록
+        http.exceptionHandling( ex ->
+                ex.authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler));
 
         // jwt(토큰 기반 인증 방식)는 세션을 필요로 하지 않음, STATELESS -> 완전 사용 안함
         http.sessionManagement(

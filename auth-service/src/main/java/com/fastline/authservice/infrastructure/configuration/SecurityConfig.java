@@ -1,8 +1,7 @@
 package com.fastline.authservice.infrastructure.configuration;
+import com.fastline.common.exception.CustomAuthenticationEntryPoint;
 import com.fastline.common.security.filter.AuthorizationFilter;
-import com.fastline.common.security.model.CustomUserDetailsService;
-import com.fastline.common.exception.CustomAccessDeniedHandlerImpl;
-import com.fastline.common.security.jwt.JwtUtil;
+import com.fastline.common.exception.CustomAccessDeniedHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +21,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 	private final AuthorizationFilter jwtFilter;
+	private final CustomAccessDeniedHandler customAccessDeniedHandler;
+	private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -30,10 +31,9 @@ public class SecurityConfig {
 
 	@Bean
 	public AccessDeniedHandler accessDeniedHandler() {
-		return new CustomAccessDeniedHandlerImpl();
+		return new CustomAccessDeniedHandler();
 	}
 
-	// todo : 인증 실패시 처리도 커스텀 필요
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -50,6 +50,10 @@ public class SecurityConfig {
 								.permitAll() // 회원가입, 로그인 접근 허용
 								.anyRequest()
 								.authenticated()); // 그 외 모든 요청 인증처리
+		// 예외 처리 핸들러 등록
+		http.exceptionHandling( ex ->
+				ex.authenticationEntryPoint(customAuthenticationEntryPoint)
+				.accessDeniedHandler(customAccessDeniedHandler));
 
 		// jwt(토큰 기반 인증 방식)는 세션을 필요로 하지 않음, STATELESS -> 완전 사용 안함
 		http.sessionManagement(
