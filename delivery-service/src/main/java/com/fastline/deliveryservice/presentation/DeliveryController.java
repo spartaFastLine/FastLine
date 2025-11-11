@@ -8,10 +8,8 @@ import com.fastline.deliveryservice.application.command.*;
 import com.fastline.deliveryservice.presentation.dto.PageResponse;
 import com.fastline.deliveryservice.presentation.dto.request.CreateDeliveryRequest;
 import com.fastline.deliveryservice.presentation.dto.request.UpdateDeliveryRequest;
-import com.fastline.deliveryservice.presentation.dto.response.DeliveryCreateResponse;
-import com.fastline.deliveryservice.presentation.dto.response.DeliveryDetailResponse;
-import com.fastline.deliveryservice.presentation.dto.response.DeliverySummaryResponse;
-import com.fastline.deliveryservice.presentation.dto.response.DeliveryUpdateResponse;
+import com.fastline.deliveryservice.presentation.dto.request.UpdateDeliveryStatusRequest;
+import com.fastline.deliveryservice.presentation.dto.response.*;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -155,4 +153,18 @@ public class DeliveryController {
 		log.info("배송 경로 기록 삭제 성공: deliveryId={}, pathId={}", deliveryId, pathId);
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_DELETE_SUCCESS);
 	}
+
+    /* 배송 상태 변경 */
+    @PatchMapping("/{deliveryId}/status")
+    public ResponseEntity<ApiResponse<DeliveryStatusUpdateResponse>> updateStatus(
+            @PathVariable UUID deliveryId,
+            @Valid @RequestBody UpdateDeliveryStatusRequest request
+    ) {
+        log.info("배송 상태 변경 요청: deliveryId={}", deliveryId);
+
+        deliveryService.updateStatus(deliveryId, request.status());
+
+        log.info("배송 상태 변경 성공: deliveryId={}", deliveryId);
+        return ResponseUtil.successResponse(SuccessCode.DELIVERY_STATUS_UPDATE_SUCCESS);
+    }
 }

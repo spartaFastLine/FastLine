@@ -7,6 +7,7 @@ import com.fastline.deliveryservice.application.command.UpdateDeliveryCommand;
 import com.fastline.deliveryservice.application.dto.DeliveryResult;
 import com.fastline.deliveryservice.domain.entity.Delivery;
 import com.fastline.deliveryservice.domain.entity.DeliveryPath;
+import com.fastline.deliveryservice.domain.entity.DeliveryStatus;
 import com.fastline.deliveryservice.domain.repository.DeliveryRepository;
 import com.fastline.deliveryservice.domain.service.DeliveryDomainService;
 import com.fastline.deliveryservice.domain.vo.OrderId;
@@ -160,4 +161,18 @@ public class DeliveryService {
 
 		log.info("배송 경로 기록 삭제 완료: deliveryId={}, pathId={}", deliveryId, pathId);
 	}
+
+    @Transactional
+    public void updateStatus(UUID deliveryId, DeliveryStatus status) {
+        log.info("배송 상태 변경 시작: deliveryId={}", deliveryId);
+
+        Delivery delivery =
+                deliveryRepository
+                        .findById(deliveryId)
+                        .orElseThrow(() -> new IllegalArgumentException("배송을 찾을 수 없습니다."));
+
+        delivery.changeStatus(status);
+
+        log.info("배송 상태 변경 완료: deliveryId={}", deliveryId);
+    }
 }
