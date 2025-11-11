@@ -34,6 +34,8 @@ public enum ErrorCode {
 	DELIVERY_MANAGER_NOT_FOUND(HttpStatus.NOT_FOUND, "배송 매니저 조회 실패"),
 	NOT_DELIVERY_MANAGER(HttpStatus.BAD_REQUEST, "배송 매니저만 등록이 가능합니다"),
 	EXIST_DELIVERY_MANAGER(HttpStatus.BAD_REQUEST, "이미 배송 매니저로 등록되어 있습니다."),
+	DELIVERY_MANAGER_DELETED(HttpStatus.BAD_REQUEST, "이미 삭제된 배송 매니저입니다."),
+
 
 	// 업체 (vendor)
 	ADDRESS_DUPLICATED(HttpStatus.CONFLICT, "업체 등록 실패"),

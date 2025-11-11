@@ -117,8 +117,9 @@ public class DeliveryManagerService {
         //회원이 배달매니저인지 확인
         checkDeliveryManager(user);
 
-        //배달 매니저 타입 변경
         DeliveryManager deliveryManager = findDeliveryManager(user.getId());
+        if(deliveryManager.getDeletedAt()!=null) throw new CustomException(ErrorCode.DELIVERY_MANAGER_DELETED);
+        //배달 매니저 타입 변경
         deliveryManager.updateType(DeliveryManagerType.valueOf(requestDto.getType()));
     }
 
