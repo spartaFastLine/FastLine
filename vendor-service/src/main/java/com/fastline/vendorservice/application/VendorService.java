@@ -1,15 +1,16 @@
 package com.fastline.vendorservice.application;
 
-import com.fastline.vendorservice.application.command.CreateVendorCommand;
-import com.fastline.vendorservice.application.command.UpdateVendorCommand;
 import com.fastline.vendorservice.domain.entity.Vendor;
 import com.fastline.vendorservice.domain.repository.VendorRepository;
 import com.fastline.vendorservice.domain.vo.VendorAddress;
 import com.fastline.vendorservice.domain.vo.VendorType;
-import java.util.UUID;
+import com.fastline.vendorservice.presentation.request.VendorCreateRequest;
+import com.fastline.vendorservice.presentation.request.VendorUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,21 +25,21 @@ public class VendorService {
 	 * TODO: 허브 서비스로의 API 호출 성공, 실패시 흐름처리 작성 필요 TODO: 성공시, Vendor.create의 UUID.randomUUID() 부분에 허브ID.
 	 * 실패시 적절한 예외처리
 	 */
-	public Vendor insert(CreateVendorCommand createCommand) {
+	public Vendor insert(VendorCreateRequest createRequest) {
 
-		VendorType vendorType = VendorType.fromString(createCommand.type());
+		VendorType vendorType = VendorType.fromString(createRequest.type());
 
 		VendorAddress vendorAddress =
 				VendorAddress.create(
-						createCommand.city(),
-						createCommand.district(),
-						createCommand.roadName(),
-						createCommand.zipCode());
+						createRequest.city(),
+						createRequest.district(),
+						createRequest.roadName(),
+						createRequest.zipCode());
 
 		//        hubClient.findHub(); -- 존재하는 허브인지 허브 서비스로 API 호출. 없거나 에러시 적절한 처리 필요
 
 		Vendor vendor =
-				Vendor.create(createCommand.name(), vendorType, vendorAddress, UUID.randomUUID());
+				Vendor.create(createRequest.name(), vendorType, vendorAddress, UUID.randomUUID());
 
 		return repository.insert(vendor);
 	}
@@ -50,14 +51,14 @@ public class VendorService {
 	}
 
 	/** TODO: hubId 업데이트 시도시, 유효한 Id인지 허브서비스로의 API요청 흐름 필요. TODO: 성공시 그대로 진행, 실패시 적절한 예외처리 */
-	public Vendor updateVendor(UUID vendorId, UpdateVendorCommand updateCommand) {
+	public Vendor updateVendor(UUID vendorId, VendorUpdateRequest updateRequest) {
 
 		Vendor findVendor = repository.findByVendorId(vendorId);
-		if (updateCommand.hubId() != null && updateCommand.hubId() != findVendor.getHubId()) {
+		if (updateRequest.hubId() != null && updateRequest.hubId() != findVendor.getHubId()) {
 			//            hubClient.findHub(); -- 존재하는 허브인지 허브 서비스로 API 호출. 없거나 에러시 적절한 처리 필요
 		}
 
-		findVendor.update(updateCommand);
+		findVendor.update(updateRequest);
 		return repository.insert(findVendor);
 	}
 

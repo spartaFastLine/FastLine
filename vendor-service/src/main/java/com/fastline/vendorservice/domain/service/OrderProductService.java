@@ -3,20 +3,21 @@ package com.fastline.vendorservice.domain.service;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.vendorservice.application.ProductService;
-import com.fastline.vendorservice.application.command.CreateOrderProductCommand;
-import com.fastline.vendorservice.application.command.UpdateProductCommand;
 import com.fastline.vendorservice.domain.entity.Order;
 import com.fastline.vendorservice.domain.entity.OrderProduct;
 import com.fastline.vendorservice.domain.entity.Product;
 import com.fastline.vendorservice.domain.vo.OrderStatus;
 import com.fastline.vendorservice.domain.vo.Stock;
+import com.fastline.vendorservice.presentation.request.OrderProductCreateRequest;
+import com.fastline.vendorservice.presentation.request.ProductUpdateRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +26,10 @@ public class OrderProductService {
 	private final ProductService productService;
 
 	public List<OrderProduct> createOrderProducts(
-			Order order, List<CreateOrderProductCommand> createCommands) {
+			Order order, List<OrderProductCreateRequest> createCommands) {
 
 		List<UUID> productIds =
-				createCommands.stream().map(CreateOrderProductCommand::productId).toList();
+				createCommands.stream().map(OrderProductCreateRequest::productId).toList();
 		List<Product> products = productService.findAllById(productIds);
 		Map<UUID, Product> productIdMap =
 				products.stream().collect(Collectors.toMap(Product::getId, p -> p));
@@ -46,9 +47,9 @@ public class OrderProductService {
 	}
 
 	private void validateStock(
-			Map<UUID, Product> productStocks, List<CreateOrderProductCommand> createCommands) {
+			Map<UUID, Product> productStocks, List<OrderProductCreateRequest> createCommands) {
 
-		for (CreateOrderProductCommand command : createCommands) {
+		for (OrderProductCreateRequest command : createCommands) {
 			Product product = productStocks.get(command.productId());
 			Stock stock = product.getStock();
 			if (stock.isLessThan(command.quantity()))
@@ -58,15 +59,13 @@ public class OrderProductService {
 
 	public void adjustQuantity(Order order, List<OrderProduct> orderProducts) {
 
+        int sign = order.getStatus() == OrderStatus.CANCELLED ? 1 : -1;
+
 		for (OrderProduct orderProduct : orderProducts) {
 			Product product = orderProduct.getProduct();
 			Integer quantity = orderProduct.getQuantity();
 
-			if (order.getStatus() == OrderStatus.CANCELLED) quantity *= -1;
-
-			productService.updateProduct(
-					new UpdateProductCommand(product.getName(), quantity, product.getPrice().getPrice()),
-					product.getId());
+            product.adjustStock(Stock.of(quantity * sign));
 		}
 	}
 }

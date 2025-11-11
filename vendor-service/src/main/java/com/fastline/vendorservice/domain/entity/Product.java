@@ -55,9 +55,14 @@ public class Product extends TimeBaseEntity {
 	public Product update(String newName, Integer newStock, Double newPrice) {
 
 		this.name = newName == null ? name : newName;
-		this.stock = newStock == null ? stock : stock.adjust(Stock.of(newStock));
+		this.stock = newStock == null ? stock : stock.change(newStock);
 		this.price = newPrice == null ? price : Money.of(newPrice);
 
 		return this;
 	}
+
+    public Product adjustStock(Stock newStock) {
+    	this.stock = stock.adjust(newStock);
+        return this;
+    }
 }

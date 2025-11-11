@@ -1,7 +1,5 @@
 package com.fastline.vendorservice;
 
-import com.fastline.vendorservice.application.command.CreateOrderCommand;
-import com.fastline.vendorservice.application.command.CreateOrderProductCommand;
 import com.fastline.vendorservice.domain.entity.Order;
 import com.fastline.vendorservice.domain.entity.OrderProduct;
 import com.fastline.vendorservice.domain.entity.Product;
@@ -12,13 +10,16 @@ import com.fastline.vendorservice.domain.repository.VendorRepository;
 import com.fastline.vendorservice.domain.vo.Stock;
 import com.fastline.vendorservice.domain.vo.VendorAddress;
 import com.fastline.vendorservice.domain.vo.VendorType;
-import java.util.List;
-import java.util.UUID;
+import com.fastline.vendorservice.presentation.request.OrderCreateRequest;
+import com.fastline.vendorservice.presentation.request.OrderProductCreateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -46,14 +47,14 @@ public class VendorDummyDataInit implements ApplicationRunner {
 
 		Order order =
 				Order.create(
-						new CreateOrderCommand(
+						new OrderCreateRequest(
 								vendor.getId(),
 								vendor.getId(),
 								"홍길동",
 								"리퀘스트",
 								List.of(
-										new CreateOrderProductCommand(product.getId(), 1),
-										new CreateOrderProductCommand(product.getId(), 1))));
+										new OrderProductCreateRequest(product.getId(), 1),
+										new OrderProductCreateRequest(product.getId(), 1))));
 		order.mappingDeliveryId(UUID.randomUUID());
 		order.mappingOrderProduct(OrderProduct.create(order, product, 1));
 		order.mappingOrderProduct(OrderProduct.create(order, product1, 1));

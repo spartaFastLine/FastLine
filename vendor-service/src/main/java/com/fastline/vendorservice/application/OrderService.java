@@ -2,7 +2,6 @@ package com.fastline.vendorservice.application;
 
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
-import com.fastline.vendorservice.application.command.CreateOrderCommand;
 import com.fastline.vendorservice.domain.entity.Order;
 import com.fastline.vendorservice.domain.entity.OrderProduct;
 import com.fastline.vendorservice.domain.repository.OrderRepository;
@@ -14,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import com.fastline.vendorservice.presentation.request.OrderCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,18 +31,18 @@ public class OrderService {
 	private final MessageClient messageClient;
 
 	/** TODO: 배송서비스에 배송 생성을 요청하는 흐름 필요. */
-	public Order insert(CreateOrderCommand createCommand) {
+	public Order insert(OrderCreateRequest createRequest) {
 
-		Order order = Order.create(createCommand);
+		Order order = Order.create(createRequest);
 		List<OrderProduct> orderProducts =
-				orderProductService.createOrderProducts(order, createCommand.orderProductCreateRequests());
+				orderProductService.createOrderProducts(order, createRequest.orderProductRequests());
 		orderProducts.forEach(order::mappingOrderProduct);
 
 		//        UUID deliveryId = deliveryClient. 받아와서 다시 해당 배송정보를 요청
 		order.mappingDeliveryId(UUID.randomUUID());
 		Order result = repository.insert(order);
 
-		messageClient.sendMassage(createMessageRequestDto(result));
+//		messageClient.sendMassage(createMessageRequestDto(result));
 
 		return result;
 	}
@@ -60,11 +61,8 @@ public class OrderService {
 			throw new CustomException(ErrorCode.ORDER_STATUS_UPDATE_FAIL);
 		}
 
-		if (newStatus == OrderStatus.CANCELLED) {
-			orderProductService.adjustQuantity(order, order.getOrderProducts());
-		}
-
-		order.updateStatus(newStatus);
+        order.updateStatus(newStatus);
+        orderProductService.adjustQuantity(order, order.getOrderProducts());
 
 		return order;
 	}

@@ -6,8 +6,6 @@ import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.success.SuccessCode;
 import com.fastline.vendorservice.application.VendorService;
-import com.fastline.vendorservice.application.command.CreateVendorCommand;
-import com.fastline.vendorservice.application.command.UpdateVendorCommand;
 import com.fastline.vendorservice.domain.entity.Vendor;
 import com.fastline.vendorservice.presentation.request.VendorCreateRequest;
 import com.fastline.vendorservice.presentation.request.VendorUpdateRequest;
@@ -15,10 +13,11 @@ import com.fastline.vendorservice.presentation.response.vendor.VendorCreateRespo
 import com.fastline.vendorservice.presentation.response.vendor.VendorFindResponse;
 import com.fastline.vendorservice.presentation.response.vendor.VendorUpdateResponse;
 import jakarta.validation.Valid;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/vendor")
@@ -31,17 +30,7 @@ public class VendorController {
 	public ResponseEntity<ApiResponse<VendorCreateResponse>> insertVendor(
 			@RequestBody @Valid VendorCreateRequest createRequest) {
 
-		CreateVendorCommand createCommand =
-				new CreateVendorCommand(
-						createRequest.name(),
-						createRequest.type(),
-						createRequest.city(),
-						createRequest.district(),
-						createRequest.roadName(),
-						createRequest.zipCode(),
-						createRequest.hubId());
-
-		Vendor vendor = service.insert(createCommand);
+		Vendor vendor = service.insert(createRequest);
 		VendorCreateResponse response =
 				new VendorCreateResponse(
 						vendor.getId(),
@@ -74,17 +63,7 @@ public class VendorController {
 
 		if (updateRequest == null) throw new CustomException(ErrorCode.VALIDATION_ERROR);
 
-		UpdateVendorCommand updateCommand =
-				new UpdateVendorCommand(
-						updateRequest.name(),
-						updateRequest.type(),
-						updateRequest.city(),
-						updateRequest.district(),
-						updateRequest.roadName(),
-						updateRequest.zipCode(),
-						updateRequest.hubId());
-
-		Vendor vendor = service.updateVendor(vendorId, updateCommand);
+		Vendor vendor = service.updateVendor(vendorId, updateRequest);
 		VendorUpdateResponse response =
 				new VendorUpdateResponse(
 						vendor.getName(), vendor.getType(), vendor.getAddress(), vendor.getHubId());
