@@ -30,6 +30,7 @@ public enum ErrorCode {
 	FORBIDDEN(HttpStatus.FORBIDDEN, "인가에 실패하였습니다"),
 	UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증에 실패하였습니다"),
 	UNAUTHORIZED_MEMBER(HttpStatus.FORBIDDEN, "데이터 저장:::인가에 실패하였습니다"),
+	HUB_NOT_FOUND(HttpStatus.NOT_FOUND, "허브 조회 실패"), // 나중에 삭제
 
 	// 배송 매니저 (delivery manager)
 	DELIVERY_MANAGER_NOT_FOUND(HttpStatus.NOT_FOUND, "배송 매니저 조회 실패"),

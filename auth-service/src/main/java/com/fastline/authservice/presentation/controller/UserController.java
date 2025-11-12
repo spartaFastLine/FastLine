@@ -84,5 +84,10 @@ public class UserController {
 		return ResponseUtil.successResponse(SuccessCode.USER_DELETE_SUCCESS);
 	}
 
-	// 후에 회원 강제 탈퇴기능 추가
+	//	@PreAuthorize()
+	@PostMapping("/{userId}/slackId")
+	public ResponseEntity<ApiResponse<SlackResponseDto>> getSlackId(@PathVariable Long userId) {
+		SlackResponseDto responseDto = userService.getSlackId(userId);
+		return ResponseUtil.successResponse(SuccessCode.SLACKID_READ_SUCCESS, responseDto);
+	}
 }
