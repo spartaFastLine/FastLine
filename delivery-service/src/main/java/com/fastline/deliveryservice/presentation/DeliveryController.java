@@ -13,7 +13,6 @@ import com.fastline.deliveryservice.presentation.dto.request.UpdateDeliveryReque
 import com.fastline.deliveryservice.presentation.dto.request.UpdateDeliveryStatusRequest;
 import com.fastline.deliveryservice.presentation.dto.response.*;
 import jakarta.validation.Valid;
-
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -167,74 +166,78 @@ public class DeliveryController {
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_COMPLETE_SUCCESS);
 	}
 
-    /* 배송별 경로 전체 조회 */
-    @GetMapping("/{deliveryId}/paths")
-    public ResponseEntity<ApiResponse<List<DeliveryPathDetailResponse>>> getPaths(@PathVariable UUID deliveryId) {
-        log.info("배송별 경로 전체 조회 요청: deliveryId={}", deliveryId);
+	/* 배송별 경로 전체 조회 */
+	@GetMapping("/{deliveryId}/paths")
+	public ResponseEntity<ApiResponse<List<DeliveryPathDetailResponse>>> getPaths(
+			@PathVariable UUID deliveryId) {
+		log.info("배송별 경로 전체 조회 요청: deliveryId={}", deliveryId);
 
-        GetDeliveryPathsCommand command = new GetDeliveryPathsCommand(deliveryId);
+		GetDeliveryPathsCommand command = new GetDeliveryPathsCommand(deliveryId);
 
-        List<DeliveryPathDetailResponse> response = deliveryService.getPaths(command).stream().map(DeliveryPathDetailResponse::from).toList();
+		List<DeliveryPathDetailResponse> response =
+				deliveryService.getPaths(command).stream().map(DeliveryPathDetailResponse::from).toList();
 
-        log.info("배송별 경로 전체 조회 성공: deliveryId={}, pathCount={}", deliveryId, response.size());
-        return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATHS_FIND_SUCCESS, response);
-    }
+		log.info("배송별 경로 전체 조회 성공: deliveryId={}, pathCount={}", deliveryId, response.size());
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATHS_FIND_SUCCESS, response);
+	}
 
-    /* 단일 경로 기록 조회 */
-    @GetMapping("/{deliveryId}/paths/{pathId}")
-    public ResponseEntity<ApiResponse<DeliveryPathDetailResponse>> getPath(
-            @PathVariable UUID deliveryId,
-            @PathVariable UUID pathId) {
-        log.info("단일 경로 조회 요청: deliveryId={}, pathId={}", deliveryId, pathId);
+	/* 단일 경로 기록 조회 */
+	@GetMapping("/{deliveryId}/paths/{pathId}")
+	public ResponseEntity<ApiResponse<DeliveryPathDetailResponse>> getPath(
+			@PathVariable UUID deliveryId, @PathVariable UUID pathId) {
+		log.info("단일 경로 조회 요청: deliveryId={}, pathId={}", deliveryId, pathId);
 
-        GetDeliveryPathCommand command = new GetDeliveryPathCommand(deliveryId, pathId);
+		GetDeliveryPathCommand command = new GetDeliveryPathCommand(deliveryId, pathId);
 
-        DeliveryPathDetailResponse response =
-                DeliveryPathDetailResponse.from(deliveryService.getPath(command));
+		DeliveryPathDetailResponse response =
+				DeliveryPathDetailResponse.from(deliveryService.getPath(command));
 
-        log.info("단일 경로 조회 성공: deliveryId={}, pathId={}", deliveryId, pathId);
-        return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_FIND_SUCCESS, response);
-    }
+		log.info("단일 경로 조회 성공: deliveryId={}, pathId={}", deliveryId, pathId);
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_FIND_SUCCESS, response);
+	}
 
-    /* 배송 경로 기록 검색 */
-    @GetMapping("/paths")
-    public ResponseEntity<ApiResponse<PageResponse<DeliveryPathSummaryResponse>>> searchDeliveryPaths(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String direction) {
-        log.info("배송 경로 검색 요청: page={}, size={}, sortBy={}, direction={}", page, size, sortBy, direction);
+	/* 배송 경로 기록 검색 */
+	@GetMapping("/paths")
+	public ResponseEntity<ApiResponse<PageResponse<DeliveryPathSummaryResponse>>> searchDeliveryPaths(
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size,
+			@RequestParam(defaultValue = "createdAt") String sortBy,
+			@RequestParam(defaultValue = "desc") String direction) {
+		log.info(
+				"배송 경로 검색 요청: page={}, size={}, sortBy={}, direction={}", page, size, sortBy, direction);
 
-        if (size != 10 && size != 30 && size != 50) size = 10;
+		if (size != 10 && size != 30 && size != 50) size = 10;
 
-        SearchDeliveryPathCommand command = new SearchDeliveryPathCommand(page, size, sortBy, direction);
+		SearchDeliveryPathCommand command =
+				new SearchDeliveryPathCommand(page, size, sortBy, direction);
 
-        PageResponse<DeliveryPathSummaryResponse> response = deliveryService.searchDeliveryPaths(command);
+		PageResponse<DeliveryPathSummaryResponse> response =
+				deliveryService.searchDeliveryPaths(command);
 
-        log.info("배송 경로 검색 성공: page={}, totalElements={}", page, response.totalElements());
-        return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_SEARCH_SUCCESS, response);
-    }
+		log.info("배송 경로 검색 성공: page={}, totalElements={}", page, response.totalElements());
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_SEARCH_SUCCESS, response);
+	}
 
-    /* 주문 생성 시 배송 생성 (내부 통신 api) */
-    @PostMapping("/from-order")
-    public ResponseEntity<ApiResponse<DeliveryFromOrderCreateResponse>> createDeliveryFromOrder(
-            @Valid @RequestBody CreateDeliveryFromOrderRequest request) {
-        log.info("주문 기반 배송 생성 요청: orderId={}", request.orderId());
+	/* 주문 생성 시 배송 생성 (내부 통신 api) */
+	@PostMapping("/from-order")
+	public ResponseEntity<ApiResponse<DeliveryFromOrderCreateResponse>> createDeliveryFromOrder(
+			@Valid @RequestBody CreateDeliveryFromOrderRequest request) {
+		log.info("주문 기반 배송 생성 요청: orderId={}", request.orderId());
 
-        CreateDeliveryFromOrderCommand command = new CreateDeliveryFromOrderCommand(
-                request.orderId(),
-                request.vendorSenderId(),
-                request.vendorReceiverId(),
-                request.recipientUsername(),
-                request.recipientSlackId(),
-                request.address()
-        );
+		CreateDeliveryFromOrderCommand command =
+				new CreateDeliveryFromOrderCommand(
+						request.orderId(),
+						request.vendorSenderId(),
+						request.vendorReceiverId(),
+						request.recipientUsername(),
+						request.recipientSlackId(),
+						request.address());
 
-        DeliveryFromOrderCreateResult result = deliveryService.createDeliveryFromOrder(command);
+		DeliveryFromOrderCreateResult result = deliveryService.createDeliveryFromOrder(command);
 
-        DeliveryFromOrderCreateResponse response = DeliveryFromOrderCreateResponse.from(result);
+		DeliveryFromOrderCreateResponse response = DeliveryFromOrderCreateResponse.from(result);
 
-        log.info("주문 기반 배송 생성 성공: orderId={}", request.orderId());
-        return ResponseUtil.successResponse(SuccessCode.DELIVERY_FROM_ORDER_SAVE_SUCCESS, response);
-    }
+		log.info("주문 기반 배송 생성 성공: orderId={}", request.orderId());
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_FROM_ORDER_SAVE_SUCCESS, response);
+	}
 }

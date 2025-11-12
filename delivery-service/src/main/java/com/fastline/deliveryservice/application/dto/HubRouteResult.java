@@ -12,6 +12,6 @@ public record HubRouteResult(
 				response.toHubId(),
 				response.expDistance(),
 				response.expDuration(),
-                response.hubName());
+				response.hubName());
 	}
 }

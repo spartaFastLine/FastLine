@@ -16,6 +16,10 @@ import com.fastline.deliveryservice.presentation.dto.PageResponse;
 import com.fastline.deliveryservice.presentation.dto.response.DeliveryPathSummaryResponse;
 import com.fastline.deliveryservice.presentation.dto.response.DeliverySummaryResponse;
 import jakarta.ws.rs.NotFoundException;
+import java.time.Instant;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,22 +29,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class DeliveryService {
 
 	private final DeliveryRepository deliveryRepository;
-    private final DeliveryPathRepository deliveryPathRepository;
+	private final DeliveryPathRepository deliveryPathRepository;
 	private final DeliveryDomainService deliveryDomainService;
-    private final VendorClient vendorClient;
-    private final HubClient hubClient;
-    private final AuthClient authClient;
+	private final VendorClient vendorClient;
+	private final HubClient hubClient;
+	private final AuthClient authClient;
 
 	@Transactional
 	public UUID createDelivery(CreateDeliveryCommand command) {
@@ -188,109 +187,121 @@ public class DeliveryService {
 
 		delivery.completeIfAllPathsArrived();
 
-        authClient.deliveryComplete(delivery.getVendorDeliveryManagerId());
+		authClient.deliveryComplete(delivery.getVendorDeliveryManagerId());
 
-        UUID endHubId = delivery.getEndHubId();
-        DeliveryPath endDeliveryPath = delivery.getPaths()
-                .stream()
-                .filter(p -> p.getToHubId().equals(endHubId))
-                .findAny().orElseThrow();
-        Instant arrivedAt = endDeliveryPath.getUpdatedAt();
-        vendorClient.deliveryComplete(delivery.getOrderId(), arrivedAt);
+		UUID endHubId = delivery.getEndHubId();
+		DeliveryPath endDeliveryPath =
+				delivery.getPaths().stream()
+						.filter(p -> p.getToHubId().equals(endHubId))
+						.findAny()
+						.orElseThrow();
+		Instant arrivedAt = endDeliveryPath.getUpdatedAt();
+		vendorClient.deliveryComplete(delivery.getOrderId(), arrivedAt);
 
 		log.info("배송 완료 처리 완료: deliveryId={}", deliveryId);
 	}
 
-    @Transactional(readOnly = true)
-    public List<DeliveryPathDetailResult> getPaths(GetDeliveryPathsCommand command) {
-        Delivery delivery = deliveryRepository.findById(command.deliveryId())
-                .orElseThrow(() -> new NotFoundException("해당 배송이 존재하지 않습니다."));
+	@Transactional(readOnly = true)
+	public List<DeliveryPathDetailResult> getPaths(GetDeliveryPathsCommand command) {
+		Delivery delivery =
+				deliveryRepository
+						.findById(command.deliveryId())
+						.orElseThrow(() -> new NotFoundException("해당 배송이 존재하지 않습니다."));
 
-        return delivery.getPaths().stream()
-                .map(DeliveryPathDetailResult::from)
-                .toList();
-    }
+		return delivery.getPaths().stream().map(DeliveryPathDetailResult::from).toList();
+	}
 
-    @Transactional(readOnly = true)
-    public DeliveryPathDetailResult getPath(GetDeliveryPathCommand command) {
-        Delivery delivery = deliveryRepository.findById(command.deliveryId())
-                .orElseThrow(() -> new NotFoundException("해당 배송이 존재하지 않습니다."));
+	@Transactional(readOnly = true)
+	public DeliveryPathDetailResult getPath(GetDeliveryPathCommand command) {
+		Delivery delivery =
+				deliveryRepository
+						.findById(command.deliveryId())
+						.orElseThrow(() -> new NotFoundException("해당 배송이 존재하지 않습니다."));
 
-        DeliveryPath path = delivery.getPaths().stream()
-                .filter(p -> p.getDeliveryPathId().equals(command.pathId()))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException("해당 경로가 존재하지 않습니다."));
+		DeliveryPath path =
+				delivery.getPaths().stream()
+						.filter(p -> p.getDeliveryPathId().equals(command.pathId()))
+						.findFirst()
+						.orElseThrow(() -> new NotFoundException("해당 경로가 존재하지 않습니다."));
 
-        return DeliveryPathDetailResult.from(path);
-    }
+		return DeliveryPathDetailResult.from(path);
+	}
 
-    @Transactional(readOnly = true)
-    public PageResponse<DeliveryPathSummaryResponse> searchDeliveryPaths(SearchDeliveryPathCommand command) {
-        log.info("배송 경로 검색 시작: page={}, size={}, sortBy={}, direction={}",
-                command.page(), command.size(), command.sortBy(), command.direction());
+	@Transactional(readOnly = true)
+	public PageResponse<DeliveryPathSummaryResponse> searchDeliveryPaths(
+			SearchDeliveryPathCommand command) {
+		log.info(
+				"배송 경로 검색 시작: page={}, size={}, sortBy={}, direction={}",
+				command.page(),
+				command.size(),
+				command.sortBy(),
+				command.direction());
 
-        Sort.Direction direction =
-                Sort.Direction.fromOptionalString(command.direction()).orElse(Sort.Direction.DESC);
+		Sort.Direction direction =
+				Sort.Direction.fromOptionalString(command.direction()).orElse(Sort.Direction.DESC);
 
-        Pageable pageable =
-                PageRequest.of(command.page(), command.size(), Sort.by(direction, command.sortBy()));
+		Pageable pageable =
+				PageRequest.of(command.page(), command.size(), Sort.by(direction, command.sortBy()));
 
-        Page<DeliveryPath> paths = deliveryPathRepository.searchDeliveryPaths(pageable);
+		Page<DeliveryPath> paths = deliveryPathRepository.searchDeliveryPaths(pageable);
 
-        log.info("배송 경로 검색 완료: page={}, totalElements={}", command.page(), paths.getTotalElements());
-        return PageResponse.from(paths.map(DeliveryPathSummaryResponse::from));
-    }
+		log.info("배송 경로 검색 완료: page={}, totalElements={}", command.page(), paths.getTotalElements());
+		return PageResponse.from(paths.map(DeliveryPathSummaryResponse::from));
+	}
 
-    @Transactional
-    public DeliveryFromOrderCreateResult createDeliveryFromOrder(CreateDeliveryFromOrderCommand command) {
-        log.info("주문 기반 배송 생성 시작: orderId={}", command.orderId());
+	@Transactional
+	public DeliveryFromOrderCreateResult createDeliveryFromOrder(
+			CreateDeliveryFromOrderCommand command) {
+		log.info("주문 기반 배송 생성 시작: orderId={}", command.orderId());
 
-        VendorInfoResult vendorInfo = vendorClient.getVendorInfo(command.vendorSenderId(), command.vendorReceiverId());
+		VendorInfoResult vendorInfo =
+				vendorClient.getVendorInfo(command.vendorSenderId(), command.vendorReceiverId());
 
-        List<HubRouteResult> routes = hubClient.getRoutes(vendorInfo.startHubId(), vendorInfo.endHubId());
+		List<HubRouteResult> routes =
+				hubClient.getRoutes(vendorInfo.startHubId(), vendorInfo.endHubId());
 
-        List<CreateDeliveryPathCommand> paths = routes.stream()
-                .map(route -> {
-                    ManagerAssignResult managerAssignResult = authClient.assign(route.fromHubId(), "HUB_DELIVERY");
-                    return new CreateDeliveryPathCommand(
-                            route.sequence(),
-                            route.fromHubId(),
-                            route.toHubId(),
-                            route.expDistance(),
-                            route.expDuration(),
-                            managerAssignResult.managerId()
-                    );
-                })
-                .toList();
+		List<CreateDeliveryPathCommand> paths =
+				routes.stream()
+						.map(
+								route -> {
+									ManagerAssignResult managerAssignResult =
+											authClient.assign(route.fromHubId(), "HUB_DELIVERY");
+									return new CreateDeliveryPathCommand(
+											route.sequence(),
+											route.fromHubId(),
+											route.toHubId(),
+											route.expDistance(),
+											route.expDuration(),
+											managerAssignResult.managerId());
+								})
+						.toList();
 
-        Long vendorDeliveryManagerId = authClient.assign(vendorInfo.endHubId(), "VENDOR_DELIVERY").managerId();
+		Long vendorDeliveryManagerId =
+				authClient.assign(vendorInfo.endHubId(), "VENDOR_DELIVERY").managerId();
 
-        CreateDeliveryCommand createCommand = new CreateDeliveryCommand(
-                command.orderId(),
-                command.vendorSenderId(),
-                command.vendorReceiverId(),
-                vendorInfo.startHubId(),
-                vendorInfo.endHubId(),
-                command.address(),
-                command.recipientUsername(),
-                command.recipientSlackId(),
-                vendorDeliveryManagerId,
-                paths
-        );
+		CreateDeliveryCommand createCommand =
+				new CreateDeliveryCommand(
+						command.orderId(),
+						command.vendorSenderId(),
+						command.vendorReceiverId(),
+						vendorInfo.startHubId(),
+						vendorInfo.endHubId(),
+						command.address(),
+						command.recipientUsername(),
+						command.recipientSlackId(),
+						vendorDeliveryManagerId,
+						paths);
 
-        UUID deliveryId = createDelivery(createCommand);
+		UUID deliveryId = createDelivery(createCommand);
 
-        List<String> routesAddress = routes.stream()
-                .sorted(Comparator.comparingInt(HubRouteResult::sequence))
-                .map(HubRouteResult::hubName)
-                .toList();
+		List<String> routesAddress =
+				routes.stream()
+						.sorted(Comparator.comparingInt(HubRouteResult::sequence))
+						.map(HubRouteResult::hubName)
+						.toList();
 
-        log.info("주문 기반 배송 생성 완료: orderId={}", command.orderId());
+		log.info("주문 기반 배송 생성 완료: orderId={}", command.orderId());
 
-        return DeliveryFromOrderCreateResult.of(
-                deliveryId,
-                vendorDeliveryManagerId,
-                routesAddress
-        );
-    }
+		return DeliveryFromOrderCreateResult.of(deliveryId, vendorDeliveryManagerId, routesAddress);
+	}
 }

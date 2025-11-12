@@ -11,7 +11,9 @@ import org.springframework.context.annotation.Configuration;
 public class RepositoryConfig {
 
 	@Bean
-	public DeliveryRepository deliveryRepository(JpaDeliveryRepository jpaDeliveryRepository, JpaDeliveryPathRepository jpaDeliveryPathRepository) {
+	public DeliveryRepository deliveryRepository(
+			JpaDeliveryRepository jpaDeliveryRepository,
+			JpaDeliveryPathRepository jpaDeliveryPathRepository) {
 		return new DeliveryRepositoryAdapter(jpaDeliveryRepository, jpaDeliveryPathRepository);
 	}
 }
