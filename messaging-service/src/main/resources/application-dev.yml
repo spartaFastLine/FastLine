@@ -50,4 +50,11 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: http://localhost:19091/eureka/
+      defaultZone: http://localhost:${EUREKA_SERVER_PORT}/eureka/
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+
+server:
+  port: ${SERVER_PORT}
