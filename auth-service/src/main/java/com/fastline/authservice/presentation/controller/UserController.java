@@ -1,13 +1,13 @@
 package com.fastline.authservice.presentation.controller;
 
 import com.fastline.authservice.domain.service.UserService;
-import com.fastline.authservice.presentation.dto.request.PermitRequestDto;
-import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequestDto;
-import com.fastline.authservice.presentation.dto.request.UpdateSlackRequestDto;
-import com.fastline.authservice.presentation.dto.request.UserSearchRequestDto;
-import com.fastline.authservice.presentation.dto.response.DeliveryManagerMessageResponseDto;
-import com.fastline.authservice.presentation.dto.response.UserHubIdResponseDto;
-import com.fastline.authservice.presentation.dto.response.UserResponseDto;
+import com.fastline.authservice.presentation.dto.request.PermitRequest;
+import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequest;
+import com.fastline.authservice.presentation.dto.request.UpdateSlackRequest;
+import com.fastline.authservice.presentation.dto.request.UserSearchRequest;
+import com.fastline.authservice.presentation.dto.response.DeliveryManagerMessageResponse;
+import com.fastline.authservice.presentation.dto.response.UserHubIdResponse;
+import com.fastline.authservice.presentation.dto.response.UserResponse;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.security.model.UserDetailsImpl;
@@ -31,7 +31,7 @@ public class UserController {
 	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Void>> permitSignup(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
-			@RequestBody @Valid PermitRequestDto requestDto) {
+			@RequestBody @Valid PermitRequest requestDto) {
 		userService.permitSignup(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_PERMIT_SUCCESS);
 	}
@@ -39,18 +39,18 @@ public class UserController {
 	// 유저 다건 조회
 	@GetMapping("/managers/users")
 	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
-	public ResponseEntity<ApiResponse<Page<UserResponseDto>>> getUsers(
+	public ResponseEntity<ApiResponse<Page<UserResponse>>> getUsers(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
-			@RequestBody UserSearchRequestDto requestDto) {
-		Page<UserResponseDto> responseDto = userService.getUsers(userDetails.getUserId(), requestDto);
+			@RequestBody UserSearchRequest requestDto) {
+		Page<UserResponse> responseDto = userService.getUsers(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
 	}
 
 	// 유저 단건 조회- 전체 가능
 	@GetMapping("/user")
-	public ResponseEntity<ApiResponse<UserResponseDto>> getUser(
+	public ResponseEntity<ApiResponse<UserResponse>> getUser(
 			@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		UserResponseDto responseDto = userService.getUser(userDetails.getUserId());
+		UserResponse responseDto = userService.getUser(userDetails.getUserId());
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
 	}
 
@@ -58,7 +58,7 @@ public class UserController {
 	@PutMapping("/user/password")
 	public ResponseEntity<ApiResponse<Void>> updatePassword(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
-			@RequestBody @Valid UpdatePasswordRequestDto requestDto) {
+			@RequestBody @Valid UpdatePasswordRequest requestDto) {
 		userService.updatePassword(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.PASSWORD_UPDATE_SUCCESS);
 	}
@@ -67,7 +67,7 @@ public class UserController {
 	@PutMapping("/user/slack")
 	public ResponseEntity<ApiResponse<Void>> updateUserSlack(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
-			@RequestBody @Valid UpdateSlackRequestDto requestDto) {
+			@RequestBody @Valid UpdateSlackRequest requestDto) {
 		userService.updateSlack(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_UPDATE_SUCCESS);
 	}
@@ -85,7 +85,7 @@ public class UserController {
 	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Void>> deleteUserpermit(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
-			@RequestBody @Valid PermitRequestDto requestDto) {
+			@RequestBody @Valid PermitRequest requestDto) {
 		userService.permitDeleteUser(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_DELETE_SUCCESS);
 	}
@@ -94,17 +94,17 @@ public class UserController {
 
 	// 배송담당자 정보 조회
 	@GetMapping("/{userId}")
-	public ResponseEntity<ApiResponse<DeliveryManagerMessageResponseDto>> getDeliveryManagerMessageInfo(
+	public ResponseEntity<ApiResponse<DeliveryManagerMessageResponse>> getDeliveryManagerMessageInfo(
 			@PathVariable Long userId) {
-		DeliveryManagerMessageResponseDto responseDto = userService.getDeliveryManagerMessageInfo(userId);
+		DeliveryManagerMessageResponse responseDto = userService.getDeliveryManagerMessageInfo(userId);
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_READ_SUCCESS, responseDto);
 	}
 
 	// 배송담당자 허브ID 조회
 	@GetMapping("/{userId}/hubId")
-	public ResponseEntity<ApiResponse<UserHubIdResponseDto>> getHubMessageInfo(
+	public ResponseEntity<ApiResponse<UserHubIdResponse>> getHubMessageInfo(
 			@PathVariable Long userId) {
-		UserHubIdResponseDto responseDto = userService.getUserHubInfo(userId);
+		UserHubIdResponse responseDto = userService.getUserHubInfo(userId);
 		return ResponseUtil.successResponse(SuccessCode.HUBID_READ_SUCCESS, responseDto);
 	}
 }

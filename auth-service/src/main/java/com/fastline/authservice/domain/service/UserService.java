@@ -4,13 +4,13 @@ import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.model.UserOrderBy;
 import com.fastline.authservice.domain.model.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
-import com.fastline.authservice.presentation.dto.request.PermitRequestDto;
-import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequestDto;
-import com.fastline.authservice.presentation.dto.request.UpdateSlackRequestDto;
-import com.fastline.authservice.presentation.dto.request.UserSearchRequestDto;
-import com.fastline.authservice.presentation.dto.response.DeliveryManagerMessageResponseDto;
-import com.fastline.authservice.presentation.dto.response.UserHubIdResponseDto;
-import com.fastline.authservice.presentation.dto.response.UserResponseDto;
+import com.fastline.authservice.presentation.dto.request.PermitRequest;
+import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequest;
+import com.fastline.authservice.presentation.dto.request.UpdateSlackRequest;
+import com.fastline.authservice.presentation.dto.request.UserSearchRequest;
+import com.fastline.authservice.presentation.dto.response.DeliveryManagerMessageResponse;
+import com.fastline.authservice.presentation.dto.response.UserHubIdResponse;
+import com.fastline.authservice.presentation.dto.response.UserResponse;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.security.model.UserRole;
@@ -34,8 +34,8 @@ public class UserService {
 
 	// 회원가입 승인
 	@Transactional
-	public void permitSignup(Long managerId, @Valid PermitRequestDto requestDto) {
-		User newUser = checkUser.userCheck(requestDto.getUserId());
+	public void permitSignup(Long managerId, @Valid PermitRequest requestDto) {
+		User newUser = checkUser.userCheck(requestDto.userId());
 		// 매니저 유저 확인
 		User manager = checkUser.userCheck(managerId);
 
@@ -50,18 +50,26 @@ public class UserService {
 
 	// 유저 단건 조회
 	@Transactional(readOnly = true)
-	public UserResponseDto getUser(Long userId) {
+	public UserResponse getUser(Long userId) {
 		// 유저 확인
 		User user = checkUser.userCheck(userId);
-		return new UserResponseDto(user);
+		return new UserResponse(
+				user.getId(),
+				user.getEmail(),
+				user.getUsername(),
+				user.getPassword(),
+				user.getRole().name(),
+				user.getSlackId(),
+				user.getStatus().name(),
+				user.getHubId());
 	}
 
 	// 유저 다건 조회
 	@Transactional(readOnly = true)
-	public Page<UserResponseDto> getUsers(Long managerId, UserSearchRequestDto requestDto) {
+	public Page<UserResponse> getUsers(Long managerId, UserSearchRequest requestDto) {
 		// 매니저 유저 확인
 		User manager = checkUser.userCheck(managerId);
-		UUID requestHubId = requestDto.getHubId();
+		UUID requestHubId = requestDto.hubId();
 		// 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
 		if (requestHubId != null) {
 			checkUser.checkHubManager(manager, requestHubId);
@@ -70,50 +78,58 @@ public class UserService {
 			if (manager.getRole() == UserRole.HUB_MANAGER) requestHubId = manager.getHubId();
 		}
 		// 정렬조건 체크
-		UserOrderBy.checkValid(requestDto.getSortBy());
+		UserOrderBy.checkValid(requestDto.sortBy());
 
 		// 오름차순/내림차순
 		Sort.Direction directions =
-				requestDto.isSortAscending() ? Sort.Direction.ASC : Sort.Direction.DESC;
+				requestDto.sortAscending() ? Sort.Direction.ASC : Sort.Direction.DESC;
 		Pageable pageable =
 				PageRequest.of(
-						requestDto.getPage() - 1,
-						requestDto.getSize(),
-						Sort.by(directions, requestDto.getSortBy()));
+						requestDto.page() - 1,
+						requestDto.size(),
+						Sort.by(directions, requestDto.sortBy()));
 		Page<User> users =
 				userRepository.findUsers(
-						requestDto.getUsername(),
+						requestDto.username(),
 						requestHubId,
-						requestDto.getRole(),
-						requestDto.getStatus(),
+						requestDto.role(),
+						requestDto.status(),
 						pageable);
-		return users.map(UserResponseDto::new);
+		return users.map(user -> new UserResponse(
+				user.getId(),
+				user.getEmail(),
+				user.getUsername(),
+				user.getPassword(),
+				user.getRole().name(),
+				user.getSlackId(),
+				user.getStatus().name(),
+				user.getHubId()));
 	}
 
 	// 비밀번호 수정
 	@Transactional
-	public void updatePassword(Long userId, UpdatePasswordRequestDto requestDto) {
+	public void updatePassword(Long userId, UpdatePasswordRequest requestDto) {
 		// 유저 확인
 		User user = checkUser.userCheck(userId);
 		// 현재 비밀번호 확인
-		if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword()))
+		if (!passwordEncoder.matches(requestDto.password(), user.getPassword()))
 			throw new CustomException(ErrorCode.PASSWORD_NOT_MATCHES);
 
 		// 동일한 비밀번호인지 확인
-		if (passwordEncoder.matches(requestDto.getNewPassword(), user.getPassword()))
+		if (passwordEncoder.matches(requestDto.newPassword(), user.getPassword()))
 			throw new CustomException(ErrorCode.PASSWORD_EQUAL);
 
 		// 새 비밀번호 인코딩 및 업데이트
-		user.updatePassword(passwordEncoder.encode(requestDto.getNewPassword()));
+		user.updatePassword(passwordEncoder.encode(requestDto.newPassword()));
 	}
 
 	// 슬랙 아이디 수정
 	@Transactional
-	public void updateSlack(Long userId, UpdateSlackRequestDto requestDto) {
+	public void updateSlack(Long userId, UpdateSlackRequest requestDto) {
 		// 유저 확인
 		User user = checkUser.userCheck(userId);
 		// 슬랙 아이디 업데이트
-		user.updateSlackId(requestDto.getSlackId());
+		user.updateSlackId(requestDto.slackId());
 	}
 
 	@Transactional
@@ -126,11 +142,11 @@ public class UserService {
 
 	//  회원 탈퇴 승인
 	@Transactional
-	public void permitDeleteUser(Long managerId, PermitRequestDto requestDto) {
+	public void permitDeleteUser(Long managerId, PermitRequest requestDto) {
 		// 매니저 유저 확인
 		User manager = checkUser.userCheck(managerId);
 		// 승인 대상 유저 확인
-		User user = checkUser.userCheck(requestDto.getUserId());
+		User user = checkUser.userCheck(requestDto.userId());
 
 		// 허브 매니저라면 소속 허브 아이디 체크
 		checkUser.checkHubManager(manager, user.getHubId());
@@ -141,13 +157,13 @@ public class UserService {
 		user.delete();
 	}
 
-	public DeliveryManagerMessageResponseDto getDeliveryManagerMessageInfo(Long userId) {
+	public DeliveryManagerMessageResponse getDeliveryManagerMessageInfo(Long userId) {
 		User user = checkUser.userCheck(userId);
-		return new DeliveryManagerMessageResponseDto(user.getSlackId(), user.getUsername(), user.getEmail());
+		return new DeliveryManagerMessageResponse(user.getSlackId(), user.getUsername(), user.getEmail());
 	}
 
-	public UserHubIdResponseDto getUserHubInfo(Long userId) {
+	public UserHubIdResponse getUserHubInfo(Long userId) {
 		User user = checkUser.userCheck(userId);
-		return new UserHubIdResponseDto(user.getHubId());
+		return new UserHubIdResponse(user.getHubId());
 	}
 }

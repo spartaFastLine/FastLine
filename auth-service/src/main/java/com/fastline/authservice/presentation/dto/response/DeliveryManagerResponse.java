@@ -5,13 +5,13 @@ import java.util.UUID;
 import lombok.Getter;
 
 @Getter
-public class DeliveryManagerResponseDto {
+public class DeliveryManagerResponse {
 	private final Long userId;
 	private final UUID hubId;
 	private final String type;
 	private final Long number;
 
-	public DeliveryManagerResponseDto(DeliveryManager deliveryManager) {
+	public DeliveryManagerResponse(DeliveryManager deliveryManager) {
 		this.userId = deliveryManager.getId();
 		this.hubId = deliveryManager.getUser().getHubId();
 		this.type = deliveryManager.getType().name();

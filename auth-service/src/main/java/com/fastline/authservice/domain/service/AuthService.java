@@ -3,8 +3,8 @@ package com.fastline.authservice.domain.service;
 import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.model.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
-import com.fastline.authservice.presentation.dto.request.LoginRequestDto;
-import com.fastline.authservice.presentation.dto.request.SignupRequestDto;
+import com.fastline.authservice.presentation.dto.request.LoginRequest;
+import com.fastline.authservice.presentation.dto.request.SignupRequest;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.security.jwt.JwtUtil;
@@ -26,9 +26,9 @@ public class AuthService {
 
 	// todo : 허브여부체크 다시 풀기
 	@Transactional
-	public void signup(SignupRequestDto requestDto) {
-		String email = requestDto.getEmail();
-		String username = requestDto.getUsername();
+	public void signup(SignupRequest requestDto) {
+		String email = requestDto.email();
+		String username = requestDto.username();
 
 		// 회원 중복 확인 - 코드 다시
 		userRepository
@@ -47,21 +47,21 @@ public class AuthService {
 						});
 
 		// 사용자 ROLE 확인
-		UserRole role = UserRole.valueOf(requestDto.getRoll());
-		String password = passwordEncoder.encode(requestDto.getPassword());
+		UserRole role = UserRole.valueOf(requestDto.roll());
+		String password = passwordEncoder.encode(requestDto.password());
 
 		// 소속된 허브아이디 확인
 		//		checkUser.checkHubExist(requestDto.getHubId());
 
 		// 새로운 사용자 생성 및 저장
 		User user =
-				new User(email, username, password, role, requestDto.getHubId(), requestDto.getSlackId());
+				new User(email, username, password, role, requestDto.hubId(), requestDto.slackId());
 		userRepository.save(user);
 	}
 
-	public void login(@Valid LoginRequestDto requestDto, HttpServletResponse res) {
-		String username = requestDto.getUsername();
-		String password = requestDto.getPassword();
+	public void login(@Valid LoginRequest requestDto, HttpServletResponse res) {
+		String username = requestDto.username();
+		String password = requestDto.password();
 
 		User user =
 				userRepository

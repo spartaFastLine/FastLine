@@ -3,7 +3,7 @@ package com.fastline.authservice.domain.service;
 import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.authservice.infrastructure.client.HubClient;
-import com.fastline.authservice.presentation.dto.request.HubExistRequestDto;
+import com.fastline.authservice.presentation.dto.request.HubExistRequest;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.security.model.UserRole;
@@ -31,8 +31,8 @@ public class CheckUser {
 	}
 
 	public void checkHubExist(@NotNull UUID hubId) {
-		HubExistRequestDto hubExist = hubClient.getHubExists(hubId);
-		if (!hubExist.isExist()) {
+		HubExistRequest hubExist = hubClient.getHubExists(hubId);
+		if (!hubExist.exist()) {
 			throw new CustomException(ErrorCode.HUB_NOT_FOUND);
 		}
 	}

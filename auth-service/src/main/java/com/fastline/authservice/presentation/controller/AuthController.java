@@ -1,8 +1,8 @@
 package com.fastline.authservice.presentation.controller;
 
 import com.fastline.authservice.domain.service.AuthService;
-import com.fastline.authservice.presentation.dto.request.LoginRequestDto;
-import com.fastline.authservice.presentation.dto.request.SignupRequestDto;
+import com.fastline.authservice.presentation.dto.request.LoginRequest;
+import com.fastline.authservice.presentation.dto.request.SignupRequest;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.success.SuccessCode;
@@ -23,7 +23,7 @@ public class AuthController {
 
 	// 회원가입
 	@PostMapping("/signup")
-	public ResponseEntity<ApiResponse<Void>> signup(@RequestBody @Valid SignupRequestDto requestDto) {
+	public ResponseEntity<ApiResponse<Void>> signup(@RequestBody @Valid SignupRequest requestDto) {
 		authService.signup(requestDto);
 		return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_SUCCESS);
 	}
@@ -31,7 +31,7 @@ public class AuthController {
 	// 로그인
 	@PostMapping("/login")
 	public ResponseEntity<ApiResponse<Void>> login(
-			@RequestBody @Valid LoginRequestDto requestDto, HttpServletResponse res) {
+			@RequestBody @Valid LoginRequest requestDto, HttpServletResponse res) {
 		authService.login(requestDto, res);
 		return ResponseUtil.successResponse(SuccessCode.USER_LOGIN_SUCCESS);
 	}
