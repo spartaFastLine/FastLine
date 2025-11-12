@@ -1,7 +1,13 @@
 package com.fastline.authservice.presentation.controller;
 
 import com.fastline.authservice.domain.service.UserService;
-import com.fastline.authservice.presentation.request.*;
+import com.fastline.authservice.presentation.dto.request.PermitRequestDto;
+import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequestDto;
+import com.fastline.authservice.presentation.dto.request.UpdateSlackRequestDto;
+import com.fastline.authservice.presentation.dto.request.UserSearchRequestDto;
+import com.fastline.authservice.presentation.dto.response.DeliveryManagerMessageResponseDto;
+import com.fastline.authservice.presentation.dto.response.UserHubIdResponseDto;
+import com.fastline.authservice.presentation.dto.response.UserResponseDto;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.security.model.UserDetailsImpl;
@@ -88,9 +94,9 @@ public class UserController {
 
 	// 배송담당자 정보 조회
 	@GetMapping("/{userId}")
-	public ResponseEntity<ApiResponse<DeliveryManagerMessageDto>> getDeliveryManagerMessageInfo(
+	public ResponseEntity<ApiResponse<DeliveryManagerMessageResponseDto>> getDeliveryManagerMessageInfo(
 			@PathVariable Long userId) {
-		DeliveryManagerMessageDto responseDto = userService.getDeliveryManagerMessageInfo(userId);
+		DeliveryManagerMessageResponseDto responseDto = userService.getDeliveryManagerMessageInfo(userId);
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_READ_SUCCESS, responseDto);
 	}
 

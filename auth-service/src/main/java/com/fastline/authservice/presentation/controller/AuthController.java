@@ -1,8 +1,8 @@
 package com.fastline.authservice.presentation.controller;
 
 import com.fastline.authservice.domain.service.AuthService;
-import com.fastline.authservice.presentation.request.LoginRequestDto;
-import com.fastline.authservice.presentation.request.SignupRequestDto;
+import com.fastline.authservice.presentation.dto.request.LoginRequestDto;
+import com.fastline.authservice.presentation.dto.request.SignupRequestDto;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.success.SuccessCode;

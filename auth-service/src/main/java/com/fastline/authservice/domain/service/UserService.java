@@ -4,7 +4,13 @@ import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.model.UserOrderBy;
 import com.fastline.authservice.domain.model.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
-import com.fastline.authservice.presentation.request.*;
+import com.fastline.authservice.presentation.dto.request.PermitRequestDto;
+import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequestDto;
+import com.fastline.authservice.presentation.dto.request.UpdateSlackRequestDto;
+import com.fastline.authservice.presentation.dto.request.UserSearchRequestDto;
+import com.fastline.authservice.presentation.dto.response.DeliveryManagerMessageResponseDto;
+import com.fastline.authservice.presentation.dto.response.UserHubIdResponseDto;
+import com.fastline.authservice.presentation.dto.response.UserResponseDto;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.security.model.UserRole;
@@ -135,9 +141,9 @@ public class UserService {
 		user.delete();
 	}
 
-	public DeliveryManagerMessageDto getDeliveryManagerMessageInfo(Long userId) {
+	public DeliveryManagerMessageResponseDto getDeliveryManagerMessageInfo(Long userId) {
 		User user = checkUser.userCheck(userId);
-		return new DeliveryManagerMessageDto(user.getSlackId(), user.getUsername(), user.getEmail());
+		return new DeliveryManagerMessageResponseDto(user.getSlackId(), user.getUsername(), user.getEmail());
 	}
 
 	public UserHubIdResponseDto getUserHubInfo(Long userId) {

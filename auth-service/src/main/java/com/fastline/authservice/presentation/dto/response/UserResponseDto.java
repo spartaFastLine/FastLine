@@ -1,4 +1,4 @@
-package com.fastline.authservice.presentation.request;
+package com.fastline.authservice.presentation.dto.response;
 
 import com.fastline.authservice.domain.model.User;
 import java.util.UUID;
