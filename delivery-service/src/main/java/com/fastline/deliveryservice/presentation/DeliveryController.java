@@ -5,7 +5,9 @@ import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.success.SuccessCode;
 import com.fastline.deliveryservice.application.DeliveryService;
 import com.fastline.deliveryservice.application.command.*;
+import com.fastline.deliveryservice.application.dto.DeliveryFromOrderCreateResult;
 import com.fastline.deliveryservice.presentation.dto.PageResponse;
+import com.fastline.deliveryservice.presentation.dto.request.CreateDeliveryFromOrderRequest;
 import com.fastline.deliveryservice.presentation.dto.request.CreateDeliveryRequest;
 import com.fastline.deliveryservice.presentation.dto.request.UpdateDeliveryRequest;
 import com.fastline.deliveryservice.presentation.dto.request.UpdateDeliveryStatusRequest;
@@ -211,5 +213,28 @@ public class DeliveryController {
 
         log.info("배송 경로 검색 성공: page={}, totalElements={}", page, response.totalElements());
         return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_SEARCH_SUCCESS, response);
+    }
+
+    /* 주문 생성 시 배송 생성 (내부 통신 api) */
+    @PostMapping("/from-order")
+    public ResponseEntity<ApiResponse<DeliveryFromOrderCreateResponse>> createDeliveryFromOrder(
+            @Valid @RequestBody CreateDeliveryFromOrderRequest request) {
+        log.info("주문 기반 배송 생성 요청: orderId={}", request.orderId());
+
+        CreateDeliveryFromOrderCommand command = new CreateDeliveryFromOrderCommand(
+                request.orderId(),
+                request.vendorSenderId(),
+                request.vendorReceiverId(),
+                request.recipientUsername(),
+                request.recipientSlackId(),
+                request.address()
+        );
+
+        DeliveryFromOrderCreateResult result = deliveryService.createDeliveryFromOrder(command);
+
+        DeliveryFromOrderCreateResponse response = DeliveryFromOrderCreateResponse.from(result);
+
+        log.info("주문 기반 배송 생성 성공: orderId={}", request.orderId());
+        return ResponseUtil.successResponse(SuccessCode.DELIVERY_FROM_ORDER_SAVE_SUCCESS, response);
     }
 }

@@ -1,8 +1,10 @@
 package com.fastline.deliveryservice.application;
 
 import com.fastline.deliveryservice.application.command.*;
-import com.fastline.deliveryservice.application.dto.DeliveryPathDetailResult;
-import com.fastline.deliveryservice.application.dto.DeliveryResult;
+import com.fastline.deliveryservice.application.dto.*;
+import com.fastline.deliveryservice.application.service.AuthClient;
+import com.fastline.deliveryservice.application.service.HubClient;
+import com.fastline.deliveryservice.application.service.VendorClient;
 import com.fastline.deliveryservice.domain.entity.Delivery;
 import com.fastline.deliveryservice.domain.entity.DeliveryPath;
 import com.fastline.deliveryservice.domain.entity.DeliveryStatus;
@@ -23,6 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +37,9 @@ public class DeliveryService {
 	private final DeliveryRepository deliveryRepository;
     private final DeliveryPathRepository deliveryPathRepository;
 	private final DeliveryDomainService deliveryDomainService;
+    private final VendorClient vendorClient;
+    private final HubClient hubClient;
+    private final AuthClient authClient;
 
 	@Transactional
 	public UUID createDelivery(CreateDeliveryCommand command) {
@@ -222,5 +228,59 @@ public class DeliveryService {
 
         log.info("배송 경로 검색 완료: page={}, totalElements={}", command.page(), paths.getTotalElements());
         return PageResponse.from(paths.map(DeliveryPathSummaryResponse::from));
+    }
+
+    @Transactional
+    public DeliveryFromOrderCreateResult createDeliveryFromOrder(CreateDeliveryFromOrderCommand command) {
+        log.info("주문 기반 배송 생성 시작: orderId={}", command.orderId());
+
+        VendorInfoResult vendorInfo = vendorClient.getVendorInfo(command.vendorSenderId(), command.vendorReceiverId());
+
+        List<HubRouteResult> routes = hubClient.getRoutes(vendorInfo.startHubId(), vendorInfo.endHubId());
+
+        List<CreateDeliveryPathCommand> paths = routes.stream()
+                .map(route -> {
+                    ManagerAssignResult managerAssignResult = authClient.assign(route.fromHubId());
+                    return new CreateDeliveryPathCommand(
+                            route.sequence(),
+                            route.fromHubId(),
+                            route.toHubId(),
+                            route.expDistance(),
+                            route.expDuration(),
+                            managerAssignResult.managerId()
+                    );
+                })
+                .toList();
+
+        Long vendorDeliveryManagerId = paths.stream()
+                .max(Comparator.comparingInt(CreateDeliveryPathCommand::sequence))
+                .map(CreateDeliveryPathCommand::deliveryManagerId)
+                .orElse(null);
+
+        CreateDeliveryCommand createCommand = new CreateDeliveryCommand(
+                command.orderId(),
+                command.vendorSenderId(),
+                command.vendorReceiverId(),
+                vendorInfo.startHubId(),
+                vendorInfo.endHubId(),
+                command.address(),
+                command.recipientUsername(),
+                command.recipientSlackId(),
+                vendorDeliveryManagerId,
+                paths
+        );
+
+        UUID deliveryId = createDelivery(createCommand);
+
+        log.info("주문 기반 배송 생성 완료: orderId={}", command.orderId());
+
+        return DeliveryFromOrderCreateResult.of(
+                deliveryId,
+                vendorDeliveryManagerId,
+                routes.stream()
+                        .sorted(Comparator.comparingInt(HubRouteResult::sequence))
+                        .map(r -> r.fromHubId().toString())
+                        .toList()
+        );
     }
 }
