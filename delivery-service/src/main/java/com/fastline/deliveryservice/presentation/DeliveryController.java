@@ -154,29 +154,26 @@ public class DeliveryController {
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_DELETE_SUCCESS);
 	}
 
-    /* 배송 상태 변경 */
-    @PatchMapping("/{deliveryId}/status")
-    public ResponseEntity<ApiResponse<DeliveryStatusUpdateResponse>> updateStatus(
-            @PathVariable UUID deliveryId,
-            @Valid @RequestBody UpdateDeliveryStatusRequest request
-    ) {
-        log.info("배송 상태 변경 요청: deliveryId={}", deliveryId);
+	/* 배송 상태 변경 */
+	@PatchMapping("/{deliveryId}/status")
+	public ResponseEntity<ApiResponse<DeliveryStatusUpdateResponse>> updateStatus(
+			@PathVariable UUID deliveryId, @Valid @RequestBody UpdateDeliveryStatusRequest request) {
+		log.info("배송 상태 변경 요청: deliveryId={}", deliveryId);
 
-        deliveryService.updateStatus(deliveryId, request.status());
+		deliveryService.updateStatus(deliveryId, request.status());
 
-        log.info("배송 상태 변경 성공: deliveryId={}", deliveryId);
-        return ResponseUtil.successResponse(SuccessCode.DELIVERY_STATUS_UPDATE_SUCCESS);
-    }
+		log.info("배송 상태 변경 성공: deliveryId={}", deliveryId);
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_STATUS_UPDATE_SUCCESS);
+	}
 
-    /* 배송 완료 처리 */
-    @PostMapping("/{deliveryId}/complete")
-    public ResponseEntity<ApiResponse<Void>> completeDelivery(@PathVariable UUID deliveryId) {
-        log.info("배송 완료 처리 요청: deliveryId={}", deliveryId);
+	/* 배송 완료 처리 */
+	@PostMapping("/{deliveryId}/complete")
+	public ResponseEntity<ApiResponse<Void>> completeDelivery(@PathVariable UUID deliveryId) {
+		log.info("배송 완료 처리 요청: deliveryId={}", deliveryId);
 
-        deliveryService.complete(deliveryId);
+		deliveryService.complete(deliveryId);
 
-        log.info("배송 완료 처리 성공: deliveryId={}", deliveryId);
-        return ResponseUtil.successResponse(SuccessCode.DELIVERY_COMPLETE_SUCCESS);
-    }
-
+		log.info("배송 완료 처리 성공: deliveryId={}", deliveryId);
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_COMPLETE_SUCCESS);
+	}
 }
