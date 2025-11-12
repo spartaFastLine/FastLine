@@ -49,3 +49,8 @@ jwt:
 security:
   authorization-filter:
     enabled: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:${EUREKA_SERVER_PORT}/eureka/
