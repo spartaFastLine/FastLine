@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class HubExistResponseDto {
-    private boolean exist;
+	private boolean exist;
 }

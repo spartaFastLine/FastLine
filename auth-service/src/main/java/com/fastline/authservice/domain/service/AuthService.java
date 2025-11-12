@@ -24,7 +24,7 @@ public class AuthService {
 	private final JwtUtil jwtUtil;
 	private final CheckUser checkUser;
 
-	//todo : 허브여부체크 다시 풀기
+	// todo : 허브여부체크 다시 풀기
 	@Transactional
 	public void signup(SignupRequestDto requestDto) {
 		String email = requestDto.getEmail();
@@ -51,7 +51,7 @@ public class AuthService {
 		String password = passwordEncoder.encode(requestDto.getPassword());
 
 		// 소속된 허브아이디 확인
-//		checkUser.checkHubExist(requestDto.getHubId());
+		//		checkUser.checkHubExist(requestDto.getHubId());
 
 		// 새로운 사용자 생성 및 저장
 		User user =

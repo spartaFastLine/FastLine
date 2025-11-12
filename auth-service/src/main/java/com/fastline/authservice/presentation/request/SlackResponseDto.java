@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class SlackResponseDto {
-    private final String slackId;
+	private final String slackId;
 
-    public SlackResponseDto(String slackId) {
-        this.slackId = slackId;
-    }
+	public SlackResponseDto(String slackId) {
+		this.slackId = slackId;
+	}
 }

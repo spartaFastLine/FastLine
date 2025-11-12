@@ -10,6 +10,7 @@ import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.security.model.UserRole;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,8 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -36,15 +35,6 @@ public class DeliveryManagerService {
 		User user = checkUser.userCheck(requestDto.getUserId());
 		// 매니저 유저 확인
 		User manager = checkUser.userCheck(managerId);
-    //배달 매니저 생성 - 마스터, 허브 관리자만 가능
-    //todo : 사용자 승인시 동시 진행
-    //todo  : requestDto의 배달 가능한 허브 아이디가 진짜 허브 아이디가 맞는지 확인
-    @Transactional
-    public void createDeliveryManager(Long managerId, DeliveryManagerCreateRequestDto requestDto) {
-        // 승인 대상 유저 확인
-        User user = checkUser.userCheck(requestDto.getUserId());
-        //매니저 유저 확인
-        User manager = checkUser.userCheck(managerId);
 
 		// 이미 배달 매니저로 등록된 유저인지 확인
 		if (deliveryManagerRepository.findById(user.getId()).isPresent())

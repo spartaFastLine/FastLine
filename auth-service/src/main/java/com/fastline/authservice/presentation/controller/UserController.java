@@ -84,7 +84,7 @@ public class UserController {
 		return ResponseUtil.successResponse(SuccessCode.USER_DELETE_SUCCESS);
 	}
 
-//	@PreAuthorize()
+	//	@PreAuthorize()
 	@PostMapping("/{userId}/slackId")
 	public ResponseEntity<ApiResponse<SlackResponseDto>> getSlackId(@PathVariable Long userId) {
 		SlackResponseDto responseDto = userService.getSlackId(userId);

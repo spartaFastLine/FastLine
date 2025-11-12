@@ -15,24 +15,25 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class CheckUser {
-    private final UserRepository userRepository;
-    private final HubClient hubClient;
+	private final UserRepository userRepository;
+	private final HubClient hubClient;
 
-    public User userCheck(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-    }
-    // 허브 매니저라면 소속 허브 아이디 체크
-    public void checkHubManager(User manager, UUID requestHubId) {
-        if (manager.getRole() == UserRole.HUB_MANAGER && !manager.getHubId().equals(requestHubId))
-            throw new CustomException(ErrorCode.NOT_HUB_MANAGER);
-    }
+	public User userCheck(Long userId) {
+		return userRepository
+				.findById(userId)
+				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+	}
 
-    public void checkHubExist(@NotNull UUID hubId) {
-        HubExistResponseDto hubExist =  hubClient.getHubExists(hubId);
-        if (!hubExist.isExist()) {
-            throw new CustomException(ErrorCode.HUB_NOT_FOUND);
-        }
-    }
+	// 허브 매니저라면 소속 허브 아이디 체크
+	public void checkHubManager(User manager, UUID requestHubId) {
+		if (manager.getRole() == UserRole.HUB_MANAGER && !manager.getHubId().equals(requestHubId))
+			throw new CustomException(ErrorCode.NOT_HUB_MANAGER);
+	}
 
+	public void checkHubExist(@NotNull UUID hubId) {
+		HubExistResponseDto hubExist = hubClient.getHubExists(hubId);
+		if (!hubExist.isExist()) {
+			throw new CustomException(ErrorCode.HUB_NOT_FOUND);
+		}
+	}
 }

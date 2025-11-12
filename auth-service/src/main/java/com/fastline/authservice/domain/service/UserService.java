@@ -135,9 +135,8 @@ public class UserService {
 		user.delete();
 	}
 
-
-    public SlackResponseDto getSlackId(Long userId) {
+	public SlackResponseDto getSlackId(Long userId) {
 		User user = checkUser.userCheck(userId);
 		return new SlackResponseDto(user.getSlackId());
-    }
+	}
 }
