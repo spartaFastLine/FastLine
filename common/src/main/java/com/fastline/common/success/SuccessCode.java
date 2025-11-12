@@ -54,7 +54,8 @@ public enum SuccessCode {
 	DELIVERY_DELETE_SUCCESS(HttpStatus.OK, "배송 삭제 성공"),
 	DELIVERY_PATH_DELETE_SUCCESS(HttpStatus.OK, "배송 경로 기록 삭제 성공"),
 	DELIVERY_STATUS_UPDATE_SUCCESS(HttpStatus.OK, "배송 상태 변경 성공"),
-	DELIVERY_COMPLETE_SUCCESS(HttpStatus.OK, "배송 완료 처리 성공");
+	DELIVERY_COMPLETE_SUCCESS(HttpStatus.OK, "배송 완료 처리 성공"),
+    DELIVERY_PATH_FIND_SUCCESS(HttpStatus.OK, "배송별 경로 전체 조회");
 
 	private final HttpStatus httpStatus;
 	private final String message;

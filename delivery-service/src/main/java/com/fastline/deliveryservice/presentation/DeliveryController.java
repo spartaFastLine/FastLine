@@ -11,6 +11,8 @@ import com.fastline.deliveryservice.presentation.dto.request.UpdateDeliveryReque
 import com.fastline.deliveryservice.presentation.dto.request.UpdateDeliveryStatusRequest;
 import com.fastline.deliveryservice.presentation.dto.response.*;
 import jakarta.validation.Valid;
+
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -162,4 +164,17 @@ public class DeliveryController {
 		log.info("배송 완료 처리 성공: deliveryId={}", deliveryId);
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_COMPLETE_SUCCESS);
 	}
+
+    /* 배송별 경로 전체 조회 */
+    @GetMapping("/{deliveryId}/paths")
+    public ResponseEntity<ApiResponse<List<DeliveryPathDetailResponse>>> getPaths(@PathVariable UUID deliveryId) {
+        log.info("배송별 경로 전체 조회 요청: deliveryId={}", deliveryId);
+
+        GetDeliveryPathsCommand command = new GetDeliveryPathsCommand(deliveryId);
+
+        List<DeliveryPathDetailResponse> response = deliveryService.getPaths(command).stream().map(DeliveryPathDetailResponse::from).toList();
+
+        log.info("배송별 경로 전체 조회 성공: deliveryId={}, pathCount={}", deliveryId, response.size());
+        return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_FIND_SUCCESS, response);
+    }
 }

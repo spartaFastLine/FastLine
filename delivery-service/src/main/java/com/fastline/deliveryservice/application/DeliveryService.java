@@ -1,9 +1,7 @@
 package com.fastline.deliveryservice.application;
 
-import com.fastline.deliveryservice.application.command.CreateDeliveryCommand;
-import com.fastline.deliveryservice.application.command.CreateDeliveryPathCommand;
-import com.fastline.deliveryservice.application.command.SearchDeliveryCommand;
-import com.fastline.deliveryservice.application.command.UpdateDeliveryCommand;
+import com.fastline.deliveryservice.application.command.*;
+import com.fastline.deliveryservice.application.dto.DeliveryPathDetailResult;
 import com.fastline.deliveryservice.application.dto.DeliveryResult;
 import com.fastline.deliveryservice.domain.entity.Delivery;
 import com.fastline.deliveryservice.domain.entity.DeliveryPath;
@@ -12,9 +10,13 @@ import com.fastline.deliveryservice.domain.repository.DeliveryRepository;
 import com.fastline.deliveryservice.domain.service.DeliveryDomainService;
 import com.fastline.deliveryservice.domain.vo.OrderId;
 import com.fastline.deliveryservice.presentation.dto.PageResponse;
+import com.fastline.deliveryservice.presentation.dto.response.DeliveryPathDetailResponse;
+import com.fastline.deliveryservice.presentation.dto.response.DeliveryPathResponse;
 import com.fastline.deliveryservice.presentation.dto.response.DeliverySummaryResponse;
 import java.util.List;
 import java.util.UUID;
+
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -180,4 +182,14 @@ public class DeliveryService {
 
 		log.info("배송 완료 처리 완료: deliveryId={}", deliveryId);
 	}
+
+    @Transactional(readOnly = true)
+    public List<DeliveryPathDetailResult> getPaths(GetDeliveryPathsCommand command) {
+        Delivery delivery = deliveryRepository.findById(command.deliveryId())
+                .orElseThrow(() -> new NotFoundException("해당 배송이 존재하지 않습니다."));
+
+        return delivery.getPaths().stream()
+                .map(DeliveryPathDetailResult::from)
+                .toList();
+    }
 }
