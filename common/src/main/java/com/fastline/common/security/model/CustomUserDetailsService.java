@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 // DB의 회원정보 조회 -> Spring Security의 인증 관리자(UserDetials)에게 전달
-//각 서비스마다 특별한 권한이 필요한 경우가 있으므로 각 서비스에 맞게 UserDetailsService를 구현
+// 각 서비스마다 특별한 권한이 필요한 경우가 있으므로 각 서비스에 맞게 UserDetailsService를 구현
 @Slf4j
 @Service
 public class CustomUserDetailsService {
