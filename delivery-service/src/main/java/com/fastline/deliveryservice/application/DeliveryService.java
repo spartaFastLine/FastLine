@@ -25,6 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -188,6 +189,14 @@ public class DeliveryService {
 		delivery.completeIfAllPathsArrived();
 
         authClient.deliveryComplete(delivery.getVendorDeliveryManagerId());
+
+        UUID endHubId = delivery.getEndHubId();
+        DeliveryPath endDeliveryPath = delivery.getPaths()
+                .stream()
+                .filter(p -> p.getToHubId().equals(endHubId))
+                .findAny().orElseThrow();
+        Instant arrivedAt = endDeliveryPath.getUpdatedAt();
+        vendorClient.deliveryComplete(delivery.getOrderId(), arrivedAt);
 
 		log.info("배송 완료 처리 완료: deliveryId={}", deliveryId);
 	}
