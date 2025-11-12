@@ -15,13 +15,22 @@ public class AuthClientImpl implements AuthClient {
 	private final AuthServiceFeignClient feignClient;
 
 	@Override
-	public ManagerAssignResult assign(UUID hubId) {
-		ApiResponse<ManagerAssignResponse> response = feignClient.assignManager(hubId);
+	public ManagerAssignResult assign(UUID hubId, String managerType) {
+		ApiResponse<ManagerAssignResponse> response = feignClient.assignManager(hubId, managerType);
 
 		if (!response.isSuccess() || response.getData() == null) {
 			throw new IllegalStateException("배송 담당자 자동 배정 실패: " + response.getMessage());
 		}
 
 		return ManagerAssignResult.from(response.getData());
+	}
+
+	@Override
+	public void deliveryComplete(Long managerId) {
+		ApiResponse<Void> response = feignClient.deliveryComplete(managerId);
+
+		if (!response.isSuccess()) {
+			throw new IllegalStateException("배송 담당자 완료 알림 실패: " + response.getMessage());
+		}
 	}
 }
