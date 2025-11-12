@@ -9,6 +9,7 @@ import com.fastline.vendorservice.application.VendorService;
 import com.fastline.vendorservice.domain.entity.Order;
 import com.fastline.vendorservice.domain.entity.Product;
 import com.fastline.vendorservice.domain.entity.Vendor;
+import com.fastline.vendorservice.infrastructure.swagger.VendorControllerSwagger;
 import com.fastline.vendorservice.presentation.request.VendorCreateRequest;
 import com.fastline.vendorservice.presentation.request.VendorUpdateRequest;
 import com.fastline.vendorservice.presentation.response.vendor.*;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/vendor")
 @RequiredArgsConstructor
-public class VendorController {
+public class VendorController implements VendorControllerSwagger {
 
 	private final VendorService service;
 
