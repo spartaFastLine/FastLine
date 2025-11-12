@@ -23,8 +23,7 @@ public class DeliveryManager extends ActorTimeBaseEntity<DeliveryManager> {
 	@Column(nullable = false)
 	private DeliveryManagerType type; // 배송 매니저 타입(허브 배달인, 업체 배달인)
 
-	@Column
-	private Boolean isStandby; // 대기 여부
+	@Column private Boolean isStandby; // 대기 여부
 
 	// 배송 순번
 	private Long number;
@@ -39,6 +38,7 @@ public class DeliveryManager extends ActorTimeBaseEntity<DeliveryManager> {
 	public void updateType(DeliveryManagerType type) {
 		this.type = type;
 	}
+
 	public void assign() {
 		this.isStandby = false;
 	}

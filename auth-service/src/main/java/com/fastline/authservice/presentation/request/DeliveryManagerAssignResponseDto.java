@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class DeliveryManagerAssignResponseDto {
-    private final Long managerId;
+	private final Long managerId;
 
-    public DeliveryManagerAssignResponseDto(Long managerId) {
-        this.managerId = managerId;
-    }
+	public DeliveryManagerAssignResponseDto(Long managerId) {
+		this.managerId = managerId;
+	}
 }

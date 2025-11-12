@@ -139,14 +139,17 @@ public class DeliveryManagerService {
 
 	// 배달 매니저 자동 배정
 	@Transactional
-	public DeliveryManagerAssignResponseDto getDeliveryManagerAssignment(String hubId, String managerType) {
-		DeliveryManager manager = deliveryManagerRepository.assignDeliveryManager(UUID.fromString(hubId), DeliveryManagerType.valueOf(managerType))
-				.orElseThrow(() -> new CustomException(ErrorCode.IMPOSSIBLE_ASSIGNMENT));
+	public DeliveryManagerAssignResponseDto getDeliveryManagerAssignment(
+			String hubId, String managerType) {
+		DeliveryManager manager =
+				deliveryManagerRepository
+						.assignDeliveryManager(UUID.fromString(hubId), DeliveryManagerType.valueOf(managerType))
+						.orElseThrow(() -> new CustomException(ErrorCode.IMPOSSIBLE_ASSIGNMENT));
 		manager.assign();
 		return new DeliveryManagerAssignResponseDto(manager.getId());
 	}
 
-	//배달매니저 배송완료 알림 -> 배송가능 상태로 변경
+	// 배달매니저 배송완료 알림 -> 배송가능 상태로 변경
 	@Transactional
 	public void completeDeliveryManager(Long managerId) {
 		DeliveryManager manager = findDeliveryManager(managerId);
@@ -163,5 +166,4 @@ public class DeliveryManagerService {
 				.findById(userId)
 				.orElseThrow(() -> new CustomException(ErrorCode.DELIVERY_MANAGER_NOT_FOUND));
 	}
-
 }

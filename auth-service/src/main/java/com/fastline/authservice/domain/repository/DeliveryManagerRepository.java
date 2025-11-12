@@ -2,11 +2,10 @@ package com.fastline.authservice.domain.repository;
 
 import com.fastline.authservice.domain.model.DeliveryManager;
 import com.fastline.authservice.domain.model.DeliveryManagerType;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface DeliveryManagerRepository {
 	void save(DeliveryManager deliveryManager);
@@ -24,6 +23,5 @@ public interface DeliveryManagerRepository {
 			boolean isActive,
 			Pageable pageable);
 
-    Optional<DeliveryManager> assignDeliveryManager(UUID hubId, DeliveryManagerType type);
-
+	Optional<DeliveryManager> assignDeliveryManager(UUID hubId, DeliveryManagerType type);
 }

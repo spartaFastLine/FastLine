@@ -72,13 +72,14 @@ public class DeliveryManagerController {
 
 	// 배달 매니저 자동 배정
 	@GetMapping("/assign/{hubId}/{managerType}")
-	public ResponseEntity<ApiResponse<DeliveryManagerAssignResponseDto>> getDeliveryManagerAssignment(@PathVariable String hubId, @PathVariable String managerType) {
+	public ResponseEntity<ApiResponse<DeliveryManagerAssignResponseDto>> getDeliveryManagerAssignment(
+			@PathVariable String hubId, @PathVariable String managerType) {
 		DeliveryManagerAssignResponseDto responseDto =
-				deliveryManagerService.getDeliveryManagerAssignment(hubId,managerType);
+				deliveryManagerService.getDeliveryManagerAssignment(hubId, managerType);
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_ASSIGN_SUCCESS, responseDto);
 	}
 
-	//배달매니저 배송완료 알림
+	// 배달매니저 배송완료 알림
 	@PostMapping("/{managerId}/complete")
 	public ResponseEntity<ApiResponse<Void>> completeDeliveryManager(@PathVariable Long managerId) {
 		deliveryManagerService.completeDeliveryManager(managerId);
