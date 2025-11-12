@@ -4,8 +4,8 @@ import static com.fastline.authservice.domain.model.QDeliveryManager.deliveryMan
 import static com.fastline.authservice.domain.model.QUser.user;
 
 import com.fastline.authservice.domain.model.DeliveryManager;
-import com.fastline.authservice.domain.model.DeliveryManagerType;
-import com.fastline.authservice.domain.model.UserStatus;
+import com.fastline.authservice.domain.vo.DeliveryManagerType;
+import com.fastline.authservice.domain.vo.UserStatus;
 import com.fastline.authservice.domain.repository.DeliveryManagerRepository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;

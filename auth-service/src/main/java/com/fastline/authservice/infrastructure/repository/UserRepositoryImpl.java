@@ -3,7 +3,7 @@ package com.fastline.authservice.infrastructure.repository;
 import static com.fastline.authservice.domain.model.QUser.user;
 
 import com.fastline.authservice.domain.model.User;
-import com.fastline.authservice.domain.model.UserStatus;
+import com.fastline.authservice.domain.vo.UserStatus;
 import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.common.security.model.UserRole;
 import com.querydsl.core.types.OrderSpecifier;

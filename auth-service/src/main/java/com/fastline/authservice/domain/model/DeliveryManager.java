@@ -1,5 +1,6 @@
 package com.fastline.authservice.domain.model;
 
+import com.fastline.authservice.domain.vo.DeliveryManagerType;
 import com.fastline.common.auditing.ActorTimeBaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;

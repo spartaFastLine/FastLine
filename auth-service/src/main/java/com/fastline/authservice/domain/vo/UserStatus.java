@@ -1,4 +1,4 @@
-package com.fastline.authservice.domain.model;
+package com.fastline.authservice.domain.vo;
 
 public enum UserStatus {
 	PENDING,

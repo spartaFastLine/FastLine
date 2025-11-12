@@ -1,16 +1,17 @@
-package com.fastline.authservice.domain.model;
+package com.fastline.authservice.domain.vo;
 
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 
-public enum UserOrderBy {
+public enum ManagerOrderBy {
 	username,
 	hubId,
-	role,
+	type,
+	number,
 	status;
 
 	public static void checkValid(String sortBy) {
-		for (UserOrderBy orderBy : UserOrderBy.values()) {
+		for (ManagerOrderBy orderBy : ManagerOrderBy.values()) {
 			if (orderBy.name().equals(sortBy)) {
 				return;
 			}

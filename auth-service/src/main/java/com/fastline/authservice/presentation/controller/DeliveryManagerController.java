@@ -1,6 +1,6 @@
 package com.fastline.authservice.presentation.controller;
 
-import com.fastline.authservice.domain.service.DeliveryManagerService;
+import com.fastline.authservice.application.change.DeliveryManagerService;
 import com.fastline.authservice.presentation.dto.request.DeliveryManagerCreateRequest;
 import com.fastline.authservice.presentation.dto.request.DeliveryManagerDeleteRequest;
 import com.fastline.authservice.presentation.dto.request.DeliveryManagerSearchRequest;

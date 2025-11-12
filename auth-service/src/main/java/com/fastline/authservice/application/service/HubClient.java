@@ -1,4 +1,4 @@
-package com.fastline.authservice.infrastructure.client;
+package com.fastline.authservice.application.service;
 
 import com.fastline.authservice.presentation.dto.request.HubExistRequest;
 import java.util.UUID;

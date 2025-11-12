@@ -1,6 +1,6 @@
 package com.fastline.authservice.presentation.controller;
 
-import com.fastline.authservice.domain.service.AuthService;
+import com.fastline.authservice.application.change.DeliveryManagerService;
 import com.fastline.authservice.presentation.dto.request.LoginRequest;
 import com.fastline.authservice.presentation.dto.request.SignupRequest;
 import com.fastline.common.response.ApiResponse;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-	private final AuthService authService;
+	private final DeliveryManagerService.AuthService authService;
 
 	// 회원가입
 	@PostMapping("/signup")

@@ -1,5 +1,6 @@
 package com.fastline.authservice.domain.model;
 
+import com.fastline.authservice.domain.vo.UserStatus;
 import com.fastline.common.auditing.TimeBaseEntity;
 import com.fastline.common.security.model.UserRole;
 import jakarta.persistence.*;

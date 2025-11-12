@@ -1,4 +1,4 @@
-package com.fastline.authservice.infrastructure.configuration;
+package com.fastline.authservice.config;
 
 import com.fastline.common.exception.CustomAccessDeniedHandler;
 import com.fastline.common.exception.CustomAuthenticationEntryPoint;
