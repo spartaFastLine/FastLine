@@ -12,6 +12,7 @@ import com.fastline.deliveryservice.presentation.dto.request.CreateDeliveryReque
 import com.fastline.deliveryservice.presentation.dto.request.UpdateDeliveryRequest;
 import com.fastline.deliveryservice.presentation.dto.request.UpdateDeliveryStatusRequest;
 import com.fastline.deliveryservice.presentation.dto.response.*;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class DeliveryController {
 
 	private final DeliveryService deliveryService;
 
-	/* 배송 등록 */
+	@Operation(summary = "배송 등록 API")
 	@PostMapping
 	public ResponseEntity<ApiResponse<DeliveryCreateResponse>> createDelivery(
 			@Valid @RequestBody CreateDeliveryRequest request) {
@@ -64,7 +65,7 @@ public class DeliveryController {
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_SAVE_SUCCESS, response);
 	}
 
-	/* 배송 조회 */
+	@Operation(summary = "배송 조회 API")
 	@GetMapping("/{deliveryId}")
 	public ResponseEntity<ApiResponse<DeliveryDetailResponse>> getDelivery(
 			@PathVariable UUID deliveryId) {
@@ -77,7 +78,7 @@ public class DeliveryController {
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_FIND_SUCCESS, response);
 	}
 
-	/* 배송 수정 */
+	@Operation(summary = "배송 수정 API")
 	@PutMapping("/{deliveryId}")
 	public ResponseEntity<ApiResponse<DeliveryUpdateResponse>> updateDelivery(
 			@PathVariable UUID deliveryId, @Valid @RequestBody UpdateDeliveryRequest request) {
@@ -112,7 +113,7 @@ public class DeliveryController {
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_UPDATE_SUCCESS, response);
 	}
 
-	/* 배송 삭제 */
+	@Operation(summary = "배송 삭제 API")
 	@DeleteMapping("/{deliveryId}")
 	public ResponseEntity<ApiResponse<Void>> deleteDelivery(@PathVariable UUID deliveryId) {
 		log.info("배송 삭제 요청: deliveryId={}", deliveryId);
@@ -125,7 +126,7 @@ public class DeliveryController {
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_DELETE_SUCCESS);
 	}
 
-	/* 배송 검색 */
+	@Operation(summary = "배송 검색 API")
 	@GetMapping
 	public ResponseEntity<ApiResponse<PageResponse<DeliverySummaryResponse>>> searchDeliveries(
 			@RequestParam(defaultValue = "0") int page,
@@ -143,7 +144,7 @@ public class DeliveryController {
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_SEARCH_SUCCESS, response);
 	}
 
-	/* 배송 상태 변경 */
+	@Operation(summary = "배송 상태 변경 API")
 	@PatchMapping("/{deliveryId}/status")
 	public ResponseEntity<ApiResponse<DeliveryStatusUpdateResponse>> updateStatus(
 			@PathVariable UUID deliveryId, @Valid @RequestBody UpdateDeliveryStatusRequest request) {
@@ -155,7 +156,7 @@ public class DeliveryController {
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_STATUS_UPDATE_SUCCESS);
 	}
 
-	/* 배송 완료 처리 */
+	@Operation(summary = "배송 완료 처리 API")
 	@PostMapping("/{deliveryId}/complete")
 	public ResponseEntity<ApiResponse<Void>> completeDelivery(@PathVariable UUID deliveryId) {
 		log.info("배송 완료 처리 요청: deliveryId={}", deliveryId);
@@ -166,7 +167,7 @@ public class DeliveryController {
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_COMPLETE_SUCCESS);
 	}
 
-	/* 배송별 경로 전체 조회 */
+	@Operation(summary = "배송별 경로 전체 조회 API")
 	@GetMapping("/{deliveryId}/paths")
 	public ResponseEntity<ApiResponse<List<DeliveryPathDetailResponse>>> getPaths(
 			@PathVariable UUID deliveryId) {
@@ -181,7 +182,7 @@ public class DeliveryController {
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATHS_FIND_SUCCESS, response);
 	}
 
-	/* 단일 경로 기록 조회 */
+	@Operation(summary = "단일 경로 기록 조회 API")
 	@GetMapping("/{deliveryId}/paths/{pathId}")
 	public ResponseEntity<ApiResponse<DeliveryPathDetailResponse>> getPath(
 			@PathVariable UUID deliveryId, @PathVariable UUID pathId) {
@@ -196,7 +197,7 @@ public class DeliveryController {
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_FIND_SUCCESS, response);
 	}
 
-	/* 배송 경로 기록 검색 */
+	@Operation(summary = "배송 경로 기록 검색 API")
 	@GetMapping("/paths")
 	public ResponseEntity<ApiResponse<PageResponse<DeliveryPathSummaryResponse>>> searchDeliveryPaths(
 			@RequestParam(defaultValue = "0") int page,
@@ -218,7 +219,7 @@ public class DeliveryController {
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_SEARCH_SUCCESS, response);
 	}
 
-	/* 주문 생성 시 배송 생성 (내부 통신 api) */
+	@Operation(summary = "주문 생성 시 배송 생성 (내부 통신 api) API")
 	@PostMapping("/from-order")
 	public ResponseEntity<ApiResponse<DeliveryFromOrderCreateResponse>> createDeliveryFromOrder(
 			@Valid @RequestBody CreateDeliveryFromOrderRequest request) {
