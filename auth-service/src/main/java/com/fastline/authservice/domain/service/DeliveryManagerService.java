@@ -2,10 +2,7 @@ package com.fastline.authservice.domain.service;
 
 import com.fastline.authservice.domain.model.*;
 import com.fastline.authservice.domain.repository.DeliveryManagerRepository;
-import com.fastline.authservice.presentation.request.DeliveryManagerCreateRequestDto;
-import com.fastline.authservice.presentation.request.DeliveryManagerDeleteRequestDto;
-import com.fastline.authservice.presentation.request.DeliveryManagerResponseDto;
-import com.fastline.authservice.presentation.request.DeliveryManagerSearchRequestDto;
+import com.fastline.authservice.presentation.request.*;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.security.model.UserRole;
@@ -138,6 +135,25 @@ public class DeliveryManagerService {
 		// 배달 매니저 삭제
 		DeliveryManager deliveryManager = findDeliveryManager(user.getId());
 		deliveryManager.delete(manager.getId());
+	}
+
+	// 배달 매니저 자동 배정
+	@Transactional
+	public DeliveryManagerAssignResponseDto getDeliveryManagerAssignment(
+			String hubId, String managerType) {
+		DeliveryManager manager =
+				deliveryManagerRepository
+						.assignDeliveryManager(UUID.fromString(hubId), DeliveryManagerType.valueOf(managerType))
+						.orElseThrow(() -> new CustomException(ErrorCode.IMPOSSIBLE_ASSIGNMENT));
+		manager.assign();
+		return new DeliveryManagerAssignResponseDto(manager.getId());
+	}
+
+	// 배달매니저 배송완료 알림 -> 배송가능 상태로 변경
+	@Transactional
+	public void completeDeliveryManager(Long managerId) {
+		DeliveryManager manager = findDeliveryManager(managerId);
+		manager.complete();
 	}
 
 	private static void checkDeliveryManager(User user) {

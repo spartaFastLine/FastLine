@@ -165,4 +165,19 @@ public class DeliveryManagerRepositoryImpl implements DeliveryManagerRepository 
 						});
 		return specs.toArray(new OrderSpecifier<?>[0]);
 	}
+
+	@Override
+	public Optional<DeliveryManager> assignDeliveryManager(UUID hubId, DeliveryManagerType type) {
+		DeliveryManager manager =
+				jpaQueryFactory
+						.selectFrom(deliveryManager)
+						.innerJoin(deliveryManager.user, user)
+						.where(
+								user.hubId.eq(hubId),
+								deliveryManager.type.eq(type),
+								deliveryManager.isStandby.eq(true))
+						.orderBy(deliveryManager.number.asc())
+						.fetchFirst();
+		return Optional.ofNullable(manager);
+	}
 }
