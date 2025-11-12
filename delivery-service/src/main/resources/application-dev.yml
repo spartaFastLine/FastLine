@@ -40,7 +40,7 @@ logging:
     org.springframework.jdbc.core: DEBUG
 
 server:
-  port: 8089
+  port: ${SERVER_PORT}
 
 jwt:
   secret:
@@ -49,3 +49,8 @@ jwt:
 security:
   authorization-filter:
     enabled: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:${EUREKA_SERVER_PORT}/eureka/
