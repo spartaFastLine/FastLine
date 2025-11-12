@@ -14,3 +14,19 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.orm.jdbc.bind: trace
+
+naver:
+  map:
+    client_id: aoi86h8zbz
+    client_secret: JjLgixmNBRucK7tfbDfanyOvykagFbbZwMnTqI8H
+# application-local.yml
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+    display-request-duration: true
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json

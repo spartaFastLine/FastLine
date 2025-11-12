@@ -1,8 +1,8 @@
 package com.fastline.hubservice.presentation.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
+import java.util.UUID;
 
 /**
  * 허브 목록 조회 요청 DTO - 필터(name, address, centralHubId, isCentral) - 페이지네이션(page, size) - 정렬(sort:
@@ -22,27 +24,32 @@ import org.springframework.data.domain.Sort;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Schema(name = "HubListRequest", description = "허브 목록 조회 필터 및 페이지네이션 요청 DTO")
 public class HubListRequest {
 
+	@Schema(description = "허브명(부분 일치)", example = "서울")
 	@Size(max = 100)
 	private String name;
 
+	@Schema(description = "주소(부분 일치)", example = "송파구")
 	@Size(max = 255)
 	private String address;
 
+	@Schema(description = "소속 중앙 허브 ID (UUID)")
 	private UUID centralHubId;
 
+	@Schema(description = "중앙 허브 여부", example = "true")
 	private Boolean isCentral;
 
-	/** 0 기반 페이지 번호 */
+	@Schema(description = "0 기반 페이지 번호", example = "0")
 	@Min(0)
 	private Integer page = 0;
 
-	/** 페이지 크기 (기본 20, 과도한 값은 toPageable()에서 제한) */
+	@Schema(description = "페이지 크기 (1~200)", example = "20")
 	@Min(1)
 	private Integer size = 20;
 
-	/** 정렬: "property,direction" (예: "createdAt,desc") */
+	@Schema(description = "정렬: 'property,direction' 형식", example = "createdAt,desc")
 	private String sort = "createdAt,desc";
 
 	/**

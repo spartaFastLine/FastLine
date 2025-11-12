@@ -3,11 +3,12 @@ package com.fastline.hubservice.domain.spec;
 import com.fastline.hubservice.application.command.HubSearchCommand;
 import com.fastline.hubservice.domain.model.Hub;
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.jpa.domain.Specification;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import org.springframework.data.jpa.domain.Specification;
 
 public final class HubSearchSpec {
 

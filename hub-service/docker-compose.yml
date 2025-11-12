@@ -49,6 +49,35 @@ services:
     user: root
     entrypoint: ["/bin/sh", "/pgadmin-init.sh"]
 
+  # In-memory cache (for Spring Cache / Spring Data Redis)
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    command: [ "redis-server", "--appendonly", "yes" ]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redisinsight:
+    image: redis/redisinsight:latest   # <-- 여기!
+    container_name: redisinsight
+    restart: unless-stopped
+    environment:
+      RI_APP_PORT: "5540"
+    ports:
+      - "127.0.0.1:5540:5540"
+    depends_on:
+      redis:
+        condition: service_healthy
+
 volumes:
   pg_data:
   pgadmin_data:
+  redis_data:

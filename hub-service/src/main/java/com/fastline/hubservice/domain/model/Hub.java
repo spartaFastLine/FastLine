@@ -2,11 +2,9 @@ package com.fastline.hubservice.domain.model;
 
 import com.fastline.common.auditing.TimeBaseEntity;
 import jakarta.persistence.*;
-import java.util.UUID;
 import lombok.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "p_hubs")

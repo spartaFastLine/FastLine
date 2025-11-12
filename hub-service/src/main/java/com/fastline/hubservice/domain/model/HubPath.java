@@ -2,9 +2,10 @@ package com.fastline.hubservice.domain.model;
 
 import com.fastline.common.auditing.TimeBaseEntity;
 import jakarta.persistence.*;
-import java.math.BigDecimal;
-import java.util.UUID;
 import lombok.*;
+
+import java.time.LocalTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "p_hub_paths")
@@ -34,11 +35,23 @@ public class HubPath extends TimeBaseEntity<HubPath> {
 	private Hub endHub;
 
 	@Column(name = "duration")
-	private Integer duration; // 소요 시간 (AI 계산 또는 수동 입력)
+	private LocalTime duration; // 소요 시간 (AI 계산 또는 수동 입력)
 
 	@Column(name = "distance", precision = 8, scale = 2)
-	private BigDecimal distance; // 거리 (KM 단위)
+	private Long distance; // 거리 (KM 단위)
 
 	@Column(name = "active", nullable = false)
 	private Boolean active;
+
+	public void setDuration(LocalTime duration) {
+	    this.duration = duration;
+	}
+
+	public void setDistance(Long distance) {
+	    this.distance = distance;
+	}
+
+	public void setActive(Boolean active) {
+	    this.active = active;
+	}
 }
