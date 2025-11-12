@@ -187,6 +187,8 @@ public class DeliveryService {
 
 		delivery.completeIfAllPathsArrived();
 
+        authClient.deliveryComplete(delivery.getVendorDeliveryManagerId());
+
 		log.info("배송 완료 처리 완료: deliveryId={}", deliveryId);
 	}
 

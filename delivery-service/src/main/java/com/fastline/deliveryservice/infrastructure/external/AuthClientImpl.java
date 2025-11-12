@@ -24,4 +24,13 @@ public class AuthClientImpl implements AuthClient {
 
 		return ManagerAssignResult.from(response.getData());
 	}
+
+    @Override
+    public void deliveryComplete(Long managerId) {
+        ApiResponse<Void> response = feignClient.deliveryComplete(managerId);
+
+        if (!response.isSuccess()) {
+            throw new IllegalStateException("배송 담당자 완료 알림 실패: " + response.getMessage());
+        }
+    }
 }

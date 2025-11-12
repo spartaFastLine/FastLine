@@ -16,4 +16,9 @@ public interface AuthServiceFeignClient {
             @PathVariable UUID hubId,
             @PathVariable String managerType
     );
+
+    @GetMapping("/api/deliveries/{managerId}/complete")
+    ApiResponse<Void> deliveryComplete(
+            @PathVariable Long managerId
+    );
 }
