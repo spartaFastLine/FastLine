@@ -1,6 +1,6 @@
 package com.fastline.deliveryservice.domain.entity;
 
-import com.fastline.common.jpa.TimeBaseEntity;
+import com.fastline.common.auditing.TimeBaseEntity;
 import com.fastline.deliveryservice.application.command.UpdateDeliveryPathCommand;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "p_deliveries")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Delivery extends TimeBaseEntity {
+public class Delivery extends TimeBaseEntity<Delivery> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)

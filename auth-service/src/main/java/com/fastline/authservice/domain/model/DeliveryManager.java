@@ -1,6 +1,6 @@
 package com.fastline.authservice.domain.model;
 
-import com.fastline.common.jpa.ActorBaseEntity;
+import com.fastline.common.auditing.ActorTimeBaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "p_delivery_manager")
 @NoArgsConstructor
-public class DeliveryManager extends ActorBaseEntity {
+public class DeliveryManager extends ActorTimeBaseEntity<DeliveryManager> {
 	@Id
 	@Column(name = "manager_id")
 	private Long id;

@@ -1,13 +1,13 @@
 package com.fastline.messagingservice.domain.entity;
 
-import com.fastline.common.auditing.BaseEntity;
+import com.fastline.common.auditing.TimeBaseEntity;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "p_slack_messages")
-public class SlackMessage extends BaseEntity<SlackMessage> {
+public class SlackMessage extends TimeBaseEntity<SlackMessage> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)

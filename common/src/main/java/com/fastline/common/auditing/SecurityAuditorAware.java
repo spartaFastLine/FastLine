@@ -1,4 +1,4 @@
-package com.fastline.common.jpa;
+package com.fastline.common.auditing;
 
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;

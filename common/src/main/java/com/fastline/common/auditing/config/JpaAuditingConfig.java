@@ -1,6 +1,6 @@
-package com.fastline.common.config;
+package com.fastline.common.auditing.config;
 
-import com.fastline.common.jpa.SecurityAuditorAware;
+import com.fastline.common.auditing.SecurityAuditorAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
