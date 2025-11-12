@@ -13,5 +13,6 @@ public record SignupRequest(@Pattern(
 							@Email @NotBlank String email,
 							@NotBlank String slackId,
 							@NotBlank String roll,
-							@NotNull UUID hubId) {
+							@NotNull UUID hubId,
+							String deliveryType) {
 }

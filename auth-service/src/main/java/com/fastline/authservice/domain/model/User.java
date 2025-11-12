@@ -1,5 +1,6 @@
 package com.fastline.authservice.domain.model;
 
+import com.fastline.authservice.domain.vo.DeliveryManagerType;
 import com.fastline.authservice.domain.vo.UserStatus;
 import com.fastline.common.auditing.TimeBaseEntity;
 import com.fastline.common.security.model.UserRole;
@@ -43,9 +44,8 @@ public class User extends TimeBaseEntity<User> {
 
 	@OneToOne(
 			mappedBy = "user",
-			fetch = FetchType.LAZY,
 			optional = true,
-			cascade = CascadeType.PERSIST)
+			cascade = CascadeType.ALL)
 	private DeliveryManager deliveryManager;
 
 	public User(
@@ -57,6 +57,17 @@ public class User extends TimeBaseEntity<User> {
 		this.slackId = slackId;
 		this.hubId = hubId;
 		this.status = UserStatus.PENDING;
+	}
+
+	public User(String email, String username, String password, UserRole role, UUID hubId, String slackId, DeliveryManagerType deliveryType, Long deliveryNumber) {
+		this.email = email;
+		this.username = username;
+		this.password = password;
+		this.role = role;
+		this.slackId = slackId;
+		this.hubId = hubId;
+		this.status = UserStatus.PENDING;
+		this.deliveryManager = new DeliveryManager(this, deliveryType, deliveryNumber);
 	}
 
 	public void permitSignup() {

@@ -1,6 +1,7 @@
 package com.fastline.authservice.presentation.controller;
 
 import com.fastline.authservice.application.change.DeliveryManagerService;
+import com.fastline.authservice.application.change.UserService;
 import com.fastline.authservice.presentation.dto.request.PermitRequest;
 import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequest;
 import com.fastline.authservice.presentation.dto.request.UpdateSlackRequest;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
-	private final DeliveryManagerService.UserService userService;
+	private final UserService userService;
 
 	// 회원가입 승인
 	@PutMapping("/permit/signup")

@@ -7,13 +7,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface UserRepository {
-	Optional<User> findByEmail(String email);
+	Optional<User> findUserByEmail(String email);
 
-	Optional<User> findByUsername(String userName);
+	Optional<User> findUserByUsername(String userName);
 
-	Optional<User> findById(Long id);
+	Optional<User> findUserById(Long id);
 
 	Page<User> findUsers(String username, UUID hubId, String role, String status, Pageable pageable);
 
 	void save(User user);
+
+	Long countDeliveryManagers();
 }
