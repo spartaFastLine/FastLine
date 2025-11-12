@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:file:vendor-service/.env[.properties]
   application:
     name: vendor-service
   datasource:
@@ -14,7 +16,7 @@ spring:
         format_sql: true
         use_sql_comments: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     defer-datasource-initialization: true
 
   sql:
@@ -33,3 +35,7 @@ eureka:
     lease-expiration-duration-in-seconds: 90
 server:
   port: 19099
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}

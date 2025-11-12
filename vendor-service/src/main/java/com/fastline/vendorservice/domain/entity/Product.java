@@ -1,8 +1,8 @@
 package com.fastline.vendorservice.domain.entity;
 
+import com.fastline.common.auditing.TimeBaseEntity;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
-import com.fastline.common.jpa.TimeBaseEntity;
 import com.fastline.vendorservice.domain.vo.Money;
 import com.fastline.vendorservice.domain.vo.Stock;
 import jakarta.persistence.*;
@@ -16,7 +16,7 @@ import org.hibernate.annotations.SQLDelete;
 @Getter
 @SQLDelete(sql = "UPDATE p_product SET deleted_at = CURRENT_TIMESTAMP WHERE product_id = ?")
 @Filter(name = "softDeleteFilter")
-public class Product extends TimeBaseEntity {
+public class Product extends TimeBaseEntity<Product> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

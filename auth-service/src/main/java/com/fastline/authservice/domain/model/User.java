@@ -1,6 +1,6 @@
 package com.fastline.authservice.domain.model;
 
-import com.fastline.common.jpa.TimeBaseEntity;
+import com.fastline.common.auditing.TimeBaseEntity;
 import com.fastline.common.security.model.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "p_users")
 @NoArgsConstructor
-public class User extends TimeBaseEntity {
+public class User extends TimeBaseEntity<User> {
 	@Id
 	@Column(name = "user_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
