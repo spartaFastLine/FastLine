@@ -1,10 +1,12 @@
 spring:
   application:
     name: eureka-service
+  config:
+    import: optional:file:eureka-service/.env[.properties]
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 server:
-    port: 19091
+    port: ${SERVER_PORT}
 eureka:
   client:
 #    유레카 서버에 등록하지 않음(여기가 서버임)
@@ -13,7 +15,7 @@ eureka:
     fetch-registry: false
     #유레카 클라이언트가 통신할때 칠요한 유레카 서버 주소
     service-url:
-      defaultZone: http://localhost:19091/eureka/
+      defaultZone: http://localhost:${SERVER_PORT}/eureka/
   instance:
     hostname: localhost
 #    유레카 서버에서 authorization-filter을 비활성화
