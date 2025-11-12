@@ -8,12 +8,14 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-@SpringBootApplication(scanBasePackages = "com.fastline", exclude = {
-		DataSourceAutoConfiguration.class,
-		HibernateJpaAutoConfiguration.class,
-		SecurityAutoConfiguration.class,
-		ManagementWebSecurityAutoConfiguration .class
-})
+@SpringBootApplication(
+		scanBasePackages = "com.fastline",
+		exclude = {
+			DataSourceAutoConfiguration.class,
+			HibernateJpaAutoConfiguration.class,
+			SecurityAutoConfiguration.class,
+			ManagementWebSecurityAutoConfiguration.class
+		})
 @EnableDiscoveryClient
 public class GatewayServiceApplication {
 

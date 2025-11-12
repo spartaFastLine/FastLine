@@ -1,7 +1,6 @@
 package com.fastline.messagingservice.domain.entity;
 
 import com.fastline.common.auditing.BaseEntity;
-import com.fastline.common.jpa.TimeBaseEntity;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.UUID;

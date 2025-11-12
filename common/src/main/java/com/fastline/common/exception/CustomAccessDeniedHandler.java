@@ -14,15 +14,28 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 	@Override
-	public void handle(HttpServletRequest request,HttpServletResponse response,AccessDeniedException accessDeniedException)throws IOException {
+	public void handle(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			AccessDeniedException accessDeniedException)
+			throws IOException {
 		String uri = request.getRequestURI();
-		log.error("접근 권한 오류 발생::: url : {}, error : {}",uri,accessDeniedException.getMessage(),accessDeniedException);
+		log.error(
+				"접근 권한 오류 발생::: url : {}, error : {}",
+				uri,
+				accessDeniedException.getMessage(),
+				accessDeniedException);
 		ErrorCode errorCode = ErrorCode.FORBIDDEN;
 		// 메시지에 URI 추가
 
 		response.setStatus(errorCode.getHttpStatus().value());
 		response.setContentType("application/json;charset=UTF-8");
-		response.getWriter().write(
-				new ObjectMapper().writeValueAsString(ApiResponse.ofFailure(errorCode.getMessage(), errorCode.getHttpStatus().toString())));
+		response
+				.getWriter()
+				.write(
+						new ObjectMapper()
+								.writeValueAsString(
+										ApiResponse.ofFailure(
+												errorCode.getMessage(), errorCode.getHttpStatus().toString())));
 	}
 }
