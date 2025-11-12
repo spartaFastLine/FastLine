@@ -17,8 +17,8 @@ logging:
 
 naver:
   map:
-    client_id: aoi86h8zbz
-    client_secret: JjLgixmNBRucK7tfbDfanyOvykagFbbZwMnTqI8H
+    client_id: ${CLIENT_ID}
+    client_secret: ${CLIENT_SECRET}
 # application-local.yml
 springdoc:
   api-docs:
