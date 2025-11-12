@@ -169,6 +169,10 @@ public class Delivery extends TimeBaseEntity<Delivery> {
 		}
 	}
 
+	public void completeIfAllPathsArrived() {
+		checkAndCompleteIfAllPathsArrived();
+	}
+
 	public void delete(Long userId) {
 		this.markDeleted();
 		//        this.deletedBy = userId;
