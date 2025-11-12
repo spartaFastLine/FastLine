@@ -5,6 +5,7 @@ import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.success.SuccessCode;
 import com.fastline.vendorservice.application.OrderService;
 import com.fastline.vendorservice.domain.entity.Order;
+import com.fastline.vendorservice.infrastructure.swagger.OrderControllerSwagger;
 import com.fastline.vendorservice.presentation.request.OrderCreateRequest;
 import com.fastline.vendorservice.presentation.response.order.*;
 import jakarta.validation.Valid;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/order")
 @RequiredArgsConstructor
-public class OrderController {
+public class OrderController implements OrderControllerSwagger {
 
 	private final OrderService service;
 
