@@ -21,37 +21,38 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final AuthorizationFilter jwtFilter;
+	private final AuthorizationFilter jwtFilter;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return new CustomAccessDeniedHandler();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // CSRF 비활성화 : 사용자가 로그인한 상태에서 의도치 않게 특정 웹사이트에 악성 요청을 보내도록 유도하는 웹 보안 공격을 막음
-        http.csrf(csrf -> csrf.disable());
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler() {
+		return new CustomAccessDeniedHandler();
+	}
 
-        // filter에서 권한 체크
-        http.authorizeHttpRequests(
-                authorizeHttpRequests ->
-                        authorizeHttpRequests
-                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                                .permitAll() // resources 접근 허용 설정
-                                .anyRequest()
-                                .authenticated()); // 그 외 모든 요청 인증처리
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		// CSRF 비활성화 : 사용자가 로그인한 상태에서 의도치 않게 특정 웹사이트에 악성 요청을 보내도록 유도하는 웹 보안 공격을 막음
+		http.csrf(csrf -> csrf.disable());
 
-        // jwt(토큰 기반 인증 방식)는 세션을 필요로 하지 않음, STATELESS -> 완전 사용 안함
-        http.sessionManagement(
-                session ->
-                        session.sessionCreationPolicy(
-                                org.springframework.security.config.http.SessionCreationPolicy.STATELESS));
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }}
+		// filter에서 권한 체크
+		http.authorizeHttpRequests(
+				authorizeHttpRequests ->
+						authorizeHttpRequests
+								.requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+								.permitAll() // resources 접근 허용 설정
+								.anyRequest()
+								.authenticated()); // 그 외 모든 요청 인증처리
 
+		// jwt(토큰 기반 인증 방식)는 세션을 필요로 하지 않음, STATELESS -> 완전 사용 안함
+		http.sessionManagement(
+				session ->
+						session.sessionCreationPolicy(
+								org.springframework.security.config.http.SessionCreationPolicy.STATELESS));
+		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+		return http.build();
+	}
+}
