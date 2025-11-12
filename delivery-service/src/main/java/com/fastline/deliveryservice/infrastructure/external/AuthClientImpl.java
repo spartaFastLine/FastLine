@@ -15,8 +15,8 @@ public class AuthClientImpl implements AuthClient {
 	private final AuthServiceFeignClient feignClient;
 
 	@Override
-	public ManagerAssignResult assign(UUID hubId) {
-		ApiResponse<ManagerAssignResponse> response = feignClient.assignManager(hubId);
+	public ManagerAssignResult assign(UUID hubId, String managerType) {
+		ApiResponse<ManagerAssignResponse> response = feignClient.assignManager(hubId, managerType);
 
 		if (!response.isSuccess() || response.getData() == null) {
 			throw new IllegalStateException("배송 담당자 자동 배정 실패: " + response.getMessage());

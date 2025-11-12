@@ -240,7 +240,7 @@ public class DeliveryService {
 
         List<CreateDeliveryPathCommand> paths = routes.stream()
                 .map(route -> {
-                    ManagerAssignResult managerAssignResult = authClient.assign(route.fromHubId());
+                    ManagerAssignResult managerAssignResult = authClient.assign(route.fromHubId(), "HUB_DELIVERY");
                     return new CreateDeliveryPathCommand(
                             route.sequence(),
                             route.fromHubId(),
@@ -252,10 +252,7 @@ public class DeliveryService {
                 })
                 .toList();
 
-        Long vendorDeliveryManagerId = paths.stream()
-                .max(Comparator.comparingInt(CreateDeliveryPathCommand::sequence))
-                .map(CreateDeliveryPathCommand::deliveryManagerId)
-                .orElse(null);
+        Long vendorDeliveryManagerId = authClient.assign(vendorInfo.endHubId(), "VENDOR_DELIVERY").managerId();
 
         CreateDeliveryCommand createCommand = new CreateDeliveryCommand(
                 command.orderId(),
@@ -272,15 +269,17 @@ public class DeliveryService {
 
         UUID deliveryId = createDelivery(createCommand);
 
+        List<String> routesAddress = routes.stream()
+                .sorted(Comparator.comparingInt(HubRouteResult::sequence))
+                .map(HubRouteResult::hubName)
+                .toList();
+
         log.info("주문 기반 배송 생성 완료: orderId={}", command.orderId());
 
         return DeliveryFromOrderCreateResult.of(
                 deliveryId,
                 vendorDeliveryManagerId,
-                routes.stream()
-                        .sorted(Comparator.comparingInt(HubRouteResult::sequence))
-                        .map(r -> r.fromHubId().toString())
-                        .toList()
+                routesAddress
         );
     }
 }
