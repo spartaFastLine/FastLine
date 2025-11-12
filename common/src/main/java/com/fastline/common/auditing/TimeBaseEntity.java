@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseEntity<T extends BaseEntity<T>> extends AbstractAggregateRoot<T> {
+public abstract class TimeBaseEntity<T extends TimeBaseEntity<T>> extends AbstractAggregateRoot<T> {
 
 	@CreatedDate
 	@Column(name = "created_at", nullable = false, updatable = false)

@@ -1,6 +1,6 @@
 package com.fastline.hubservice.domain.model;
 
-import com.fastline.common.jpa.TimeBaseEntity;
+import com.fastline.common.auditing.TimeBaseEntity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -12,7 +12,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class HubPath extends TimeBaseEntity {
+public class HubPath extends TimeBaseEntity<HubPath> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)

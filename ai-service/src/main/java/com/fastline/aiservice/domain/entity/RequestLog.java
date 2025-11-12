@@ -1,6 +1,6 @@
 package com.fastline.aiservice.domain.entity;
 
-import com.fastline.common.auditing.BaseEntity;
+import com.fastline.common.auditing.TimeBaseEntity;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @Entity
 @Table(name = "p_ai_request_log")
-public class RequestLog extends BaseEntity<RequestLog> {
+public class RequestLog extends TimeBaseEntity<RequestLog> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID requestId;

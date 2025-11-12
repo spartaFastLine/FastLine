@@ -7,6 +7,7 @@ import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.success.SuccessCode;
 import com.fastline.vendorservice.application.ProductService;
 import com.fastline.vendorservice.domain.entity.Product;
+import com.fastline.vendorservice.infrastructure.swagger.ProductControllerSwagger;
 import com.fastline.vendorservice.presentation.request.ProductCreateRequest;
 import com.fastline.vendorservice.presentation.request.ProductUpdateRequest;
 import com.fastline.vendorservice.presentation.response.product.ProductCreateResponse;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/product")
 @RequiredArgsConstructor
-public class ProductController {
+public class ProductController implements ProductControllerSwagger {
 
 	private final ProductService service;
 
