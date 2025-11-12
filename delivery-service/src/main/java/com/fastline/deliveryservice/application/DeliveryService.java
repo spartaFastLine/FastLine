@@ -192,4 +192,18 @@ public class DeliveryService {
                 .map(DeliveryPathDetailResult::from)
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    public DeliveryPathDetailResult getPath(GetDeliveryPathCommand command) {
+        Delivery delivery = deliveryRepository.findById(command.deliveryId())
+                .orElseThrow(() -> new NotFoundException("해당 배송이 존재하지 않습니다."));
+
+        DeliveryPath path = delivery.getPaths().stream()
+                .filter(p -> p.getDeliveryPathId().equals(command.pathId()))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("해당 경로가 존재하지 않습니다."));
+
+        return DeliveryPathDetailResult.from(path);
+    }
+
 }

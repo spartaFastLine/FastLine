@@ -175,6 +175,22 @@ public class DeliveryController {
         List<DeliveryPathDetailResponse> response = deliveryService.getPaths(command).stream().map(DeliveryPathDetailResponse::from).toList();
 
         log.info("배송별 경로 전체 조회 성공: deliveryId={}, pathCount={}", deliveryId, response.size());
+        return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATHS_FIND_SUCCESS, response);
+    }
+
+    /* 단일 경로 기록 조회 */
+    @GetMapping("/{deliveryId}/paths/{pathId}")
+    public ResponseEntity<ApiResponse<DeliveryPathDetailResponse>> getPath(
+            @PathVariable UUID deliveryId,
+            @PathVariable UUID pathId) {
+        log.info("단일 경로 조회 요청: deliveryId={}, pathId={}", deliveryId, pathId);
+
+        GetDeliveryPathCommand command = new GetDeliveryPathCommand(deliveryId, pathId);
+
+        DeliveryPathDetailResponse response =
+                DeliveryPathDetailResponse.from(deliveryService.getPath(command));
+
+        log.info("단일 경로 조회 성공: deliveryId={}, pathId={}", deliveryId, pathId);
         return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_FIND_SUCCESS, response);
     }
 }
