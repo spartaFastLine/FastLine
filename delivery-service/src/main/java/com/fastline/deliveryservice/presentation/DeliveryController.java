@@ -193,4 +193,23 @@ public class DeliveryController {
         log.info("단일 경로 조회 성공: deliveryId={}, pathId={}", deliveryId, pathId);
         return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_FIND_SUCCESS, response);
     }
+
+    /* 배송 경로 기록 검색 */
+    @GetMapping("/paths")
+    public ResponseEntity<ApiResponse<PageResponse<DeliveryPathSummaryResponse>>> searchDeliveryPaths(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction) {
+        log.info("배송 경로 검색 요청: page={}, size={}, sortBy={}, direction={}", page, size, sortBy, direction);
+
+        if (size != 10 && size != 30 && size != 50) size = 10;
+
+        SearchDeliveryPathCommand command = new SearchDeliveryPathCommand(page, size, sortBy, direction);
+
+        PageResponse<DeliveryPathSummaryResponse> response = deliveryService.searchDeliveryPaths(command);
+
+        log.info("배송 경로 검색 성공: page={}, totalElements={}", page, response.totalElements());
+        return ResponseUtil.successResponse(SuccessCode.DELIVERY_PATH_SEARCH_SUCCESS, response);
+    }
 }

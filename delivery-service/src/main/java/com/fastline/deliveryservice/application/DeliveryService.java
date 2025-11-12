@@ -6,16 +6,13 @@ import com.fastline.deliveryservice.application.dto.DeliveryResult;
 import com.fastline.deliveryservice.domain.entity.Delivery;
 import com.fastline.deliveryservice.domain.entity.DeliveryPath;
 import com.fastline.deliveryservice.domain.entity.DeliveryStatus;
+import com.fastline.deliveryservice.domain.repository.DeliveryPathRepository;
 import com.fastline.deliveryservice.domain.repository.DeliveryRepository;
 import com.fastline.deliveryservice.domain.service.DeliveryDomainService;
 import com.fastline.deliveryservice.domain.vo.OrderId;
 import com.fastline.deliveryservice.presentation.dto.PageResponse;
-import com.fastline.deliveryservice.presentation.dto.response.DeliveryPathDetailResponse;
-import com.fastline.deliveryservice.presentation.dto.response.DeliveryPathResponse;
+import com.fastline.deliveryservice.presentation.dto.response.DeliveryPathSummaryResponse;
 import com.fastline.deliveryservice.presentation.dto.response.DeliverySummaryResponse;
-import java.util.List;
-import java.util.UUID;
-
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +23,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.UUID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class DeliveryService {
 
 	private final DeliveryRepository deliveryRepository;
+    private final DeliveryPathRepository deliveryPathRepository;
 	private final DeliveryDomainService deliveryDomainService;
 
 	@Transactional
@@ -206,4 +207,20 @@ public class DeliveryService {
         return DeliveryPathDetailResult.from(path);
     }
 
+    @Transactional(readOnly = true)
+    public PageResponse<DeliveryPathSummaryResponse> searchDeliveryPaths(SearchDeliveryPathCommand command) {
+        log.info("배송 경로 검색 시작: page={}, size={}, sortBy={}, direction={}",
+                command.page(), command.size(), command.sortBy(), command.direction());
+
+        Sort.Direction direction =
+                Sort.Direction.fromOptionalString(command.direction()).orElse(Sort.Direction.DESC);
+
+        Pageable pageable =
+                PageRequest.of(command.page(), command.size(), Sort.by(direction, command.sortBy()));
+
+        Page<DeliveryPath> paths = deliveryPathRepository.searchDeliveryPaths(pageable);
+
+        log.info("배송 경로 검색 완료: page={}, totalElements={}", command.page(), paths.getTotalElements());
+        return PageResponse.from(paths.map(DeliveryPathSummaryResponse::from));
+    }
 }

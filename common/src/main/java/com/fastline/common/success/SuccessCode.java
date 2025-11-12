@@ -56,7 +56,8 @@ public enum SuccessCode {
 	DELIVERY_STATUS_UPDATE_SUCCESS(HttpStatus.OK, "배송 상태 변경 성공"),
 	DELIVERY_COMPLETE_SUCCESS(HttpStatus.OK, "배송 완료 처리 성공"),
     DELIVERY_PATHS_FIND_SUCCESS(HttpStatus.OK, "배송별 경로 전체 조회"),
-    DELIVERY_PATH_FIND_SUCCESS(HttpStatus.OK, "단일 경로 기록 조회");
+    DELIVERY_PATH_FIND_SUCCESS(HttpStatus.OK, "단일 경로 기록 조회"),
+    DELIVERY_PATH_SEARCH_SUCCESS(HttpStatus.OK, "배송 경로 검색 성공");
 
 	private final HttpStatus httpStatus;
 	private final String message;
