@@ -149,20 +149,6 @@ public class DeliveryService {
 	}
 
 	@Transactional
-	public void deletePath(UUID deliveryId, UUID pathId, Long userId) {
-		log.info("배송 경로 기록 삭제 시작: deliveryId={}, pathId={}", deliveryId, pathId);
-
-		Delivery delivery =
-				deliveryRepository
-						.findById(deliveryId)
-						.orElseThrow(() -> new IllegalArgumentException("배송을 찾을 수 없습니다."));
-
-		delivery.deletePath(pathId, userId);
-
-		log.info("배송 경로 기록 삭제 완료: deliveryId={}, pathId={}", deliveryId, pathId);
-	}
-
-	@Transactional
 	public void updateStatus(UUID deliveryId, DeliveryStatus status) {
 		log.info("배송 상태 변경 시작: deliveryId={}", deliveryId);
 
