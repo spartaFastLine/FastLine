@@ -40,6 +40,7 @@ public enum ErrorCode {
 	// 업체 (vendor)
 	ADDRESS_DUPLICATED(HttpStatus.CONFLICT, "업체 등록 실패"),
 	VENDOR_NOT_FOUND(HttpStatus.NOT_FOUND, "업체 조회 실패"),
+    VENDOR_HUBID_INVALIDATION(HttpStatus.CONFLICT, "업체의 허브ID가 유효하지 않음"),
 	PRODUCT_NAME_DUPLICATED(HttpStatus.CONFLICT, "상품 등록 실패"),
 	PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "상품 조회 실패"),
 	PRODUCT_STOCK_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "상품 재고 부족"),

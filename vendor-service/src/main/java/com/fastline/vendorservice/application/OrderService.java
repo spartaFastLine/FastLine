@@ -2,21 +2,29 @@ package com.fastline.vendorservice.application;
 
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
+import com.fastline.vendorservice.application.service.DeliveryClient;
+import com.fastline.vendorservice.application.service.MessageClient;
+import com.fastline.vendorservice.application.service.UserClient;
 import com.fastline.vendorservice.domain.entity.Order;
 import com.fastline.vendorservice.domain.entity.OrderProduct;
 import com.fastline.vendorservice.domain.repository.OrderRepository;
+import com.fastline.vendorservice.domain.repository.VendorRepository;
 import com.fastline.vendorservice.domain.service.OrderProductService;
 import com.fastline.vendorservice.domain.vo.OrderStatus;
-import com.fastline.vendorservice.infrastructure.external.MessageClient;
+import com.fastline.vendorservice.infrastructure.external.dto.delivery.DeliveryRequestDto;
+import com.fastline.vendorservice.infrastructure.external.dto.delivery.DeliveryResponseDto;
+import com.fastline.vendorservice.infrastructure.external.dto.UserResponseDto;
 import com.fastline.vendorservice.infrastructure.external.dto.message.MessageRequestDto;
 import com.fastline.vendorservice.presentation.request.OrderCreateRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -26,22 +34,32 @@ public class OrderService {
 	private final OrderRepository repository;
 	private final OrderProductService orderProductService;
 
-	//    private final DeliveryClient deliveryClient;
-	private final MessageClient messageClient;
+    private final DeliveryClient deliveryClient;
+	private final UserClient userClient;
+    private final MessageClient messageClient;
 
-	/** TODO: 배송서비스에 배송 생성을 요청하는 흐름 필요. */
-	public Order insert(OrderCreateRequest createRequest) {
+	public Order insert(OrderCreateRequest createRequest, Long userId) {
 
 		Order order = Order.create(createRequest);
 		List<OrderProduct> orderProducts =
 				orderProductService.createOrderProducts(order, createRequest.orderProductRequests());
 		orderProducts.forEach(order::mappingOrderProduct);
 
-		//        UUID deliveryId = deliveryClient. 받아와서 다시 해당 배송정보를 요청
-		order.mappingDeliveryId(UUID.randomUUID());
+        UserResponseDto userInfo = userClient.getUserInfo(userId);
+
+        DeliveryResponseDto deliveryResponseDto = deliveryClient.requestDelivery(new DeliveryRequestDto(
+                order.getId().toString(),
+                order.getVendorProducerId().toString(),
+                order.getVendorConsumerId().toString(),
+                order.getConsumerName(),
+                userInfo.slackId(),
+                createRequest.address()
+        ));
+
+        order.mappingDeliveryId(UUID.fromString(deliveryResponseDto.deliveryId()));
 		Order result = repository.insert(order);
 
-		//		messageClient.sendMassage(createMessageRequestDto(result));
+        messageClient.sendMessage(createMessageRequestDto(result, userInfo, deliveryResponseDto, createRequest.address()));
 
 		return result;
 	}
@@ -71,11 +89,10 @@ public class OrderService {
 		return repository.deleteByOrderId(orderId);
 	}
 
-	private MessageRequestDto createMessageRequestDto(Order order) {
+	private MessageRequestDto createMessageRequestDto(Order order, UserResponseDto userInfo, DeliveryResponseDto deliveryResponseDto, String destination) {
 
-		List<OrderProduct> orderProducts = order.getOrderProducts();
 		ArrayList<MessageRequestDto.MessageItem> messageItems =
-				orderProducts.stream()
+                order.getOrderProducts().stream()
 						.map(
 								product ->
 										new MessageRequestDto.MessageItem(
@@ -84,15 +101,14 @@ public class OrderService {
 
 		return new MessageRequestDto(
 				order.getId(),
+                deliveryResponseDto.managerId(),
 				order.getConsumerName(),
-				"test123@gmail.com",
-				order.getCreatedAt(),
+                userInfo.email(),
+                Instant.now(),
 				messageItems,
 				order.getRequest(),
-				"testHub",
-				List.of("hub1, hub2"),
-				"도착지",
-				"매니저",
-				"manager@gmail.com");
+				deliveryResponseDto.hubPath().get(0),
+				deliveryResponseDto.hubPath().subList(1, deliveryResponseDto.hubPath().size()),
+				destination);
 	}
 }

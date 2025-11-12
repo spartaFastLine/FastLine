@@ -9,6 +9,7 @@ import com.fastline.vendorservice.application.VendorService;
 import com.fastline.vendorservice.domain.entity.Order;
 import com.fastline.vendorservice.domain.entity.Product;
 import com.fastline.vendorservice.domain.entity.Vendor;
+import com.fastline.vendorservice.infrastructure.external.dto.delivery.VendorHubIdResponse;
 import com.fastline.vendorservice.infrastructure.swagger.VendorControllerSwagger;
 import com.fastline.vendorservice.presentation.request.VendorCreateRequest;
 import com.fastline.vendorservice.presentation.request.VendorUpdateRequest;
@@ -114,4 +115,14 @@ public class VendorController implements VendorControllerSwagger {
 		UUID deletedId = service.deleteVendor(vendorId);
 		return ResponseUtil.successResponse(SuccessCode.VENDOR_DELETE_SUCCESS, deletedId);
 	}
+
+    @GetMapping("/info")
+    public ResponseEntity<ApiResponse<VendorHubIdResponse>> sendToDeliveryVendorInfos(@RequestParam UUID vendorSenderId,
+                                                                                     @RequestParam UUID vendorReceiverId) {
+
+        List<UUID> vendorHubId = service.findVendorHubId(vendorSenderId, vendorReceiverId);
+        VendorHubIdResponse response = new VendorHubIdResponse(vendorHubId.get(0).toString(), vendorHubId.get(1).toString());
+
+        return ResponseUtil.successResponse(SuccessCode.VENDOR_INFO_FIND_SUCCESS, response);
+    }
 }

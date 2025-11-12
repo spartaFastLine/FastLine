@@ -4,7 +4,11 @@ import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.vendorservice.domain.entity.Vendor;
 import com.fastline.vendorservice.domain.repository.VendorRepository;
+
+import java.util.List;
 import java.util.UUID;
+
+import com.fastline.vendorservice.infrastructure.external.dto.delivery.VendorHubIdMappingObj;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -42,4 +46,9 @@ public class VendorRepositoryAdapter implements VendorRepository {
 		jpaVendorRepository.deleteById(vendorId);
 		return vendorId;
 	}
+
+    @Override
+    public List<VendorHubIdMappingObj> findVendorHubId(UUID vendorSenderId, UUID vendorReceiverId) {
+        return jpaVendorRepository.findVendorHubId(List.of(vendorSenderId, vendorReceiverId));
+    }
 }

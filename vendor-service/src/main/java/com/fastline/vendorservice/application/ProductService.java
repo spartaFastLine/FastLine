@@ -1,5 +1,8 @@
 package com.fastline.vendorservice.application;
 
+import com.fastline.common.exception.CustomException;
+import com.fastline.common.exception.ErrorCode;
+import com.fastline.vendorservice.application.service.HubClient;
 import com.fastline.vendorservice.domain.entity.Product;
 import com.fastline.vendorservice.domain.entity.Vendor;
 import com.fastline.vendorservice.domain.repository.ProductRepository;
@@ -19,13 +22,16 @@ public class ProductService {
 	private final ProductRepository repository;
 	private final VendorService vendorService;
 
-	//    private final HubClient hubClient
+    private final HubClient hubClient;
 
-	/** TODO: vendor의 hubId가 유효한지 확인하는 흐름 작성 필요. */
 	public Product insert(ProductCreateRequest request) {
 
 		Vendor vendor = vendorService.findByVendorId(request.vendorId());
-		//        hubClient.findHub();
+        Boolean isExistHub = hubClient.validateHubId(vendor.getId());
+
+        if (!isExistHub) {
+            throw new CustomException(ErrorCode.VENDOR_HUBID_INVALIDATION);
+        }
 
 		Product product =
 				Product.create(request.name(), Stock.of(request.stock()), request.price(), vendor);
