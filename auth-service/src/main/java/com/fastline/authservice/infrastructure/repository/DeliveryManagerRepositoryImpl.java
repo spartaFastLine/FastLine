@@ -1,8 +1,5 @@
 package com.fastline.authservice.infrastructure.repository;
 
-import static com.fastline.authservice.domain.model.QDeliveryManager.deliveryManager;
-import static com.fastline.authservice.domain.model.QUser.user;
-
 import com.fastline.authservice.domain.model.DeliveryManager;
 import com.fastline.authservice.domain.model.DeliveryManagerType;
 import com.fastline.authservice.domain.model.UserStatus;
@@ -12,16 +9,20 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static com.fastline.authservice.domain.model.QDeliveryManager.deliveryManager;
+import static com.fastline.authservice.domain.model.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
@@ -165,4 +166,17 @@ public class DeliveryManagerRepositoryImpl implements DeliveryManagerRepository 
 						});
 		return specs.toArray(new OrderSpecifier<?>[0]);
 	}
+
+	@Override
+	public Optional<DeliveryManager> assignDeliveryManager(UUID hubId, DeliveryManagerType type) {
+		DeliveryManager manager =jpaQueryFactory.selectFrom(deliveryManager)
+				.innerJoin(deliveryManager.user, user)
+				.where(user.hubId.eq(hubId),
+						deliveryManager.type.eq(type),
+						deliveryManager.isStandby.eq(true))
+				.orderBy(deliveryManager.number.asc())
+						.fetchFirst();
+		return Optional.ofNullable(manager);
+	}
+
 }

@@ -84,10 +84,19 @@ public class UserController {
 		return ResponseUtil.successResponse(SuccessCode.USER_DELETE_SUCCESS);
 	}
 
-	//	@PreAuthorize()
-	@PostMapping("/{userId}/slackId")
-	public ResponseEntity<ApiResponse<SlackResponseDto>> getSlackId(@PathVariable Long userId) {
-		SlackResponseDto responseDto = userService.getSlackId(userId);
-		return ResponseUtil.successResponse(SuccessCode.SLACKID_READ_SUCCESS, responseDto);
+	//내부요청
+
+	//배송담당자 정보 조회
+	@GetMapping("/{userId}")
+	public ResponseEntity<ApiResponse<DeliveryManagerMessageDto>> getDeliveryManagerMessageInfo(@PathVariable Long userId) {
+		DeliveryManagerMessageDto responseDto = userService.getDeliveryManagerMessageInfo(userId);
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_READ_SUCCESS, responseDto);
+	}
+
+	//배송담당자 허브ID 조회
+	@GetMapping("/{userId}/hubId")
+	public ResponseEntity<ApiResponse<UserHubIdResponseDto>> getHubMessageInfo(@PathVariable Long userId) {
+		UserHubIdResponseDto responseDto = userService.getUserHubInfo(userId);
+		return ResponseUtil.successResponse(SuccessCode.HUBID_READ_SUCCESS, responseDto);
 	}
 }
