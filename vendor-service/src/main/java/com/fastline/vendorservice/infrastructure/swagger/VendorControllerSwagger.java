@@ -1,6 +1,7 @@
 package com.fastline.vendorservice.infrastructure.swagger;
 
 import com.fastline.common.response.ApiResponse;
+import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.vendorservice.presentation.request.VendorCreateRequest;
 import com.fastline.vendorservice.presentation.request.VendorUpdateRequest;
 import com.fastline.vendorservice.presentation.response.vendor.*;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 public interface VendorControllerSwagger {
@@ -37,7 +39,8 @@ public interface VendorControllerSwagger {
 											schema = @Schema(implementation = VendorCreateRequest.class))))
 	@PostMapping
 	ResponseEntity<ApiResponse<VendorCreateResponse>> insertVendor(
-			@RequestBody @Valid VendorCreateRequest createRequest);
+			@RequestBody @Valid VendorCreateRequest createRequest,
+			@AuthenticationPrincipal UserDetailsImpl userDetails);
 
 	@Operation(
 			summary = "업체 단건 조회",
@@ -140,8 +143,8 @@ public interface VendorControllerSwagger {
 	@GetMapping("/{vendorId}/orders")
 	ResponseEntity<ApiResponse<VendorOrderResponse>> getVendorOrders(
 			@PathVariable UUID vendorId,
-			@PageableDefault(direction = Sort.Direction.ASC, sort = "vendorProducerId")
-					Pageable pageable);
+			@PageableDefault(direction = Sort.Direction.ASC, sort = "vendorProducerId") Pageable pageable,
+			@AuthenticationPrincipal UserDetailsImpl userDetails);
 
 	@Operation(
 			summary = "업체 정보 수정",
@@ -171,7 +174,9 @@ public interface VendorControllerSwagger {
 											schema = @Schema(implementation = VendorUpdateRequest.class))))
 	@PutMapping
 	ResponseEntity<ApiResponse<VendorUpdateResponse>> updateVendor(
-			@RequestBody @Valid VendorUpdateRequest updateRequest, @RequestParam UUID vendorId);
+			@RequestBody @Valid VendorUpdateRequest updateRequest,
+			@RequestParam UUID vendorId,
+			@AuthenticationPrincipal UserDetailsImpl userDetails);
 
 	@Operation(
 			summary = "업체 단건 삭제",
@@ -190,5 +195,6 @@ public interface VendorControllerSwagger {
 						schema = @Schema(implementation = UUID.class))
 			})
 	@DeleteMapping
-	ResponseEntity<ApiResponse<UUID>> deleteVendor(@RequestParam UUID vendorId);
+	ResponseEntity<ApiResponse<UUID>> deleteVendor(
+			@RequestParam UUID vendorId, @AuthenticationPrincipal UserDetailsImpl userDetails);
 }

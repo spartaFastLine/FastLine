@@ -5,6 +5,13 @@ spring:
     active: local
   config:
     import: optional:file:./hub-service/.env.dev[.properties]
+  data:
+    redis:
+      host: localhost
+      port: 6379
+     # password: yourpassword
+  cache:
+    type: redis
   # 공통 JPA/Flyway/시간대
   jpa:
     open-in-view: false

@@ -34,6 +34,7 @@ public enum SuccessCode {
 	VENDOR_FIND_SUCCESS(HttpStatus.OK, "업체 조회 성공"),
 	VENDOR_UPDATE_SUCCESS(HttpStatus.OK, "업체 정보 수정 성공"),
 	VENDOR_DELETE_SUCCESS(HttpStatus.OK, "업체 삭제 성공"),
+	VENDOR_INFO_FIND_SUCCESS(HttpStatus.OK, "업체 정보 조회 성공"),
 	PRODUCT_SAVE_SUCCESS(HttpStatus.CREATED, "상품 등록 성공"),
 	PRODUCT_FIND_SUCCESS(HttpStatus.OK, "상품 조회 성공"),
 	PRODUCT_UPDATE_SUCCESS(HttpStatus.OK, "상품 정보 수정 성공"),
@@ -42,6 +43,7 @@ public enum SuccessCode {
 	ORDER_FIND_SUCCESS(HttpStatus.OK, "주문 조회 성공"),
 	ORDER_STATUS_UPDATE_SUCCESS(HttpStatus.OK, "주문 상태 변경 성공"),
 	ORDER_DELETE_SUCCESS(HttpStatus.OK, "주문 삭제 성공"),
+	ORDER_COMPLETE(HttpStatus.OK, "주문이 정상적으로 종료됨"),
 
 	// AI
 	MESSAGE_GENERATION_SUCCESS(HttpStatus.OK, "최종 발송 시한 정보 생성 성공"),
@@ -51,13 +53,17 @@ public enum SuccessCode {
 
 	// 배송 (delivery)
 	DELIVERY_SAVE_SUCCESS(HttpStatus.CREATED, "배송 생성 성공"),
+	DELIVERY_FROM_ORDER_SAVE_SUCCESS(HttpStatus.CREATED, "주문 생성 시 배송 생성 성공"),
 	DELIVERY_FIND_SUCCESS(HttpStatus.OK, "배송 단건 조회 성공"),
 	DELIVERY_SEARCH_SUCCESS(HttpStatus.OK, "배송 검색 성공"),
 	DELIVERY_UPDATE_SUCCESS(HttpStatus.OK, "배송 수정 성공"),
 	DELIVERY_DELETE_SUCCESS(HttpStatus.OK, "배송 삭제 성공"),
 	DELIVERY_PATH_DELETE_SUCCESS(HttpStatus.OK, "배송 경로 기록 삭제 성공"),
 	DELIVERY_STATUS_UPDATE_SUCCESS(HttpStatus.OK, "배송 상태 변경 성공"),
-	DELIVERY_COMPLETE_SUCCESS(HttpStatus.OK, "배송 완료 처리 성공");
+	DELIVERY_COMPLETE_SUCCESS(HttpStatus.OK, "배송 완료 처리 성공"),
+	DELIVERY_PATHS_FIND_SUCCESS(HttpStatus.OK, "배송별 경로 전체 조회"),
+	DELIVERY_PATH_FIND_SUCCESS(HttpStatus.OK, "단일 경로 기록 조회"),
+	DELIVERY_PATH_SEARCH_SUCCESS(HttpStatus.OK, "배송 경로 검색 성공");
 
 	private final HttpStatus httpStatus;
 	private final String message;

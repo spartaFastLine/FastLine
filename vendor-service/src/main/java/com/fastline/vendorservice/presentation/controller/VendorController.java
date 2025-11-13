@@ -4,11 +4,13 @@ import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
+import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.common.success.SuccessCode;
 import com.fastline.vendorservice.application.VendorService;
-import com.fastline.vendorservice.domain.entity.Order;
-import com.fastline.vendorservice.domain.entity.Product;
-import com.fastline.vendorservice.domain.entity.Vendor;
+import com.fastline.vendorservice.domain.model.Order;
+import com.fastline.vendorservice.domain.model.Product;
+import com.fastline.vendorservice.domain.model.Vendor;
+import com.fastline.vendorservice.infrastructure.external.dto.delivery.VendorHubIdResponse;
 import com.fastline.vendorservice.infrastructure.swagger.VendorControllerSwagger;
 import com.fastline.vendorservice.presentation.request.VendorCreateRequest;
 import com.fastline.vendorservice.presentation.request.VendorUpdateRequest;
@@ -21,6 +23,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,10 +35,12 @@ public class VendorController implements VendorControllerSwagger {
 	private final VendorService service;
 
 	@PostMapping
+	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<VendorCreateResponse>> insertVendor(
-			@RequestBody @Valid VendorCreateRequest createRequest) {
+			@RequestBody @Valid VendorCreateRequest createRequest,
+			@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-		Vendor vendor = service.insert(createRequest);
+		Vendor vendor = service.insert(createRequest, userDetails.getUserId());
 		VendorCreateResponse response =
 				new VendorCreateResponse(
 						vendor.getId(),
@@ -47,6 +53,7 @@ public class VendorController implements VendorControllerSwagger {
 	}
 
 	@GetMapping
+	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<ApiResponse<VendorFindResponse>> getVendor(@RequestParam UUID vendorId) {
 
 		Vendor vendor = service.findByVendorId(vendorId);
@@ -62,6 +69,7 @@ public class VendorController implements VendorControllerSwagger {
 	}
 
 	@GetMapping("/{vendorId}/products")
+	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<ApiResponse<VendorProductResponse>> getVendorProducts(
 			@PathVariable UUID vendorId,
 			@PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable) {
@@ -78,12 +86,14 @@ public class VendorController implements VendorControllerSwagger {
 	}
 
 	@GetMapping("/{vendorId}/orders")
+	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<ApiResponse<VendorOrderResponse>> getVendorOrders(
 			@PathVariable UUID vendorId,
-			@PageableDefault(direction = Sort.Direction.ASC, sort = "vendorProducerId")
-					Pageable pageable) {
+			@PageableDefault(direction = Sort.Direction.ASC, sort = "vendorProducerId") Pageable pageable,
+			@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-		List<Order> orderInVendor = service.findOrdersInVendor(vendorId, pageable);
+		List<Order> orderInVendor =
+				service.findOrdersInVendor(vendorId, pageable, userDetails.getUserId());
 		List<VendorOrder> vendorOrders =
 				orderInVendor.stream()
 						.map(p -> new VendorOrder(p.getId(), p.getStatus(), p.getArrivalTime()))
@@ -95,12 +105,15 @@ public class VendorController implements VendorControllerSwagger {
 	}
 
 	@PutMapping
+	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER', 'VENDOR_MANAGER')")
 	public ResponseEntity<ApiResponse<VendorUpdateResponse>> updateVendor(
-			@RequestBody @Valid VendorUpdateRequest updateRequest, @RequestParam UUID vendorId) {
+			@RequestBody @Valid VendorUpdateRequest updateRequest,
+			@RequestParam UUID vendorId,
+			@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
 		if (updateRequest == null) throw new CustomException(ErrorCode.VALIDATION_ERROR);
 
-		Vendor vendor = service.updateVendor(vendorId, updateRequest);
+		Vendor vendor = service.updateVendor(vendorId, updateRequest, userDetails.getUserId());
 		VendorUpdateResponse response =
 				new VendorUpdateResponse(
 						vendor.getName(), vendor.getType(), vendor.getAddress(), vendor.getHubId());
@@ -109,9 +122,22 @@ public class VendorController implements VendorControllerSwagger {
 	}
 
 	@DeleteMapping
-	public ResponseEntity<ApiResponse<UUID>> deleteVendor(@RequestParam UUID vendorId) {
+	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
+	public ResponseEntity<ApiResponse<UUID>> deleteVendor(
+			@RequestParam UUID vendorId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-		UUID deletedId = service.deleteVendor(vendorId);
+		UUID deletedId = service.deleteVendor(vendorId, userDetails.getUserId());
 		return ResponseUtil.successResponse(SuccessCode.VENDOR_DELETE_SUCCESS, deletedId);
+	}
+
+	@GetMapping("/info")
+	public ResponseEntity<ApiResponse<VendorHubIdResponse>> sendToDeliveryVendorInfos(
+			@RequestParam UUID vendorSenderId, @RequestParam UUID vendorReceiverId) {
+
+		List<UUID> vendorHubId = service.findHubIdInVendor(vendorSenderId, vendorReceiverId);
+		VendorHubIdResponse response =
+				new VendorHubIdResponse(vendorHubId.get(0).toString(), vendorHubId.get(1).toString());
+
+		return ResponseUtil.successResponse(SuccessCode.VENDOR_INFO_FIND_SUCCESS, response);
 	}
 }

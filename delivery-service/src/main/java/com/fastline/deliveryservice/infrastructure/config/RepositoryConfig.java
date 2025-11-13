@@ -2,6 +2,7 @@ package com.fastline.deliveryservice.infrastructure.config;
 
 import com.fastline.deliveryservice.domain.repository.DeliveryRepository;
 import com.fastline.deliveryservice.infrastructure.repository.DeliveryRepositoryAdapter;
+import com.fastline.deliveryservice.infrastructure.repository.JpaDeliveryPathRepository;
 import com.fastline.deliveryservice.infrastructure.repository.JpaDeliveryRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +11,9 @@ import org.springframework.context.annotation.Configuration;
 public class RepositoryConfig {
 
 	@Bean
-	public DeliveryRepository deliveryRepository(JpaDeliveryRepository jpaDeliveryRepository) {
-		return new DeliveryRepositoryAdapter(jpaDeliveryRepository);
+	public DeliveryRepository deliveryRepository(
+			JpaDeliveryRepository jpaDeliveryRepository,
+			JpaDeliveryPathRepository jpaDeliveryPathRepository) {
+		return new DeliveryRepositoryAdapter(jpaDeliveryRepository, jpaDeliveryPathRepository);
 	}
 }
