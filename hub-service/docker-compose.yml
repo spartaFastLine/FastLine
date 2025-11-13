@@ -39,7 +39,7 @@ services:
       PGADMIN_SERVER_JSON_FILE: /pgadmin4/servers.json
       PGADMIN_REPLACE_SERVERS_ON_STARTUP: "True"
     ports:
-      - "127.0.0.1:5050:80"
+      - "127.0.0.1:5050:85"
     depends_on:
       db:
         condition: service_healthy
@@ -56,7 +56,7 @@ services:
     restart: unless-stopped
     command: [ "redis-server", "--appendonly", "yes" ]
     ports:
-      - "6379:6379"
+      - "6384:6384"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -70,9 +70,9 @@ services:
     container_name: redisinsight
     restart: unless-stopped
     environment:
-      RI_APP_PORT: "5540"
+      RI_APP_PORT: "5545"
     ports:
-      - "127.0.0.1:5540:5540"
+      - "127.0.0.1:5540:5545"
     depends_on:
       redis:
         condition: service_healthy
