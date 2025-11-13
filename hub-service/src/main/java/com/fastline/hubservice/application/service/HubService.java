@@ -22,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class HubService {
 	private final HubRepository hubRepository;
 
-	// private final HubDomainService hubDomainService;
-
 	@Transactional
 	public UUID createHub(CreateHubCommand command) {
 		log.info("허브 생성 시작 : hubId={}", command);
@@ -44,17 +42,18 @@ public class HubService {
 		}
 		Hub hub = Hub.create(spec);
 
-		hubRepository.save(hub);
+		Hub savedHub = hubRepository.save(hub);
 
-		log.info("허브 생성 완료: hubId={}", hub.getHubId());
+		log.info("허브 생성 완료: hubId={}", savedHub.getHubId());
 		return hub.getHubId();
 	}
 
 	@Transactional(readOnly = true)
 	public Hub getHub(UUID hubId) {
-		return hubRepository
-				.findById(hubId)
-				.orElseThrow(() -> new EntityNotFoundException("허브가 존재하지 않습니다: " + hubId));
+		return (Hub)
+				hubRepository
+						.findById(hubId)
+						.orElseThrow(() -> new EntityNotFoundException("허브가 존재하지 않습니다: " + hubId));
 	}
 
 	// 클래스 마지막 닫는 괄호 직전에 추가
@@ -68,9 +67,10 @@ public class HubService {
 	@Transactional
 	public void softDeleteHub(UUID hubId) {
 		Hub hub =
-				hubRepository
-						.findById(hubId)
-						.orElseThrow(() -> new EntityNotFoundException("허브가 존재하지 않습니다: " + hubId));
+				(Hub)
+						hubRepository
+								.findById(hubId)
+								.orElseThrow(() -> new EntityNotFoundException("허브가 존재하지 않습니다: " + hubId));
 
 		// 이미 삭제된 경우는 조용히 종료하거나 정책에 따라 예외를 던질 수 있음
 		if (hub.getDeletedAt() != null) {
