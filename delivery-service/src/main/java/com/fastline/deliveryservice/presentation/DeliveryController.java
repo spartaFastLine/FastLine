@@ -2,6 +2,7 @@ package com.fastline.deliveryservice.presentation;
 
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
+import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.common.success.SuccessCode;
 import com.fastline.deliveryservice.application.DeliveryService;
 import com.fastline.deliveryservice.application.command.*;
@@ -19,6 +20,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -115,10 +117,11 @@ public class DeliveryController {
 
 	@Operation(summary = "배송 삭제 API")
 	@DeleteMapping("/{deliveryId}")
-	public ResponseEntity<ApiResponse<Void>> deleteDelivery(@PathVariable UUID deliveryId) {
+	public ResponseEntity<ApiResponse<Void>> deleteDelivery(
+			@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable UUID deliveryId) {
 		log.info("배송 삭제 요청: deliveryId={}", deliveryId);
 
-		Long userId = 1234L; // 추후 로그인 사용자 정보 가져오게 수정 필요
+		Long userId = userDetails.getUserId();
 
 		deliveryService.deleteDelivery(deliveryId, userId);
 
