@@ -11,7 +11,28 @@ spring:
             - id: auth-service  # 라우트 식별자
               uri: lb://auth-service  # 서비스 디스커버리를 통한 user-service로 라우팅
               predicates:
-                - Path=/api/users/**,/api/auth/**  # /users/** 경로에 대한 요청을 auth-service로 라우팅
+                - Path=/api/users/**, /api/auth/**  # /users/** 경로에 대한 요청을 auth-service로 라우팅
+            - id: delivery-service  # delivery
+              uri: lb://delivery-service
+              predicates:
+                - Path=/api/deliverys, /api/deliverys/**
+            - id: hub-service  #hub
+              uri: lb://hub-service
+              predicates:
+                - Path=/api/hubs, /api/hubs/**, /api/hub-path, /api/hub-path/**
+            - id: ai-service  #ai
+              uri: lb://ai-service
+              predicates:
+                - Path=/api/ai/**
+            - id: vendor-service  #vendor
+              uri: lb://vendor-service
+              predicates:
+                - Path=/api/vendor, /api/vendor/**, /api/product, /api/order, /api/order/**
+            - id: messaging-service  #messaging
+              uri: lb://messaging-service
+              predicates:
+                - Path=/api/slack/**
+
 server:
   port: ${SERVER_PORT}  # 게이트웨이 서비스 포트 설정
 eureka:

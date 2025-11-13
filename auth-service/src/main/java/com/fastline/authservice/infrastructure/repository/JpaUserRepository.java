@@ -9,6 +9,7 @@ public interface JpaUserRepository extends JpaRepository<User, Long> {
 	Optional<User> findByEmail(String email);
 
 	Optional<User> findByUsername(String username);
+
 	@Query("SELECT COUNT(u) FROM User u WHERE u.deliveryManager IS NOT NULL")
 	Long countDeliveryManagers();
 }

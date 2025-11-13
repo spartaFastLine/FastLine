@@ -1,13 +1,13 @@
 package com.fastline.authservice.infrastructure.repository;
 
-import static com.fastline.authservice.domain.model.QUser.user;
 import static com.fastline.authservice.domain.model.QDeliveryManager.deliveryManager;
+import static com.fastline.authservice.domain.model.QUser.user;
 
 import com.fastline.authservice.domain.model.DeliveryManager;
 import com.fastline.authservice.domain.model.User;
+import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.authservice.domain.vo.DeliveryManagerType;
 import com.fastline.authservice.domain.vo.UserStatus;
-import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.common.security.model.UserRole;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -80,11 +80,18 @@ public class UserRepositoryAdapter implements UserRepository {
 		return new PageImpl<>(users, pageable, total);
 	}
 
-
 	@Override
-	public Page<DeliveryManager> findDeliveryManagers(String username, UUID hubId, String deliveryType, Long number, String userStatus, boolean isActive, Pageable pageable) {
+	public Page<DeliveryManager> findDeliveryManagers(
+			String username,
+			UUID hubId,
+			String deliveryType,
+			Long number,
+			String userStatus,
+			boolean isActive,
+			Pageable pageable) {
 		List<DeliveryManager> deliveryManagers =
-				jpaQueryFactory.selectFrom(deliveryManager)
+				jpaQueryFactory
+						.selectFrom(deliveryManager)
 						.innerJoin(deliveryManager.user, user)
 						.where(
 								eqUsername(username),
@@ -97,17 +104,19 @@ public class UserRepositoryAdapter implements UserRepository {
 						.offset(pageable.getOffset())
 						.limit(pageable.getPageSize())
 						.fetch();
-		Long total = jpaQueryFactory.select(user.count())
-				.from(user)
-				.innerJoin(user.deliveryManager,deliveryManager)
-				.where(
-						eqUsername(username),
-						eqhubId(hubId),
-						eqType(deliveryType),
-						eqNumber(number),
-						eqStatus(userStatus),
-						eqIsActive(isActive))
-				.fetchOne();
+		Long total =
+				jpaQueryFactory
+						.select(user.count())
+						.from(user)
+						.innerJoin(user.deliveryManager, deliveryManager)
+						.where(
+								eqUsername(username),
+								eqhubId(hubId),
+								eqType(deliveryType),
+								eqNumber(number),
+								eqStatus(userStatus),
+								eqIsActive(isActive))
+						.fetchOne();
 		total = total != null ? total : 0L;
 		return new PageImpl<>(deliveryManagers, pageable, total);
 	}
@@ -210,6 +219,7 @@ public class UserRepositoryAdapter implements UserRepository {
 						});
 		return specs.toArray(new OrderSpecifier<?>[0]);
 	}
+
 	// 정렬조건 빌더
 	private OrderSpecifier<?>[] builderDeliveryOrderSepifier(Pageable pageable) {
 		List<OrderSpecifier<?>> specs = new ArrayList<>();

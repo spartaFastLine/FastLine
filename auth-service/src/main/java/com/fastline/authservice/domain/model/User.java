@@ -42,10 +42,7 @@ public class User extends TimeBaseEntity<User> {
 
 	private UUID hubId;
 
-	@OneToOne(
-			mappedBy = "user",
-			optional = true,
-			cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "user", optional = true, cascade = CascadeType.ALL)
 	private DeliveryManager deliveryManager;
 
 	public User(
@@ -59,7 +56,15 @@ public class User extends TimeBaseEntity<User> {
 		this.status = UserStatus.PENDING;
 	}
 
-	public User(String email, String username, String password, UserRole role, UUID hubId, String slackId, DeliveryManagerType deliveryType, Long deliveryNumber) {
+	public User(
+			String email,
+			String username,
+			String password,
+			UserRole role,
+			UUID hubId,
+			String slackId,
+			DeliveryManagerType deliveryType,
+			Long deliveryNumber) {
 		this.email = email;
 		this.username = username;
 		this.password = password;
@@ -97,15 +102,13 @@ public class User extends TimeBaseEntity<User> {
 	public void delete() {
 		this.status = UserStatus.DELETED;
 		markDeleted();
-		if(this.role == UserRole.DELIVERY_MANAGER) this.getDeliveryManager().delete();
+		if (this.role == UserRole.DELIVERY_MANAGER) this.getDeliveryManager().delete();
 	}
 
 	public void updateByManager(UUID hubId, UserStatus status, DeliveryManagerType deliveryType) {
-		if(hubId!=null) this.hubId = hubId;
-		if(status!=null) this.status = status;
-		if(this.role == UserRole.DELIVERY_MANAGER && deliveryType!=null)
+		if (hubId != null) this.hubId = hubId;
+		if (status != null) this.status = status;
+		if (this.role == UserRole.DELIVERY_MANAGER && deliveryType != null)
 			this.getDeliveryManager().updateType(deliveryType);
-
-
 	}
 }

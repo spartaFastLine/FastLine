@@ -27,8 +27,7 @@ public class UserController {
 	@PutMapping("/permit/signup/{userId}")
 	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Void>> permitSignup(
-			@AuthenticationPrincipal UserDetailsImpl userDetails,
-			@PathVariable("userId") Long userId){
+			@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("userId") Long userId) {
 		userService.permitSignup(userDetails.getUserId(), userId);
 		return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_PERMIT_SUCCESS);
 	}
@@ -39,30 +38,30 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Page<UserResponse>>> getUsers(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody UserSearchRequest requestDto) {
-		UserSearchCommand command = new UserSearchCommand(
-				requestDto.page(),
-				requestDto.size(),
-				requestDto.hubId(),
-				requestDto.username(),
-				requestDto.role(),
-				requestDto.status(),
-				requestDto.sortBy(),
-				requestDto.sortAscending()
-		);
+		UserSearchCommand command =
+				new UserSearchCommand(
+						requestDto.page(),
+						requestDto.size(),
+						requestDto.hubId(),
+						requestDto.username(),
+						requestDto.role(),
+						requestDto.status(),
+						requestDto.sortBy(),
+						requestDto.sortAscending());
 		Page<UserResult> results = userService.getUsers(userDetails.getUserId(), command);
-		Page<UserResponse> responseDto = results.map(
-				result -> new UserResponse(
-						result.userId(),
-						result.email(),
-						result.username(),
-						result.role(),
-						result.slackId(),
-						result.status(),
-						result.hubId(),
-						result.deliveryType(),
-						result.deliveryNumber()
-				)
-		);
+		Page<UserResponse> responseDto =
+				results.map(
+						result ->
+								new UserResponse(
+										result.userId(),
+										result.email(),
+										result.username(),
+										result.role(),
+										result.slackId(),
+										result.status(),
+										result.hubId(),
+										result.deliveryType(),
+										result.deliveryNumber()));
 
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
 	}
@@ -73,30 +72,30 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Page<DeliveryManagerResponse>>> getDeliveryManagers(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid DeliveryManagerSearchRequest request) {
-		DeliveryManagerCommand command = new DeliveryManagerCommand(
-				request.page(),
-				request.size(),
-				request.username(),
-				request.hubId(),
-				request.type(),
-				request.number(),
-				request.status(),
-				request.isActive(),
-				request.sortBy(),
-				request.sortAscending()
-		);
+		DeliveryManagerCommand command =
+				new DeliveryManagerCommand(
+						request.page(),
+						request.size(),
+						request.username(),
+						request.hubId(),
+						request.type(),
+						request.number(),
+						request.status(),
+						request.isActive(),
+						request.sortBy(),
+						request.sortAscending());
 		Page<DeliveryManagerResult> results =
 				userService.getDeliveryManagers(userDetails.getUserId(), command);
-		Page<DeliveryManagerResponse> response = results.map(
-				result -> new DeliveryManagerResponse(
-						result.userId(),
-						result.username(),
-						result.slackId(),
-						result.hubId(),
-						result.deliveryType(),
-						result.deliveryNumber()
-				)
-		);
+		Page<DeliveryManagerResponse> response =
+				results.map(
+						result ->
+								new DeliveryManagerResponse(
+										result.userId(),
+										result.username(),
+										result.slackId(),
+										result.hubId(),
+										result.deliveryType(),
+										result.deliveryNumber()));
 
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_READ_SUCCESS, response);
 	}
@@ -106,17 +105,17 @@ public class UserController {
 	public ResponseEntity<ApiResponse<UserResponse>> getUser(
 			@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		UserResult result = userService.getUser(userDetails.getUserId());
-		UserResponse response = new UserResponse(
-				result.userId(),
-				result.email(),
-				result.username(),
-				result.role(),
-				result.slackId(),
-				result.status(),
-				result.hubId(),
-				result.deliveryType(),
-				result.deliveryNumber()
-		);
+		UserResponse response =
+				new UserResponse(
+						result.userId(),
+						result.email(),
+						result.username(),
+						result.role(),
+						result.slackId(),
+						result.status(),
+						result.hubId(),
+						result.deliveryType(),
+						result.deliveryNumber());
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, response);
 	}
 
@@ -125,10 +124,8 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> updatePassword(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid UpdatePasswordRequest requestDto) {
-		UpdatePasswordCommand command = new UpdatePasswordCommand(
-				requestDto.password(),
-				requestDto.newPassword()
-		);
+		UpdatePasswordCommand command =
+				new UpdatePasswordCommand(requestDto.password(), requestDto.newPassword());
 		userService.updatePassword(userDetails.getUserId(), command);
 		return ResponseUtil.successResponse(SuccessCode.PASSWORD_UPDATE_SUCCESS);
 	}
@@ -138,26 +135,21 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> updateUserSlack(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid UpdateSlackRequest requestDto) {
-		UpdateSlackCommand command = new UpdateSlackCommand(
-				requestDto.slackId()
-		);
+		UpdateSlackCommand command = new UpdateSlackCommand(requestDto.slackId());
 		userService.updateSlack(userDetails.getUserId(), command);
 		return ResponseUtil.successResponse(SuccessCode.USER_UPDATE_SUCCESS);
 	}
 
-	//유저 정보 수정 - 관리자만 가능한 영격
+	// 유저 정보 수정 - 관리자만 가능한 영격
 	@PutMapping("/{userId}")
 	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Void>> updateDeliveryManager(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@PathVariable("userId") Long userId,
 			@RequestBody @Valid UserManagerUpdateRequest request) {
-		UserManagerUpdateCommand command = new UserManagerUpdateCommand(
-				request.hubId(),
-				request.status(),
-				request.deliveryType()
-		);
-		userService.updateDeliveryManager(userDetails.getUserId(), userId,  command);
+		UserManagerUpdateCommand command =
+				new UserManagerUpdateCommand(request.hubId(), request.status(), request.deliveryType());
+		userService.updateDeliveryManager(userDetails.getUserId(), userId, command);
 		return ResponseUtil.successResponse(SuccessCode.USER_UPDATE_SUCCESS);
 	}
 
@@ -173,8 +165,7 @@ public class UserController {
 	@DeleteMapping("/managers/withdraw/{userId}/permit")
 	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Void>> deleteUserpermit(
-			@AuthenticationPrincipal UserDetailsImpl userDetails,
-			@PathVariable("userId") Long userId) {
+			@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("userId") Long userId) {
 		userService.permitDeleteUser(userDetails.getUserId(), userId);
 		return ResponseUtil.successResponse(SuccessCode.USER_DELETE_SUCCESS);
 	}
@@ -186,11 +177,8 @@ public class UserController {
 	public ResponseEntity<ApiResponse<DeliveryManagerMessageResponse>> getDeliveryManagerMessageInfo(
 			@PathVariable Long userId) {
 		DeliveryManagerMessageResult result = userService.getDeliveryManagerMessageInfo(userId);
-		DeliveryManagerMessageResponse responseDto = new DeliveryManagerMessageResponse(
-				result.slackId(),
-				result.username(),
-				result.email()
-		);
+		DeliveryManagerMessageResponse responseDto =
+				new DeliveryManagerMessageResponse(result.slackId(), result.username(), result.email());
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_READ_SUCCESS, responseDto);
 	}
 
@@ -209,7 +197,8 @@ public class UserController {
 			@PathVariable String hubId, @PathVariable String managerType) {
 		DeliveryManagerAssignResult result =
 				userService.getDeliveryManagerAssignment(hubId, managerType);
-		DeliveryManagerAssignResponse responseDto = new DeliveryManagerAssignResponse(result.managerId());
+		DeliveryManagerAssignResponse responseDto =
+				new DeliveryManagerAssignResponse(result.managerId());
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_ASSIGN_SUCCESS, responseDto);
 	}
 

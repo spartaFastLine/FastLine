@@ -2,10 +2,9 @@ package com.fastline.authservice.domain.repository;
 
 import com.fastline.authservice.domain.model.DeliveryManager;
 import com.fastline.authservice.domain.model.User;
+import com.fastline.authservice.domain.vo.DeliveryManagerType;
 import java.util.Optional;
 import java.util.UUID;
-
-import com.fastline.authservice.domain.vo.DeliveryManagerType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
