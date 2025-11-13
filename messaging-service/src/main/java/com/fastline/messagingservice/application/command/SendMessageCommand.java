@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public record SendMessageCommand(
 		UUID orderId,
+		Long deliveryManagerId,
 		String customerName,
 		String customerEmail,
 		LocalDateTime orderDateTime,
@@ -14,13 +15,12 @@ public record SendMessageCommand(
 		String requestNote,
 		String sourceHub,
 		List<String> viaHubs,
-		String destination,
-		String deliveryManagerName,
-		String deliveryManagerEmail) {
+		String destination) {
 
 	public static SendMessageCommand from(SendMessageRequest dto) {
 		return new SendMessageCommand(
 				dto.orderId(),
+				dto.deliveryManagerId(),
 				dto.customerName(),
 				dto.customerEmail(),
 				dto.orderDateTime(),
@@ -28,8 +28,6 @@ public record SendMessageCommand(
 				dto.requestNote(),
 				dto.sourceHub(),
 				dto.viaHubs(),
-				dto.destination(),
-				dto.deliveryManagerName(),
-				dto.deliveryManagerEmail());
+				dto.destination());
 	}
 }
