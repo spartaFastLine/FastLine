@@ -129,9 +129,8 @@ public class VendorService {
 
 	private UUID validateHubId(UUID hubId) {
 
-		if (hubClient.validateHubId(hubId)) {
-			throw new CustomException(ErrorCode.VENDOR_HUBID_INVALIDATION);
-		}
+		/** 허브 서비스에서 예외처리를 구현한다면 리팩토링 필요 */
+		hubClient.getHubInfo(hubId);
 		return hubId;
 	}
 
