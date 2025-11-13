@@ -9,7 +9,6 @@ import com.fastline.vendorservice.domain.model.Vendor;
 import com.fastline.vendorservice.domain.repository.ProductRepository;
 import com.fastline.vendorservice.domain.service.VendorProductService;
 import com.fastline.vendorservice.domain.vo.Stock;
-import com.fastline.vendorservice.infrastructure.external.dto.HubResponseDto;
 import com.fastline.vendorservice.presentation.request.ProductCreateRequest;
 import com.fastline.vendorservice.presentation.request.ProductUpdateRequest;
 import java.util.UUID;
@@ -31,7 +30,7 @@ public class ProductService {
 	public Product insert(ProductCreateRequest request, Long userId) {
 
 		Vendor vendor = vendorProductService.findVendorByVendorId(request.vendorId());
-        hubClient.getHubInfo(vendor.getId());
+		hubClient.getHubInfo(vendor.getId());
 
 		Product product =
 				Product.create(request.name(), Stock.of(request.stock()), request.price(), vendor);
