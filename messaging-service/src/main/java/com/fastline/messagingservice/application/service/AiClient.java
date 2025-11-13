@@ -1,7 +1,7 @@
 package com.fastline.messagingservice.application.service;
 
-import com.fastline.messagingservice.application.command.SendMessageCommand;
+import com.fastline.messagingservice.application.model.SendMessageContext;
 
 public interface AiClient {
-	String generate(SendMessageCommand command);
+	String generate(SendMessageContext context);
 }
