@@ -118,8 +118,7 @@ public class DeliveryController {
 	@Operation(summary = "배송 삭제 API")
 	@DeleteMapping("/{deliveryId}")
 	public ResponseEntity<ApiResponse<Void>> deleteDelivery(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable UUID deliveryId) {
+			@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable UUID deliveryId) {
 		log.info("배송 삭제 요청: deliveryId={}", deliveryId);
 
 		Long userId = userDetails.getUserId();
