@@ -1,7 +1,7 @@
 spring:
   application:
     name: auth-service
-    #env?? ????
+    #env파일 불러오기
   config:
     import: optional:file:auth-service/.env[.properties]
   #    db config
@@ -16,9 +16,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-#    client:
-#      service-url:
-#        defaultZone: http://localhost:8761/eureka/
 
 #jwt
 jwt:
@@ -32,11 +29,11 @@ eureka:
     fetch-registry: true
 #    유레카 클라이언트가 통신할때 필요한 유레카 서버 주소
     service-url:
-      defaultZone: http://localhost:19091/eureka/
+      defaultZone: http://localhost:${EUREKA_SERVER_PORT}/eureka/
 #    enabled: false   # 유레카 클라이언트 비활성화
 
 server:
-  port: 19090
+  port: ${SERVER_PORT}
 logging:
   level:
     org.springframework.security: DEBUG

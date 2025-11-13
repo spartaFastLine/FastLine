@@ -1,10 +1,7 @@
 package com.fastline.authservice.presentation.controller;
 
 import com.fastline.authservice.domain.service.DeliveryManagerService;
-import com.fastline.authservice.presentation.request.DeliveryManagerCreateRequestDto;
-import com.fastline.authservice.presentation.request.DeliveryManagerDeleteRequestDto;
-import com.fastline.authservice.presentation.request.DeliveryManagerResponseDto;
-import com.fastline.authservice.presentation.request.DeliveryManagerSearchRequestDto;
+import com.fastline.authservice.presentation.request.*;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.security.model.UserDetailsImpl;
@@ -71,5 +68,21 @@ public class DeliveryManagerController {
 			@RequestBody @Valid DeliveryManagerDeleteRequestDto requestDto) {
 		deliveryManagerService.deleteDeliveryManager(userDetails.getUserId(), requestDto);
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_DELETE_SUCCESS);
+	}
+
+	// 배달 매니저 자동 배정
+	@GetMapping("/assign/{hubId}/{managerType}")
+	public ResponseEntity<ApiResponse<DeliveryManagerAssignResponseDto>> getDeliveryManagerAssignment(
+			@PathVariable String hubId, @PathVariable String managerType) {
+		DeliveryManagerAssignResponseDto responseDto =
+				deliveryManagerService.getDeliveryManagerAssignment(hubId, managerType);
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_ASSIGN_SUCCESS, responseDto);
+	}
+
+	// 배달매니저 배송완료 알림
+	@PostMapping("/{managerId}/complete")
+	public ResponseEntity<ApiResponse<Void>> completeDeliveryManager(@PathVariable Long managerId) {
+		deliveryManagerService.completeDeliveryManager(managerId);
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_COMPLETE_SUCCESS);
 	}
 }

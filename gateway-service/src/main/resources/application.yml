@@ -11,18 +11,13 @@ spring:
             - id: auth-service  # 라우트 식별자
               uri: lb://auth-service  # 서비스 디스커버리를 통한 user-service로 라우팅
               predicates:
-                - Path=/api/users/**,/api/auth/**  # /users/** 경로에 대한 요청을 auth-service로 라우팅
-            - id: vendor-service
-              uri: lb://vendor-service
-              predicates:
-                - Path=/api/vendor/**, /api/product/**, /api/order/**
-
+                - Path=/api/users/**,/api/auth/**,/api/delivery/managers,/api/delivery/managers/**  # /users/** 경로에 대한 요청을 auth-service로 라우팅
 server:
-  port: 19092  # 게이트웨이 서비스 포트 설정
+  port: ${SERVER_PORT}  # 게이트웨이 서비스 포트 설정
 eureka:
   client:
     service-url:
-        defaultZone: http://localhost:19091/eureka/ # Eureka 서버 주소 설정
+        defaultZone: http://localhost:${EUREKA_SERVER_PORT}/eureka/ # Eureka 서버 주소 설정
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}

@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public record SendMessageRequest(
 		UUID orderId,
+		Long deliveryManagerId,
 		String customerName,
 		String customerEmail,
 		LocalDateTime orderDateTime,
@@ -13,9 +14,7 @@ public record SendMessageRequest(
 		String requestNote,
 		String sourceHub,
 		List<String> viaHubs,
-		String destination,
-		String deliveryManagerName,
-		String deliveryManagerEmail) {
+		String destination) {
 
 	public record Item(String name, int quantity) {}
 }

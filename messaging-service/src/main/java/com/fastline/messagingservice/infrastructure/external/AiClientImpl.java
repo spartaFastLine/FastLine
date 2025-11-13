@@ -1,9 +1,9 @@
 package com.fastline.messagingservice.infrastructure.external;
 
-import com.fastline.messagingservice.application.command.SendMessageCommand;
+import com.fastline.messagingservice.application.model.SendMessageContext;
 import com.fastline.messagingservice.application.service.AiClient;
-import com.fastline.messagingservice.infrastructure.external.dto.MessageGenerationRequest;
-import com.fastline.messagingservice.infrastructure.external.dto.MessageGenerationResponse;
+import com.fastline.messagingservice.infrastructure.external.dto.request.MessageGenerationRequestDTO;
+import com.fastline.messagingservice.infrastructure.external.dto.response.MessageGenerationResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,10 +14,9 @@ public class AiClientImpl implements AiClient {
 	private final AiServiceFeignClient feignClient;
 
 	@Override
-	public String generate(SendMessageCommand command) {
-		MessageGenerationRequest request = MessageGenerationRequest.from(command);
-		MessageGenerationResponse response = feignClient.generate(request);
-
+	public String generate(SendMessageContext context) {
+		MessageGenerationRequestDTO request = MessageGenerationRequestDTO.from(context);
+		MessageGenerationResponseDTO response = feignClient.generate(request);
 		return response.data().finalDispatchDeadline();
 	}
 }

@@ -134,4 +134,14 @@ public class UserService {
 		// 탈퇴 신청한 유저 삭제
 		user.delete();
 	}
+
+	public DeliveryManagerMessageDto getDeliveryManagerMessageInfo(Long userId) {
+		User user = checkUser.userCheck(userId);
+		return new DeliveryManagerMessageDto(user.getSlackId(), user.getUsername(), user.getEmail());
+	}
+
+	public UserHubIdResponseDto getUserHubInfo(Long userId) {
+		User user = checkUser.userCheck(userId);
+		return new UserHubIdResponseDto(user.getHubId());
+	}
 }

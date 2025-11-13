@@ -181,14 +181,4 @@ public class Delivery extends TimeBaseEntity<Delivery> {
 			path.delete(userId);
 		}
 	}
-
-	public void deletePath(UUID pathId, Long userId) {
-		DeliveryPath targetPath =
-				this.paths.stream()
-						.filter(p -> p.getDeliveryPathId().equals(pathId))
-						.findFirst()
-						.orElseThrow(() -> new IllegalArgumentException("해당 시퀀스의 배송 경로를 찾을 수 없습니다: " + pathId));
-
-		targetPath.delete(userId);
-	}
 }
