@@ -1,5 +1,6 @@
 package com.fastline.authservice.presentation.controller;
 
+import com.fastline.authservice.application.command.UpdatePasswordCommand;
 import com.fastline.authservice.application.command.UserSearchCommand;
 import com.fastline.authservice.application.result.UserResult;
 import com.fastline.authservice.application.service.UserService;
@@ -74,8 +75,17 @@ public class UserController {
 	@GetMapping("/user")
 	public ResponseEntity<ApiResponse<UserResponse>> getUser(
 			@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		UserResponse responseDto = userService.getUser(userDetails.getUserId());
-		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
+		UserResult result = userService.getUser(userDetails.getUserId());
+		UserResponse response = new UserResponse(
+				result.userId(),
+				result.email(),
+				result.username(),
+				result.role(),
+				result.slackId(),
+				result.status(),
+				result.hubId()
+		);
+		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, response);
 	}
 
 	// 비밀번호 수정- 전체 가능
@@ -83,7 +93,11 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> updatePassword(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid UpdatePasswordRequest requestDto) {
-		userService.updatePassword(userDetails.getUserId(), requestDto);
+		UpdatePasswordCommand command = new UpdatePasswordCommand(
+				requestDto.password(),
+				requestDto.newPassword()
+		);
+		userService.updatePassword(userDetails.getUserId(), command);
 		return ResponseUtil.successResponse(SuccessCode.PASSWORD_UPDATE_SUCCESS);
 	}
 

@@ -1,6 +1,7 @@
 package com.fastline.authservice.application.service;
 
 import com.fastline.authservice.application.change.DeliveryManagerService;
+import com.fastline.authservice.application.command.UpdatePasswordCommand;
 import com.fastline.authservice.application.command.UserSearchCommand;
 import com.fastline.authservice.application.result.UserResult;
 import com.fastline.authservice.domain.model.User;
@@ -8,11 +9,9 @@ import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.authservice.domain.vo.UserOrderBy;
 import com.fastline.authservice.domain.vo.UserStatus;
 import com.fastline.authservice.presentation.dto.request.PermitRequest;
-import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequest;
 import com.fastline.authservice.presentation.dto.request.UpdateSlackRequest;
 import com.fastline.authservice.presentation.dto.response.DeliveryManagerMessageResponse;
 import com.fastline.authservice.presentation.dto.response.UserHubIdResponse;
-import com.fastline.authservice.presentation.dto.response.UserResponse;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.security.model.UserRole;
@@ -90,11 +89,34 @@ public class UserService {
                 user.getHubId()));
     }
 
-    public UserResponse getUser(Long userId) {
-        return null;
+    @Transactional(readOnly = true)
+    public UserResult getUser(Long userId) {
+                // 유저 확인
+        User user = checkUser.userCheck(userId);
+        return new UserResult(
+                user.getId(),
+                user.getEmail(),
+                user.getUsername(),
+                user.getRole().name(),
+                user.getSlackId(),
+                user.getStatus().name(),
+                user.getHubId());
     }
 
-    public void updatePassword(Long userId, @Valid UpdatePasswordRequest requestDto) {
+    @Transactional
+    public void updatePassword(Long userId, UpdatePasswordCommand command) {
+        // 유저 확인
+        User user = checkUser.userCheck(userId);
+        // 현재 비밀번호 확인
+        if (!passwordEncoder.matches(command.password(), user.getPassword()))
+            throw new CustomException(ErrorCode.PASSWORD_NOT_MATCHES);
+
+        // 동일한 비밀번호인지 확인
+        if (passwordEncoder.matches(command.newPassword(), user.getPassword()))
+            throw new CustomException(ErrorCode.PASSWORD_EQUAL);
+
+        // 새 비밀번호 인코딩 및 업데이트
+        user.updatePassword(passwordEncoder.encode(command.newPassword()));
     }
 
     public void updateSlack(Long userId, @Valid UpdateSlackRequest requestDto) {

@@ -4,13 +4,11 @@ import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.authservice.domain.vo.UserStatus;
 import com.fastline.authservice.presentation.dto.request.PermitRequest;
-import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequest;
 import com.fastline.authservice.presentation.dto.request.UpdateSlackRequest;
 import com.fastline.authservice.presentation.dto.response.DeliveryManagerMessageResponse;
 import com.fastline.authservice.presentation.dto.response.UserHubIdResponse;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,55 +21,12 @@ public class UserService {
     private final DeliveryManagerService.CheckUser checkUser;
 
     // 회원가입 승인
-    @Transactional
-    public void permitSignup(Long managerId, @Valid PermitRequest requestDto) {
-        User newUser = checkUser.userCheck(requestDto.userId());
-        // 매니저 유저 확인
-        User manager = checkUser.userCheck(managerId);
-
-        // 허브 매니저라면 소속 허브 아이디 체크
-        checkUser.checkHubManager(manager, newUser.getHubId());
-        // 승인 대기 상태가 아닌 경우 예외 발생
-        if (newUser.getStatus() != UserStatus.PENDING) throw new CustomException(ErrorCode.NOT_PENDING);
-
-        // 회원가입 승인
-        newUser.permitSignup();
-    }
 
     // 유저 단건 조회
-//    @Transactional(readOnly = true)
-//    public UserResponse getUser(Long userId) {
-//        // 유저 확인
-//        User user = checkUser.userCheck(userId);
-//        return new UserResponse(
-//                user.getId(),
-//                user.getEmail(),
-//                user.getUsername(),
-//                user.getPassword(),
-//                user.getRole().name(),
-//                user.getSlackId(),
-//                user.getStatus().name(),
-//                user.getHubId());
-//    }
 
     // 유저 다건 조회
 
     // 비밀번호 수정
-    @Transactional
-    public void updatePassword(Long userId, UpdatePasswordRequest requestDto) {
-        // 유저 확인
-        User user = checkUser.userCheck(userId);
-        // 현재 비밀번호 확인
-        if (!passwordEncoder.matches(requestDto.password(), user.getPassword()))
-            throw new CustomException(ErrorCode.PASSWORD_NOT_MATCHES);
-
-        // 동일한 비밀번호인지 확인
-        if (passwordEncoder.matches(requestDto.newPassword(), user.getPassword()))
-            throw new CustomException(ErrorCode.PASSWORD_EQUAL);
-
-        // 새 비밀번호 인코딩 및 업데이트
-        user.updatePassword(passwordEncoder.encode(requestDto.newPassword()));
-    }
 
     // 슬랙 아이디 수정
     @Transactional
