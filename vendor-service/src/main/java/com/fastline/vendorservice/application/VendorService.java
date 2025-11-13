@@ -129,12 +129,10 @@ public class VendorService {
 
 	private UUID validateHubId(UUID hubId) {
 
-        /**
-         * 허브 서비스에서 예외처리를 구현한다면 리팩토링 필요
-         */
-        hubClient.getHubInfo(hubId);
-        return hubId;
-    }
+		/** 허브 서비스에서 예외처리를 구현한다면 리팩토링 필요 */
+		hubClient.getHubInfo(hubId);
+		return hubId;
+	}
 
 	private boolean isMasterUser(Long userId) {
 		return userId == 1L;

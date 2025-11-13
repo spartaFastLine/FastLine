@@ -1,9 +1,8 @@
 package com.fastline.vendorservice.infrastructure.external.feignclient;
 
 import com.fastline.vendorservice.application.service.HubClient;
-import java.util.UUID;
-
 import com.fastline.vendorservice.infrastructure.external.dto.HubResponseDto;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

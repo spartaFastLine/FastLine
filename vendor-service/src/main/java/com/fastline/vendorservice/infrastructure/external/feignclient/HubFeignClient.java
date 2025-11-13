@@ -1,8 +1,7 @@
 package com.fastline.vendorservice.infrastructure.external.feignclient;
 
-import java.util.UUID;
-
 import com.fastline.vendorservice.infrastructure.external.dto.HubResponseDto;
+import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,5 +10,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface HubFeignClient {
 
 	@GetMapping("/api/hubs/{hubId}/exists")
-    HubResponseDto getHubInfo(@PathVariable UUID hubId);
+	HubResponseDto getHubInfo(@PathVariable UUID hubId);
 }
