@@ -7,7 +7,7 @@ cat >/pgadmin4/servers.json <<EOF
       "Name": "local-docker",
       "Group": "Servers",
       "Host": "db",
-      "Port": 5432,
+      "Port": 5435,
       "MaintenanceDB": "fastlinehub",
       "Username": "user",
       "SSLMode": "prefer",

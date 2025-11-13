@@ -11,7 +11,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       TZ: Asia/Seoul
     ports:
-      - "5432:5432"
+      - "5435:5435"
     volumes:
       - pg_data:/var/lib/postgresql/data
       - ./init:/docker-entrypoint-initdb.d:ro

@@ -38,7 +38,7 @@ public class NaverService {
 		log.debug("naverAPI method Input: {} , {}", Arrays.toString(str), stopoverNum);
 
 		URI uri =
-				UriComponentsBuilder.fromUriString("https://naveropenapi.apigw.ntruss.com")
+				UriComponentsBuilder.fromUriString("https://maps.apigw.ntruss.com")
 						.path("/map-direction/v1/driving")
 						.queryParam("start", str[0])
 						.queryParam("goal", str[1])
