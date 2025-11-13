@@ -49,7 +49,7 @@ public enum ErrorCode {
 	NAVER_API_FORBIDDEN(HttpStatus.FORBIDDEN, "네이버 API 접근이 거부되었습니다."),
 	NAVER_API_SUBSCRIPTION_REQUIRED(HttpStatus.UNAUTHORIZED, "네이버 API 구독이 필요합니다."),
 	NAVER_API_ERROR(HttpStatus.BAD_GATEWAY, "네이버 API 호출 중 오류가 발생했습니다."),
-    NO_ACTIVE_HUBS(HttpStatus.NOT_FOUND,"활성 허브가 없습니다."),
+	NO_ACTIVE_HUBS(HttpStatus.NOT_FOUND, "활성 허브가 없습니다."),
 	// 배송 매니저 (delivery manager)
 	DELIVERY_MANAGER_NOT_FOUND(HttpStatus.NOT_FOUND, "배송 매니저 조회 실패"),
 	NOT_DELIVERY_MANAGER(HttpStatus.BAD_REQUEST, "배송 매니저만 등록이 가능합니다"),
