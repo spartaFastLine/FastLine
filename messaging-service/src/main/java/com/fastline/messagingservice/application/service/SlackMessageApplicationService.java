@@ -28,7 +28,7 @@ public class SlackMessageApplicationService {
 
 		String finalDispatchDeadline = aiClient.generate(context);
 
-		String messageText = SlackMessageFormatter.format(cmd, finalDispatchDeadline);
+		String messageText = SlackMessageFormatter.format(context, finalDispatchDeadline);
 		slackWebhookClient.send(messageText);
 
 		slackMessageRepository.save(SlackMessage.of(cmd.orderId(), messageText, cmd.customerEmail()));
