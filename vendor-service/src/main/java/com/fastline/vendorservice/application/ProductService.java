@@ -30,7 +30,7 @@ public class ProductService {
 	public Product insert(ProductCreateRequest request, Long userId) {
 
 		Vendor vendor = vendorProductService.findVendorByVendorId(request.vendorId());
-		Boolean isExistHub = hubClient.validateHubId(vendor.getId());
+		Boolean isExistHub = hubClient.getHubInfo(vendor.getId());
 
 		if (!isExistHub) {
 			throw new CustomException(ErrorCode.VENDOR_HUBID_INVALIDATION);

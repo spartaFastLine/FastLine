@@ -1,8 +1,10 @@
 package com.fastline.vendorservice.application.service;
 
+import com.fastline.vendorservice.infrastructure.external.dto.HubResponseDto;
+
 import java.util.UUID;
 
 public interface HubClient {
 
-	Boolean validateHubId(UUID hubId);
+    HubResponseDto getHubInfo(UUID hubId);
 }
