@@ -1,6 +1,7 @@
 package com.fastline.authservice.domain.model;
 
-import com.fastline.common.auditing.ActorTimeBaseEntity;
+import com.fastline.authservice.domain.vo.DeliveryManagerType;
+import com.fastline.common.auditing.TimeBaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "p_delivery_manager")
 @NoArgsConstructor
-public class DeliveryManager extends ActorTimeBaseEntity<DeliveryManager> {
+public class DeliveryManager extends TimeBaseEntity<DeliveryManager> {
 	@Id
 	@Column(name = "manager_id")
 	private Long id;
@@ -47,8 +48,7 @@ public class DeliveryManager extends ActorTimeBaseEntity<DeliveryManager> {
 		this.isStandby = true;
 	}
 
-	public void delete(Long managerId) {
+	public void delete() {
 		markDeleted();
-		this.deletedBy = managerId;
 	}
 }

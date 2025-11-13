@@ -18,6 +18,7 @@ public enum ErrorCode {
 	NOT_HUB_MANAGER(HttpStatus.UNAUTHORIZED, "담당하는 허브가 아닙니다."),
 	EXIST_EMAIL(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다."),
 	EXIST_USERNAME(HttpStatus.BAD_REQUEST, "이미 존재하는 사용자 이름입니다."),
+	INVALID_DELIVERY_MANAGER_TYPE(HttpStatus.BAD_REQUEST, "배달기사라면 배달 타입을 지정해야 합니다."),
 	NOT_PENDING(HttpStatus.BAD_REQUEST, "승인대기 상태가 아닙니다."),
 	USER_NOT_APPROVE(HttpStatus.UNAUTHORIZED, "승인된 사용자가 아닙니다."),
 	NOT_APPROVE(HttpStatus.BAD_REQUEST, "활성화 상태가 아닙니다."),

@@ -12,13 +12,20 @@ public class FeignClientConfig implements RequestInterceptor {
 
 	@Override
 	public void apply(RequestTemplate requestTemplate) {
+		// Gemini API 호출 제외
+		if (requestTemplate.feignTarget().url().contains("generativelanguage.googleapis.com")) {
+			return;
+		}
 
 		ServletRequestAttributes attributes =
 				(ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
-		HttpServletRequest request = attributes.getRequest();
-		String token = request.getHeader("Authorization");
-
-		requestTemplate.header("Authorization", token);
+		if (attributes != null) {
+			HttpServletRequest request = attributes.getRequest();
+			String token = request.getHeader("Authorization");
+			if (token != null) {
+				requestTemplate.header("Authorization", token);
+			}
+		}
 	}
 }
