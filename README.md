@@ -15,35 +15,35 @@
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="17%">
+      <td align="center" valign="top" width="20%">
         <a href="https://github.com/seolbin01">
           <img src="https://avatars.githubusercontent.com/u/106576062?v=4" width="80" alt="박설빈"/><br />
           <b>박설빈</b>
         </a><br />
         <sub>팀장<br>delivery-service</sub>
       </td>
-      <td align="center" valign="top" width="17%">
+      <td align="center" valign="top" width="20%">
         <a href="https://github.com/minju26">
           <img src="https://avatars.githubusercontent.com/u/110724254?v=4" width="80" alt="김민주"/><br />
           <b>김민주</b>
         </a><br />
         <sub>ai-service<br>messaging-service</sub>
       </td>
-      <td align="center" valign="top" width="17%">
+      <td align="center" valign="top" width="20%">
         <a href="https://github.com/wlsql852">
           <img src="https://avatars.githubusercontent.com/u/108854643?v=4" width="80" alt="김진비"/><br />
           <b>김진비</b>
         </a><br />
         <sub>auth-service<br>gateway-service<br>eureka-service</sub>
       </td>
-      <td align="center" valign="top" width="17%">
+      <td align="center" valign="top" width="20%">
         <a href="https://github.com/newbee9507">
           <img src="https://avatars.githubusercontent.com/u/130113243?v=4" width="80" alt="조재희"/><br />
           <b>조재희</b>
         </a><br />
         <sub>vendor-service</sub>
       </td>
-      <td align="center" valign="top" width="17%">
+      <td align="center" valign="top" width="20%">
         <a href="https://github.com/kingstree">
           <img src="https://avatars.githubusercontent.com/u/50073354?v=4" width="80" alt="한준희"/><br />
           <b>한준희</b>
