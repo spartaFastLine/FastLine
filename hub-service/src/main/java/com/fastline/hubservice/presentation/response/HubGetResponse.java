@@ -1,7 +1,6 @@
 package com.fastline.hubservice.presentation.response;
 
 import com.fastline.hubservice.domain.model.Hub;
-
 import java.time.Instant;
 import java.util.UUID;
 

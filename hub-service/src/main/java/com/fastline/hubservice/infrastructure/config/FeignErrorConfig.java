@@ -9,13 +9,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FeignErrorConfig implements ErrorDecoder {
 
-    private final ErrorDecoder defaultDecoder = new Default();
+	private final ErrorDecoder defaultDecoder = new Default();
 
-    @Override
-    public Exception decode(String methodKey, Response response) {
-        if (response.status() == 401) {
-            return new CustomException(ErrorCode.UNAUTHORIZED); // 외부인증 api 안됨
-        }
-        return defaultDecoder.decode(methodKey, response);
-    }
+	@Override
+	public Exception decode(String methodKey, Response response) {
+		if (response.status() == 401) {
+			return new CustomException(ErrorCode.UNAUTHORIZED); // 외부인증 api 안됨
+		}
+		return defaultDecoder.decode(methodKey, response);
+	}
 }

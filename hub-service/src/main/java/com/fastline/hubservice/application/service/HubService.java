@@ -7,6 +7,7 @@ import com.fastline.hubservice.domain.repository.HubRepository;
 import com.fastline.hubservice.domain.spec.HubSearchSpec;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Predicate;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,13 +16,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class HubService {
-    private final HubRepository hubRepository;
+	private final HubRepository hubRepository;
 
 	@Transactional
 	public UUID createHub(CreateHubCommand command) {
@@ -51,9 +50,10 @@ public class HubService {
 
 	@Transactional(readOnly = true)
 	public Hub getHub(UUID hubId) {
-		return (Hub) hubRepository
-				.findById(hubId)
-				.orElseThrow(() -> new EntityNotFoundException("허브가 존재하지 않습니다: " + hubId));
+		return (Hub)
+				hubRepository
+						.findById(hubId)
+						.orElseThrow(() -> new EntityNotFoundException("허브가 존재하지 않습니다: " + hubId));
 	}
 
 	// 클래스 마지막 닫는 괄호 직전에 추가
@@ -67,9 +67,10 @@ public class HubService {
 	@Transactional
 	public void softDeleteHub(UUID hubId) {
 		Hub hub =
-                (Hub) hubRepository
-                        .findById(hubId)
-                        .orElseThrow(() -> new EntityNotFoundException("허브가 존재하지 않습니다: " + hubId));
+				(Hub)
+						hubRepository
+								.findById(hubId)
+								.orElseThrow(() -> new EntityNotFoundException("허브가 존재하지 않습니다: " + hubId));
 
 		// 이미 삭제된 경우는 조용히 종료하거나 정책에 따라 예외를 던질 수 있음
 		if (hub.getDeletedAt() != null) {

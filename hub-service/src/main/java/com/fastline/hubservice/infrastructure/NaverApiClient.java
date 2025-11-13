@@ -7,15 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(
-        name = "naverApiClient",
-        url = "https://naveropenapi.apigw.ntruss.com",
-        configuration = NaverFeignConfig.class
-)
+		name = "naverApiClient",
+		url = "https://naveropenapi.apigw.ntruss.com",
+		configuration = NaverFeignConfig.class)
 public interface NaverApiClient {
 
-    @GetMapping("/map-direction/v1/driving")
-    NaverDirectionResponse getDrivingDirection(
-            @RequestParam("start") String start,
-            @RequestParam("goal") String goal
-    );
+	@GetMapping("/map-direction/v1/driving")
+	NaverDirectionResponse getDrivingDirection(
+			@RequestParam("start") String start, @RequestParam("goal") String goal);
 }

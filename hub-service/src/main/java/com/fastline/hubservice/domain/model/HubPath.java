@@ -2,10 +2,9 @@ package com.fastline.hubservice.domain.model;
 
 import com.fastline.common.auditing.TimeBaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalTime;
 import java.util.UUID;
+import lombok.*;
 
 @Entity
 @Table(name = "p_hub_paths")
@@ -44,14 +43,14 @@ public class HubPath extends TimeBaseEntity<HubPath> {
 	private Boolean active;
 
 	public void setDuration(LocalTime duration) {
-	    this.duration = duration;
+		this.duration = duration;
 	}
 
 	public void setDistance(Long distance) {
-	    this.distance = distance;
+		this.distance = distance;
 	}
 
 	public void setActive(Boolean active) {
-	    this.active = active;
+		this.active = active;
 	}
 }

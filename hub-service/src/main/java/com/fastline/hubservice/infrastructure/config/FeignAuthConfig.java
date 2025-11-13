@@ -10,17 +10,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Configuration
 public class FeignAuthConfig {
 
-    @Bean
-    public RequestInterceptor jwtInterceptor() {
-        return new RequestInterceptor() {
-            @Override
-            public void apply(RequestTemplate template) {
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                if (auth != null && auth.getCredentials() != null) {
-                    String token = auth.getCredentials().toString();
-                    template.header("Authorization", "Bearer " + token);
-                }
-            }
-        };
-    }
+	@Bean
+	public RequestInterceptor jwtInterceptor() {
+		return new RequestInterceptor() {
+			@Override
+			public void apply(RequestTemplate template) {
+				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+				if (auth != null && auth.getCredentials() != null) {
+					String token = auth.getCredentials().toString();
+					template.header("Authorization", "Bearer " + token);
+				}
+			}
+		};
+	}
 }

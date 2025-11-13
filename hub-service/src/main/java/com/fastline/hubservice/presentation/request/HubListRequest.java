@@ -3,6 +3,7 @@ package com.fastline.hubservice.presentation.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +11,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import java.util.UUID;
 
 /**
  * 허브 목록 조회 요청 DTO - 필터(name, address, centralHubId, isCentral) - 페이지네이션(page, size) - 정렬(sort:
@@ -43,13 +42,16 @@ public class HubListRequest {
 
 	@Schema(description = "0 기반 페이지 번호", example = "0")
 	@Min(0)
+	@Builder.Default
 	private Integer page = 0;
 
 	@Schema(description = "페이지 크기 (1~200)", example = "20")
 	@Min(1)
+	@Builder.Default
 	private Integer size = 20;
 
 	@Schema(description = "정렬: 'property,direction' 형식", example = "createdAt,desc")
+	@Builder.Default
 	private String sort = "createdAt,desc";
 
 	/**
