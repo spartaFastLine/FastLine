@@ -37,3 +37,14 @@ server:
 logging:
   level:
     org.springframework.security: DEBUG
+# 문서화
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs      # 기본값이라 안 써도 되지만 명시해도 OK
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui       # 접속 URL: http://localhost:포트/swagger-ui
+    display-request-duration: true
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json

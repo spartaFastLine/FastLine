@@ -46,6 +46,8 @@ public class SecurityConfig {
 						authorizeHttpRequests
 								.requestMatchers(PathRequest.toStaticResources().atCommonLocations())
 								.permitAll() // resources 접근 허용 설정
+								.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+								.permitAll()
 								.requestMatchers("/api/auth/signup", "/api/auth/login")
 								.permitAll() // 회원가입, 로그인 접근 허용
 								.anyRequest()

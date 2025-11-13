@@ -3,6 +3,7 @@ package com.fastline.authservice.presentation.controller;
 import com.fastline.authservice.application.command.*;
 import com.fastline.authservice.application.result.*;
 import com.fastline.authservice.application.service.UserService;
+import com.fastline.authservice.infrastructure.swagger.UserControllerSwagger;
 import com.fastline.authservice.presentation.dto.request.*;
 import com.fastline.authservice.presentation.dto.response.*;
 import com.fastline.common.response.ApiResponse;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserControllerSwagger {
 	private final UserService userService;
 
 	// 회원가입 승인
@@ -66,7 +67,7 @@ public class UserController {
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
 	}
 
-	// 다건 조회 - 마스터, 허브 관리자만 가능
+	// 배송 매닞 다건 조회 - 마스터, 허브 관리자만 가능
 	@GetMapping("/managers")
 	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Page<DeliveryManagerResponse>>> getDeliveryManagers(
