@@ -2,16 +2,13 @@ package com.fastline.authservice.presentation.controller;
 
 import com.fastline.authservice.application.change.DeliveryManagerService;
 import com.fastline.authservice.presentation.dto.request.DeliveryManagerDeleteRequest;
-import com.fastline.authservice.presentation.dto.request.DeliveryManagerSearchRequest;
 import com.fastline.authservice.presentation.dto.response.DeliveryManagerAssignResponse;
-import com.fastline.authservice.presentation.dto.response.DeliveryManagerResponse;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.common.success.SuccessCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,25 +24,8 @@ public class DeliveryManagerController {
 	// 배달 매니저 생성 - 마스터, 허브 관리자만 가능
 
 	// 배달 매니저 단건 조회 - 배달 매니저 본인만 가능, 마스터나 허브 관리자는 다건 조회에서 가능
-	@GetMapping()
-	@PreAuthorize("hasAnyRole('DELIVERY_MANAGER')")
-	public ResponseEntity<ApiResponse<DeliveryManagerResponse>> getDeliveryManager(
-			@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		DeliveryManagerResponse responseDto =
-				deliveryManagerService.getDeliveryManager(userDetails.getUserId());
-		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_READ_SUCCESS, responseDto);
-	}
 
 	// 다건 조회 - 마스터, 허브 관리자만 가능
-	@GetMapping("/managers")
-	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
-	public ResponseEntity<ApiResponse<Page<DeliveryManagerResponse>>> getDeliveryManagers(
-			@AuthenticationPrincipal UserDetailsImpl userDetails,
-			@RequestBody @Valid DeliveryManagerSearchRequest requestDto) {
-		Page<DeliveryManagerResponse> responseDto =
-				deliveryManagerService.getDeliveryManagers(userDetails.getUserId(), requestDto);
-		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_READ_SUCCESS, responseDto);
-	}
 
 	//배달매니저 타입 수정 -> 유저서비스에서
 //	@PutMapping

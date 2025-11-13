@@ -1,14 +1,18 @@
 package com.fastline.authservice.application.service;
 
 import com.fastline.authservice.application.change.DeliveryManagerService;
+import com.fastline.authservice.application.command.DeliveryManagerCommand;
 import com.fastline.authservice.application.command.UpdatePasswordCommand;
 import com.fastline.authservice.application.command.UpdateSlackCommand;
 import com.fastline.authservice.application.command.UserSearchCommand;
 import com.fastline.authservice.application.result.DeliveryManagerMessageResult;
+import com.fastline.authservice.application.result.DeliveryManagerResult;
 import com.fastline.authservice.application.result.UserHubIdResult;
 import com.fastline.authservice.application.result.UserResult;
+import com.fastline.authservice.domain.model.DeliveryManager;
 import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.repository.UserRepository;
+import com.fastline.authservice.domain.vo.ManagerOrderBy;
 import com.fastline.authservice.domain.vo.UserOrderBy;
 import com.fastline.authservice.domain.vo.UserStatus;
 import com.fastline.common.exception.CustomException;
@@ -77,28 +81,53 @@ public class UserService {
                         command.role(),
                         command.status(),
                         pageable);
-        return users.map(user -> new UserResult(
-                user.getId(),
-                user.getEmail(),
-                user.getUsername(),
-                user.getRole().name(),
-                user.getSlackId(),
-                user.getStatus().name(),
-                user.getHubId()));
+
+        return users.map(UserResult::new);
+    }
+
+    // 배달 매니저 검색
+    public Page<DeliveryManagerResult> getDeliveryManagers(
+            Long managerId, DeliveryManagerCommand command) {
+        // 매니저 유저 확인
+        User manager = checkUser.userCheck(managerId);
+        UUID hubId = command.hubId();
+        // 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
+        if (hubId != null) checkUser.checkHubManager(manager, hubId);
+        else {
+            // 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
+            if (manager.getRole() == UserRole.HUB_MANAGER) hubId = manager.getHubId();
+        }
+        // 정렬조건 체크
+        ManagerOrderBy.checkValid(command.sortBy());
+
+        // 오름차순/내림차순
+        Sort.Direction directions =
+                command.sortAscending() ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Pageable pageable =
+                PageRequest.of(
+                        command.page() - 1,
+                        command.size(),
+                        Sort.by(directions, command.sortBy()));
+
+        Page<DeliveryManager> deliveryManagers =
+                userRepository.findDeliveryManagers(
+                        command.username(),
+                        hubId,
+                        command.type(),
+                        command.number(),
+                        command.status(),
+                        command.isActive(),
+                        pageable);
+        return deliveryManagers.map(DeliveryManagerResult::new);
     }
 
     @Transactional(readOnly = true)
     public UserResult getUser(Long userId) {
                 // 유저 확인
         User user = checkUser.userCheck(userId);
-        return new UserResult(
-                user.getId(),
-                user.getEmail(),
-                user.getUsername(),
-                user.getRole().name(),
-                user.getSlackId(),
-                user.getStatus().name(),
-                user.getHubId());
+        return new UserResult(user);
+
     }
 
     @Transactional

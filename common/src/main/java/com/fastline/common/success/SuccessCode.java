@@ -17,7 +17,7 @@ public enum SuccessCode {
 	USER_UPDATE_SUCCESS(HttpStatus.OK, "회원 정보 수정 성공"),
 	PASSWORD_UPDATE_SUCCESS(HttpStatus.OK, "비밀번호 수정 성공"),
 	USER_WITHDRAWAL_REQUEST_SUCCESS(HttpStatus.OK, "회원탈퇴 신청 성공"),
-	USER_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "회원 삭제 성공"),
+	USER_DELETE_SUCCESS(HttpStatus.OK, "회원 삭제 성공"),
 	SLACKID_READ_SUCCESS(HttpStatus.OK, "사용자 슬랙 아이디 조회 성공"),
 	HUBID_READ_SUCCESS(HttpStatus.OK, "사용자 허브 아이디 조회 성공"),
 	DELIVERY_MANAGER_ASSIGN_SUCCESS(HttpStatus.OK, "배송 담당자 자동 배정 성공"),

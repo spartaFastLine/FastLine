@@ -1,28 +1,23 @@
 package com.fastline.authservice.application.change;
 
-import com.fastline.authservice.domain.model.*;
+import com.fastline.authservice.application.service.HubClient;
+import com.fastline.authservice.domain.model.DeliveryManager;
+import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.repository.DeliveryManagerRepository;
 import com.fastline.authservice.domain.repository.UserRepository;
 import com.fastline.authservice.domain.vo.DeliveryManagerType;
-import com.fastline.authservice.domain.vo.ManagerOrderBy;
-import com.fastline.authservice.domain.vo.UserStatus;
-import com.fastline.authservice.application.service.HubClient;
-import com.fastline.authservice.presentation.dto.request.*;
-import com.fastline.authservice.presentation.dto.response.*;
+import com.fastline.authservice.presentation.dto.request.DeliveryManagerDeleteRequest;
+import com.fastline.authservice.presentation.dto.response.DeliveryManagerAssignResponse;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
 import com.fastline.common.security.model.UserRole;
 import jakarta.validation.Valid;
-import java.util.UUID;
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,49 +29,43 @@ public class DeliveryManagerService {
 	// 배달 매니저 생성 - 마스터, 허브 관리자만 가능
 
 	// 배달 매니저 단건 조회 - 배달 매니저 본인만 가능, 마스터나 허브 관리자는 다건 조회에서 가능
-	@Transactional(readOnly = true)
-	public DeliveryManagerResponse getDeliveryManager(Long userId) {
-		// 정보 확인
-		DeliveryManager manager = findDeliveryManager(userId);
-		return new DeliveryManagerResponse(manager);
-	}
 
 	// 배달 매니저 검색
-	public Page<DeliveryManagerResponse> getDeliveryManagers(
-			Long managerId, @Valid DeliveryManagerSearchRequest requestDto) {
-		// 매니저 유저 확인
-		User manager = checkUser.userCheck(managerId);
-		UUID hubId = requestDto.hubId();
-		// 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
-		if (hubId != null) checkUser.checkHubManager(manager, hubId);
-		else {
-			// 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
-			if (manager.getRole() == UserRole.HUB_MANAGER) hubId = manager.getHubId();
-		}
-		// 정렬조건 체크
-		ManagerOrderBy.checkValid(requestDto.sortBy());
-
-		// 오름차순/내림차순
-		Sort.Direction directions =
-				requestDto.sortAscending() ? Sort.Direction.ASC : Sort.Direction.DESC;
-
-		Pageable pageable =
-				PageRequest.of(
-						requestDto.page() - 1,
-						requestDto.size(),
-						Sort.by(directions, requestDto.sortBy()));
-
-		Page<DeliveryManager> deliveryManagers =
-				deliveryManagerRepository.findDeliveryManagers(
-						requestDto.username(),
-						hubId,
-						requestDto.type(),
-						requestDto.number(),
-						requestDto.status(),
-						requestDto.isActive(),
-						pageable);
-		return deliveryManagers.map(DeliveryManagerResponse::new);
-	}
+//	public Page<DeliveryManagerResponse> getDeliveryManagers(
+//			Long managerId, @Valid DeliveryManagerSearchRequest requestDto) {
+//		// 매니저 유저 확인
+//		User manager = checkUser.userCheck(managerId);
+//		UUID hubId = requestDto.hubId();
+//		// 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
+//		if (hubId != null) checkUser.checkHubManager(manager, hubId);
+//		else {
+//			// 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
+//			if (manager.getRole() == UserRole.HUB_MANAGER) hubId = manager.getHubId();
+//		}
+//		// 정렬조건 체크
+//		ManagerOrderBy.checkValid(requestDto.sortBy());
+//
+//		// 오름차순/내림차순
+//		Sort.Direction directions =
+//				requestDto.sortAscending() ? Sort.Direction.ASC : Sort.Direction.DESC;
+//
+//		Pageable pageable =
+//				PageRequest.of(
+//						requestDto.page() - 1,
+//						requestDto.size(),
+//						Sort.by(directions, requestDto.sortBy()));
+//
+//		Page<DeliveryManager> deliveryManagers =
+//				deliveryManagerRepository.findDeliveryManagers(
+//						requestDto.username(),
+//						hubId,
+//						requestDto.type(),
+//						requestDto.number(),
+//						requestDto.status(),
+//						requestDto.isActive(),
+//						pageable);
+//		return deliveryManagers.map(DeliveryManagerResponse::new);
+//	}
 
 //	@Transactional
 //	public void updateDeliveryManager(

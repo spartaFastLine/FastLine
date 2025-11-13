@@ -20,6 +20,6 @@ public record UserSearchRequest(Integer page,
 		this.role = role;
 		this.status = status;
 		this.sortBy = sortBy == null ? "username" : sortBy;
-		this.sortAscending = sortAscending;
+		this.sortAscending = sortAscending == null || sortAscending;
 	}
 }

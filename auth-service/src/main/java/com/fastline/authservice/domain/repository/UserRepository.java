@@ -1,5 +1,6 @@
 package com.fastline.authservice.domain.repository;
 
+import com.fastline.authservice.domain.model.DeliveryManager;
 import com.fastline.authservice.domain.model.User;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,4 +19,13 @@ public interface UserRepository {
 	void save(User user);
 
 	Long countDeliveryManagers();
+
+	Page<DeliveryManager> findDeliveryManagers(
+			String username,
+			UUID hubId,
+			String deliveryType,
+			Long number,
+			String userStatus,
+			boolean isActive,
+			Pageable pageable);
 }

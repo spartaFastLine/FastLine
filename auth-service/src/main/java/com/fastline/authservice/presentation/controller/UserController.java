@@ -1,16 +1,20 @@
 package com.fastline.authservice.presentation.controller;
 
+import com.fastline.authservice.application.command.DeliveryManagerCommand;
 import com.fastline.authservice.application.command.UpdatePasswordCommand;
 import com.fastline.authservice.application.command.UpdateSlackCommand;
 import com.fastline.authservice.application.command.UserSearchCommand;
 import com.fastline.authservice.application.result.DeliveryManagerMessageResult;
+import com.fastline.authservice.application.result.DeliveryManagerResult;
 import com.fastline.authservice.application.result.UserHubIdResult;
 import com.fastline.authservice.application.result.UserResult;
 import com.fastline.authservice.application.service.UserService;
+import com.fastline.authservice.presentation.dto.request.DeliveryManagerSearchRequest;
 import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequest;
 import com.fastline.authservice.presentation.dto.request.UpdateSlackRequest;
 import com.fastline.authservice.presentation.dto.request.UserSearchRequest;
 import com.fastline.authservice.presentation.dto.response.DeliveryManagerMessageResponse;
+import com.fastline.authservice.presentation.dto.response.DeliveryManagerResponse;
 import com.fastline.authservice.presentation.dto.response.UserHubIdResponse;
 import com.fastline.authservice.presentation.dto.response.UserResponse;
 import com.fastline.common.response.ApiResponse;
@@ -66,11 +70,47 @@ public class UserController {
 						result.role(),
 						result.slackId(),
 						result.status(),
-						result.hubId()
+						result.hubId(),
+						result.deliveryType(),
+						result.deliveryNumber()
 				)
 		);
 
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
+	}
+
+	// 다건 조회 - 마스터, 허브 관리자만 가능
+	@GetMapping("/managers")
+	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
+	public ResponseEntity<ApiResponse<Page<DeliveryManagerResponse>>> getDeliveryManagers(
+			@AuthenticationPrincipal UserDetailsImpl userDetails,
+			@RequestBody @Valid DeliveryManagerSearchRequest request) {
+		DeliveryManagerCommand command = new DeliveryManagerCommand(
+				request.page(),
+				request.size(),
+				request.username(),
+				request.hubId(),
+				request.type(),
+				request.number(),
+				request.status(),
+				request.isActive(),
+				request.sortBy(),
+				request.sortAscending()
+		);
+		Page<DeliveryManagerResult> results =
+				userService.getDeliveryManagers(userDetails.getUserId(), command);
+		Page<DeliveryManagerResponse> response = results.map(
+				result -> new DeliveryManagerResponse(
+						result.userId(),
+						result.username(),
+						result.slackId(),
+						result.hubId(),
+						result.deliveryType(),
+						result.deliveryNumber()
+				)
+		);
+
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_READ_SUCCESS, response);
 	}
 
 	// 유저 단건 조회- 전체 가능
@@ -85,7 +125,9 @@ public class UserController {
 				result.role(),
 				result.slackId(),
 				result.status(),
-				result.hubId()
+				result.hubId(),
+				result.deliveryType(),
+				result.deliveryNumber()
 		);
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, response);
 	}

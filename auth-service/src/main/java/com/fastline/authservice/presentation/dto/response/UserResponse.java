@@ -8,5 +8,7 @@ public record UserResponse(Long userId,
 						   String role,
 						   String slackId,
 						   String status,
-						   UUID hubId) {
+						   UUID hubId,
+						   String deliveryType,
+						   Long deliveryNumber) {
 }

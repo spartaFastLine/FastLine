@@ -28,6 +28,6 @@ public record DeliveryManagerSearchRequest(Integer page,
 		this.status = status;
 		this.isActive = isActive != null && isActive;
 		this.sortBy = sortBy == null ? "hubId" : sortBy;
-		this.sortAscending = sortAscending;
+		this.sortAscending = sortAscending == null || sortAscending;
 	}
 }

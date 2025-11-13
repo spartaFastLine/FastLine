@@ -89,5 +89,6 @@ public class User extends TimeBaseEntity<User> {
 	public void delete() {
 		this.status = UserStatus.DELETED;
 		markDeleted();
+		if(this.role == UserRole.DELIVERY_MANAGER) this.getDeliveryManager().delete();
 	}
 }
