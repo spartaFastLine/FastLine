@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/fastlinehub
+    url: jdbc:postgresql://localhost:5437/fastlinehub
     username: user
     password: 1234
     driver-class-name: org.postgresql.Driver

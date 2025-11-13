@@ -29,3 +29,14 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:${EUREKA_SERVER_PORT}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
