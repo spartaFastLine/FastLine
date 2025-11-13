@@ -8,6 +8,7 @@ import com.fastline.aiservice.presentation.dto.MessageGenerationResponse;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.success.SuccessCode;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,18 +25,14 @@ public class AiController {
 
 	private final RequestLogApplicationService requestLogApplicationService;
 
+	@Operation(summary = "AI 기반 최종 발송 시한 생성 API")
 	@PostMapping("/messages")
 	public ResponseEntity<ApiResponse<MessageGenerationResponse>> generateMessage(
 			@RequestBody MessageGenerationRequest request) {
 		log.info("AI 메세지 생성 요청: orderId={}", request.orderId());
 
-		// 1. Command 객체 생성
 		GenerateMessageCommand command = GenerateMessageCommand.from(request);
-
-		// 2. 애플리케이션 서비스 호출
 		MessageGenerationResult result = requestLogApplicationService.generateMessage(command);
-
-		// 3. 응용 계층 DTO -> 프레젠테이션 계층 DTO
 		MessageGenerationResponse response = MessageGenerationResponse.from(result);
 
 		log.info("AI 메세지 생성 성공");

@@ -23,6 +23,9 @@ dependencies {
     //spring security
     api "org.springframework.boot:spring-boot-starter-security"
 
+    //feignclient
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
     // bcrypt
     api 'at.favre.lib:bcrypt:0.10.2'
 
