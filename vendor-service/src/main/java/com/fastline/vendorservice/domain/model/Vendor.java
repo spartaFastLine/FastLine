@@ -1,4 +1,4 @@
-package com.fastline.vendorservice.domain.entity;
+package com.fastline.vendorservice.domain.model;
 
 import com.fastline.common.auditing.TimeBaseEntity;
 import com.fastline.common.exception.CustomException;
@@ -44,10 +44,14 @@ public class Vendor extends TimeBaseEntity<Vendor> {
 	@Column(nullable = false)
 	private UUID hubId;
 
+	@Column(nullable = false)
+	private Long userId;
+
 	protected Vendor() {}
 
-	public static Vendor create(String name, VendorType type, VendorAddress address, UUID hubId) {
-		if (name == null || type == null || address == null || hubId == null)
+	public static Vendor create(
+			String name, VendorType type, VendorAddress address, UUID hubId, Long userId) {
+		if (name == null || type == null || address == null || hubId == null || userId == null)
 			throw new CustomException(ErrorCode.VALIDATION_ERROR);
 
 		Vendor vendor = new Vendor();
@@ -55,6 +59,7 @@ public class Vendor extends TimeBaseEntity<Vendor> {
 		vendor.type = type;
 		vendor.address = address;
 		vendor.hubId = hubId;
+		vendor.userId = userId;
 		return vendor;
 	}
 
@@ -66,5 +71,13 @@ public class Vendor extends TimeBaseEntity<Vendor> {
 		this.hubId = updateCommand.hubId() == null ? hubId : updateCommand.hubId();
 
 		return this;
+	}
+
+	public boolean isHubManager(UUID hubId) {
+		return this.hubId.equals(hubId);
+	}
+
+	public boolean isVendorManager(Long userId) {
+		return this.userId.equals(userId);
 	}
 }

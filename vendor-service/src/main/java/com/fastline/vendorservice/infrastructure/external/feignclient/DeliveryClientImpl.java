@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DeliveryClientImpl implements DeliveryClient {
 
-    private final DeliveryFeignClient deliveryFeignClient;
+	private final DeliveryFeignClient deliveryFeignClient;
 
-    @Override
-    public DeliveryResponseDto requestDelivery(DeliveryRequestDto requestDto) {
-        return deliveryFeignClient.requestDelivery(requestDto);
-    }
+	@Override
+	public DeliveryResponseDto requestDelivery(DeliveryRequestDto requestDto) {
+		return deliveryFeignClient.requestDelivery(requestDto);
+	}
 }

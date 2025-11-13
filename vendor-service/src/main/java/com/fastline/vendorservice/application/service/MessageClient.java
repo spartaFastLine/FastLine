@@ -4,5 +4,5 @@ import com.fastline.vendorservice.infrastructure.external.dto.message.MessageReq
 
 public interface MessageClient {
 
-    void sendMessage(MessageRequestDto requestDto);
+	void sendMessage(MessageRequestDto requestDto);
 }

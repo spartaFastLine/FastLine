@@ -29,7 +29,7 @@ public enum SuccessCode {
 	VENDOR_FIND_SUCCESS(HttpStatus.OK, "업체 조회 성공"),
 	VENDOR_UPDATE_SUCCESS(HttpStatus.OK, "업체 정보 수정 성공"),
 	VENDOR_DELETE_SUCCESS(HttpStatus.OK, "업체 삭제 성공"),
-    VENDOR_INFO_FIND_SUCCESS(HttpStatus.OK, "업체 정보 조회 성공"),
+	VENDOR_INFO_FIND_SUCCESS(HttpStatus.OK, "업체 정보 조회 성공"),
 	PRODUCT_SAVE_SUCCESS(HttpStatus.CREATED, "상품 등록 성공"),
 	PRODUCT_FIND_SUCCESS(HttpStatus.OK, "상품 조회 성공"),
 	PRODUCT_UPDATE_SUCCESS(HttpStatus.OK, "상품 정보 수정 성공"),
@@ -38,6 +38,7 @@ public enum SuccessCode {
 	ORDER_FIND_SUCCESS(HttpStatus.OK, "주문 조회 성공"),
 	ORDER_STATUS_UPDATE_SUCCESS(HttpStatus.OK, "주문 상태 변경 성공"),
 	ORDER_DELETE_SUCCESS(HttpStatus.OK, "주문 삭제 성공"),
+	ORDER_COMPLETE(HttpStatus.OK, "주문이 정상적으로 종료됨"),
 
 	// AI
 	MESSAGE_GENERATION_SUCCESS(HttpStatus.OK, "최종 발송 시한 정보 생성 성공"),

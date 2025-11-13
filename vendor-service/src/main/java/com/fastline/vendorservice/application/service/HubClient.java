@@ -4,5 +4,5 @@ import java.util.UUID;
 
 public interface HubClient {
 
-    Boolean validateHubId(UUID hubId);
+	Boolean validateHubId(UUID hubId);
 }

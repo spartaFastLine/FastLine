@@ -39,13 +39,16 @@ public enum ErrorCode {
 
 	// 업체 (vendor)
 	ADDRESS_DUPLICATED(HttpStatus.CONFLICT, "업체 등록 실패"),
+	VENDOR_FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없는 사용자의 요청"),
 	VENDOR_NOT_FOUND(HttpStatus.NOT_FOUND, "업체 조회 실패"),
-    VENDOR_HUBID_INVALIDATION(HttpStatus.CONFLICT, "업체의 허브ID가 유효하지 않음"),
+	VENDOR_HUBID_INVALIDATION(HttpStatus.CONFLICT, "업체의 허브ID가 유효하지 않음"),
 	PRODUCT_NAME_DUPLICATED(HttpStatus.CONFLICT, "상품 등록 실패"),
 	PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "상품 조회 실패"),
 	PRODUCT_STOCK_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "상품 재고 부족"),
+	PRODUCT_FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없는 사용자의 요청"),
 	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문 조회 실패"),
 	ORDER_STATUS_UPDATE_FAIL(HttpStatus.BAD_REQUEST, "주문 상태 변경 실패 - 존재하지 않거나 변경 불가한 주문"),
+	ORDER_FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없는 사용자의 요청"),
 
 	// AI
 	GENERATION_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "AI 응답 생성 실패"),

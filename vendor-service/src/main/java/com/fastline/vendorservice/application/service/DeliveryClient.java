@@ -5,5 +5,5 @@ import com.fastline.vendorservice.infrastructure.external.dto.delivery.DeliveryR
 
 public interface DeliveryClient {
 
-    DeliveryResponseDto requestDelivery(DeliveryRequestDto requestDto);
+	DeliveryResponseDto requestDelivery(DeliveryRequestDto requestDto);
 }

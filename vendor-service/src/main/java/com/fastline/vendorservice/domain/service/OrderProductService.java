@@ -2,9 +2,9 @@ package com.fastline.vendorservice.domain.service;
 
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
-import com.fastline.vendorservice.domain.entity.Order;
-import com.fastline.vendorservice.domain.entity.OrderProduct;
-import com.fastline.vendorservice.domain.entity.Product;
+import com.fastline.vendorservice.domain.model.Order;
+import com.fastline.vendorservice.domain.model.OrderProduct;
+import com.fastline.vendorservice.domain.model.Product;
 import com.fastline.vendorservice.domain.repository.ProductRepository;
 import com.fastline.vendorservice.domain.vo.OrderStatus;
 import com.fastline.vendorservice.domain.vo.Stock;

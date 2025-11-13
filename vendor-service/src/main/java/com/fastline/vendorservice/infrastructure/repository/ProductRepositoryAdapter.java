@@ -2,7 +2,7 @@ package com.fastline.vendorservice.infrastructure.repository;
 
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
-import com.fastline.vendorservice.domain.entity.Product;
+import com.fastline.vendorservice.domain.model.Product;
 import com.fastline.vendorservice.domain.repository.ProductRepository;
 import java.util.List;
 import java.util.UUID;
@@ -56,5 +56,10 @@ public class ProductRepositoryAdapter implements ProductRepository {
 
 		jpaProductRepository.deleteById(productId);
 		return productId;
+	}
+
+	@Override
+	public Product findByProductIdFetchVendor(UUID productId) {
+		return jpaProductRepository.findByProductFetchVendor(productId);
 	}
 }

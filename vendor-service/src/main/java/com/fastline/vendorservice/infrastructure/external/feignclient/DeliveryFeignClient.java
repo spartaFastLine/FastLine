@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @FeignClient(name = "delivery-service")
 public interface DeliveryFeignClient {
 
-    @PostMapping("/api/deliveries/from-order")
-    DeliveryResponseDto requestDelivery(DeliveryRequestDto requestDto);
+	@PostMapping("/api/deliveries/from-order")
+	DeliveryResponseDto requestDelivery(DeliveryRequestDto requestDto);
 }

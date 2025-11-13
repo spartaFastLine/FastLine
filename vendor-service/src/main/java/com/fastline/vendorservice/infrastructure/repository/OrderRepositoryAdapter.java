@@ -2,7 +2,7 @@ package com.fastline.vendorservice.infrastructure.repository;
 
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
-import com.fastline.vendorservice.domain.entity.Order;
+import com.fastline.vendorservice.domain.model.Order;
 import com.fastline.vendorservice.domain.repository.OrderRepository;
 import java.util.List;
 import java.util.UUID;

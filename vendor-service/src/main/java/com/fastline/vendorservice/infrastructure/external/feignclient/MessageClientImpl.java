@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MessageClientImpl implements MessageClient {
 
-    private final MessageFeignClient messageFeignClient;
+	private final MessageFeignClient messageFeignClient;
 
-    @Override
-    public void sendMessage(MessageRequestDto requestDto) {
-        messageFeignClient.sendMessage(requestDto);
-    }
+	@Override
+	public void sendMessage(MessageRequestDto requestDto) {
+		messageFeignClient.sendMessage(requestDto);
+	}
 }

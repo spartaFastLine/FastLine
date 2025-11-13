@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @FeignClient(name = "messaging-service")
 public interface MessageFeignClient {
 
-    @PostMapping("/api/slack/messages")
-    void sendMessage(MessageRequestDto requestDto);
+	@PostMapping("/api/slack/messages")
+	void sendMessage(MessageRequestDto requestDto);
 }
