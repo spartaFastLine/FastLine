@@ -1,24 +1,32 @@
 package com.fastline.authservice.application.service;
 
 import com.fastline.authservice.application.change.DeliveryManagerService;
+import com.fastline.authservice.application.command.UserSearchCommand;
+import com.fastline.authservice.application.result.UserResult;
 import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.repository.UserRepository;
+import com.fastline.authservice.domain.vo.UserOrderBy;
 import com.fastline.authservice.domain.vo.UserStatus;
 import com.fastline.authservice.presentation.dto.request.PermitRequest;
 import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequest;
 import com.fastline.authservice.presentation.dto.request.UpdateSlackRequest;
-import com.fastline.authservice.presentation.dto.request.UserSearchRequest;
 import com.fastline.authservice.presentation.dto.response.DeliveryManagerMessageResponse;
 import com.fastline.authservice.presentation.dto.response.UserHubIdResponse;
 import com.fastline.authservice.presentation.dto.response.UserResponse;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
+import com.fastline.common.security.model.UserRole;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -42,8 +50,44 @@ public class UserService {
         newUser.permitSignup();
     }
 
-    public Page<UserResponse> getUsers(Long userId, UserSearchRequest requestDto) {
-        return null;
+    @Transactional(readOnly = true)
+    public Page<UserResult> getUsers(Long managerId, UserSearchCommand command) {
+        // 매니저 유저 확인
+        User manager = checkUser.userCheck(managerId);
+        UUID requestHubId = command.hubId();
+        // 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
+        if (requestHubId != null) {
+            checkUser.checkHubManager(manager, requestHubId);
+        } else {
+            // 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
+            if (manager.getRole() == UserRole.HUB_MANAGER) requestHubId = manager.getHubId();
+        }
+        // 정렬조건 체크
+        UserOrderBy.checkValid(command.sortBy());
+
+        // 오름차순/내림차순
+        Sort.Direction directions =
+                command.sortAscending() ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable =
+                PageRequest.of(
+                        command.page() - 1,
+                        command.size(),
+                        Sort.by(directions, command.sortBy()));
+        Page<User> users =
+                userRepository.findUsers(
+                        command.username(),
+                        requestHubId,
+                        command.role(),
+                        command.status(),
+                        pageable);
+        return users.map(user -> new UserResult(
+                user.getId(),
+                user.getEmail(),
+                user.getUsername(),
+                user.getRole().name(),
+                user.getSlackId(),
+                user.getStatus().name(),
+                user.getHubId()));
     }
 
     public UserResponse getUser(Long userId) {

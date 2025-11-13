@@ -2,29 +2,18 @@ package com.fastline.authservice.application.change;
 
 import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.repository.UserRepository;
-import com.fastline.authservice.domain.vo.UserOrderBy;
 import com.fastline.authservice.domain.vo.UserStatus;
 import com.fastline.authservice.presentation.dto.request.PermitRequest;
 import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequest;
 import com.fastline.authservice.presentation.dto.request.UpdateSlackRequest;
-import com.fastline.authservice.presentation.dto.request.UserSearchRequest;
 import com.fastline.authservice.presentation.dto.response.DeliveryManagerMessageResponse;
 import com.fastline.authservice.presentation.dto.response.UserHubIdResponse;
-import com.fastline.authservice.presentation.dto.response.UserResponse;
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
-import com.fastline.common.security.model.UserRole;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 //@Service
 @RequiredArgsConstructor
@@ -50,62 +39,22 @@ public class UserService {
     }
 
     // 유저 단건 조회
-    @Transactional(readOnly = true)
-    public UserResponse getUser(Long userId) {
-        // 유저 확인
-        User user = checkUser.userCheck(userId);
-        return new UserResponse(
-                user.getId(),
-                user.getEmail(),
-                user.getUsername(),
-                user.getPassword(),
-                user.getRole().name(),
-                user.getSlackId(),
-                user.getStatus().name(),
-                user.getHubId());
-    }
+//    @Transactional(readOnly = true)
+//    public UserResponse getUser(Long userId) {
+//        // 유저 확인
+//        User user = checkUser.userCheck(userId);
+//        return new UserResponse(
+//                user.getId(),
+//                user.getEmail(),
+//                user.getUsername(),
+//                user.getPassword(),
+//                user.getRole().name(),
+//                user.getSlackId(),
+//                user.getStatus().name(),
+//                user.getHubId());
+//    }
 
     // 유저 다건 조회
-    @Transactional(readOnly = true)
-    public Page<UserResponse> getUsers(Long managerId, UserSearchRequest requestDto) {
-        // 매니저 유저 확인
-        User manager = checkUser.userCheck(managerId);
-        UUID requestHubId = requestDto.hubId();
-        // 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
-        if (requestHubId != null) {
-            checkUser.checkHubManager(manager, requestHubId);
-        } else {
-            // 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
-            if (manager.getRole() == UserRole.HUB_MANAGER) requestHubId = manager.getHubId();
-        }
-        // 정렬조건 체크
-        UserOrderBy.checkValid(requestDto.sortBy());
-
-        // 오름차순/내림차순
-        Sort.Direction directions =
-                requestDto.sortAscending() ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable =
-                PageRequest.of(
-                        requestDto.page() - 1,
-                        requestDto.size(),
-                        Sort.by(directions, requestDto.sortBy()));
-        Page<User> users =
-                userRepository.findUsers(
-                        requestDto.username(),
-                        requestHubId,
-                        requestDto.role(),
-                        requestDto.status(),
-                        pageable);
-        return users.map(user -> new UserResponse(
-                user.getId(),
-                user.getEmail(),
-                user.getUsername(),
-                user.getPassword(),
-                user.getRole().name(),
-                user.getSlackId(),
-                user.getStatus().name(),
-                user.getHubId()));
-    }
 
     // 비밀번호 수정
     @Transactional

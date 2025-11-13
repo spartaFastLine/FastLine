@@ -1,5 +1,7 @@
 package com.fastline.authservice.presentation.controller;
 
+import com.fastline.authservice.application.command.UserSearchCommand;
+import com.fastline.authservice.application.result.UserResult;
 import com.fastline.authservice.application.service.UserService;
 import com.fastline.authservice.presentation.dto.request.PermitRequest;
 import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequest;
@@ -42,7 +44,29 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Page<UserResponse>>> getUsers(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody UserSearchRequest requestDto) {
-		Page<UserResponse> responseDto = userService.getUsers(userDetails.getUserId(), requestDto);
+		UserSearchCommand command = new UserSearchCommand(
+				requestDto.page(),
+				requestDto.size(),
+				requestDto.hubId(),
+				requestDto.username(),
+				requestDto.role(),
+				requestDto.status(),
+				requestDto.sortBy(),
+				requestDto.sortAscending()
+		);
+		Page<UserResult> results = userService.getUsers(userDetails.getUserId(), command);
+		Page<UserResponse> responseDto = results.map(
+				result -> new UserResponse(
+						result.userId(),
+						result.email(),
+						result.username(),
+						result.role(),
+						result.slackId(),
+						result.status(),
+						result.hubId()
+				)
+		);
+
 		return ResponseUtil.successResponse(SuccessCode.USER_READ_SUCCESS, responseDto);
 	}
 
