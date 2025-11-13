@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-@Service
+//@Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;

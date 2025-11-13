@@ -1,5 +1,6 @@
 package com.fastline.authservice.presentation.controller;
 
+import com.fastline.authservice.application.command.LoginCommand;
 import com.fastline.authservice.application.service.AuthService;
 import com.fastline.authservice.application.command.SignupCommand;
 import com.fastline.authservice.presentation.dto.request.LoginRequest;
@@ -37,7 +38,8 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<ApiResponse<Void>> login(
 			@RequestBody @Valid LoginRequest requestDto, HttpServletResponse res) {
-		authService.login(requestDto, res);
+		LoginCommand command = new LoginCommand(requestDto.username(), requestDto.password());
+		authService.login(command, res);
 		return ResponseUtil.successResponse(SuccessCode.USER_LOGIN_SUCCESS);
 	}
 }

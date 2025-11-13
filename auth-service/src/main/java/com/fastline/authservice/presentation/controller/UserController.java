@@ -1,7 +1,6 @@
 package com.fastline.authservice.presentation.controller;
 
-import com.fastline.authservice.application.change.DeliveryManagerService;
-import com.fastline.authservice.application.change.UserService;
+import com.fastline.authservice.application.service.UserService;
 import com.fastline.authservice.presentation.dto.request.PermitRequest;
 import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequest;
 import com.fastline.authservice.presentation.dto.request.UpdateSlackRequest;
@@ -28,12 +27,12 @@ public class UserController {
 	private final UserService userService;
 
 	// 회원가입 승인
-	@PutMapping("/permit/signup")
+	@PutMapping("/permit/signup/{userId}")
 	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Void>> permitSignup(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
-			@RequestBody @Valid PermitRequest requestDto) {
-		userService.permitSignup(userDetails.getUserId(), requestDto);
+			@PathVariable("userId") Long userId){
+		userService.permitSignup(userDetails.getUserId(), userId);
 		return ResponseUtil.successResponse(SuccessCode.USER_SIGNUP_PERMIT_SUCCESS);
 	}
 
