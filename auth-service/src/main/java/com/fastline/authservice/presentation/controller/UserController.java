@@ -1,10 +1,12 @@
 package com.fastline.authservice.presentation.controller;
 
 import com.fastline.authservice.application.command.UpdatePasswordCommand;
+import com.fastline.authservice.application.command.UpdateSlackCommand;
 import com.fastline.authservice.application.command.UserSearchCommand;
+import com.fastline.authservice.application.result.DeliveryManagerMessageResult;
+import com.fastline.authservice.application.result.UserHubIdResult;
 import com.fastline.authservice.application.result.UserResult;
 import com.fastline.authservice.application.service.UserService;
-import com.fastline.authservice.presentation.dto.request.PermitRequest;
 import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequest;
 import com.fastline.authservice.presentation.dto.request.UpdateSlackRequest;
 import com.fastline.authservice.presentation.dto.request.UserSearchRequest;
@@ -106,7 +108,10 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> updateUserSlack(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
 			@RequestBody @Valid UpdateSlackRequest requestDto) {
-		userService.updateSlack(userDetails.getUserId(), requestDto);
+		UpdateSlackCommand command = new UpdateSlackCommand(
+				requestDto.slackId()
+		);
+		userService.updateSlack(userDetails.getUserId(), command);
 		return ResponseUtil.successResponse(SuccessCode.USER_UPDATE_SUCCESS);
 	}
 
@@ -119,12 +124,12 @@ public class UserController {
 	}
 
 	// 회원 탈퇴 승인
-	@DeleteMapping("/managers/withdraw/permit")
+	@DeleteMapping("/managers/withdraw/{userId}/permit")
 	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Void>> deleteUserpermit(
 			@AuthenticationPrincipal UserDetailsImpl userDetails,
-			@RequestBody @Valid PermitRequest requestDto) {
-		userService.permitDeleteUser(userDetails.getUserId(), requestDto);
+			@PathVariable("userId") Long userId) {
+		userService.permitDeleteUser(userDetails.getUserId(), userId);
 		return ResponseUtil.successResponse(SuccessCode.USER_DELETE_SUCCESS);
 	}
 
@@ -134,7 +139,12 @@ public class UserController {
 	@GetMapping("/{userId}")
 	public ResponseEntity<ApiResponse<DeliveryManagerMessageResponse>> getDeliveryManagerMessageInfo(
 			@PathVariable Long userId) {
-		DeliveryManagerMessageResponse responseDto = userService.getDeliveryManagerMessageInfo(userId);
+		DeliveryManagerMessageResult result = userService.getDeliveryManagerMessageInfo(userId);
+		DeliveryManagerMessageResponse responseDto = new DeliveryManagerMessageResponse(
+				result.slackId(),
+				result.username(),
+				result.email()
+		);
 		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_READ_SUCCESS, responseDto);
 	}
 
@@ -142,7 +152,8 @@ public class UserController {
 	@GetMapping("/{userId}/hubId")
 	public ResponseEntity<ApiResponse<UserHubIdResponse>> getHubMessageInfo(
 			@PathVariable Long userId) {
-		UserHubIdResponse responseDto = userService.getUserHubInfo(userId);
+		UserHubIdResult result = userService.getUserHubInfo(userId);
+		UserHubIdResponse responseDto = new UserHubIdResponse(result.hubId());
 		return ResponseUtil.successResponse(SuccessCode.HUBID_READ_SUCCESS, responseDto);
 	}
 }
