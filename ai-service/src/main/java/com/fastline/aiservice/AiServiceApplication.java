@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @EnableFeignClients
 @EnableDiscoveryClient
-@SpringBootApplication(exclude = SecurityAutoConfiguration.class, scanBasePackages = "com.fastline")
+@SpringBootApplication(scanBasePackages = "com.fastline")
 public class AiServiceApplication {
 
 	public static void main(String[] args) {
