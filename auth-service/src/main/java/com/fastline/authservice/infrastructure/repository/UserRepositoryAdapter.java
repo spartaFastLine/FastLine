@@ -112,6 +112,21 @@ public class UserRepositoryAdapter implements UserRepository {
 		return new PageImpl<>(deliveryManagers, pageable, total);
 	}
 
+	@Override
+	public Optional<User> assignDeliveryManager(UUID hubId, DeliveryManagerType deliveryType) {
+		User manager =
+				jpaQueryFactory
+						.selectFrom(user)
+						.innerJoin(user.deliveryManager, deliveryManager)
+						.where(
+								user.hubId.eq(hubId),
+								deliveryManager.type.eq(deliveryType),
+								deliveryManager.isStandby.eq(true))
+						.orderBy(deliveryManager.number.asc())
+						.fetchFirst();
+		return Optional.ofNullable(manager);
+	}
+
 	// 검색 조건 null 처리
 	private BooleanExpression eqUsername(String username) {
 		return StringUtils.hasText(username) ? user.username.eq(username) : null;

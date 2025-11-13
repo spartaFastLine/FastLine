@@ -4,6 +4,8 @@ import com.fastline.authservice.domain.model.DeliveryManager;
 import com.fastline.authservice.domain.model.User;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.fastline.authservice.domain.vo.DeliveryManagerType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -28,4 +30,6 @@ public interface UserRepository {
 			String userStatus,
 			boolean isActive,
 			Pageable pageable);
+
+	Optional<User> assignDeliveryManager(UUID hubId, DeliveryManagerType deliveryType);
 }

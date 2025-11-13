@@ -86,9 +86,26 @@ public class User extends TimeBaseEntity<User> {
 		this.status = UserStatus.REJECTED;
 	}
 
+	public void assign() {
+		this.deliveryManager.assign();
+	}
+
+	public void complete() {
+		this.deliveryManager.complete();
+	}
+
 	public void delete() {
 		this.status = UserStatus.DELETED;
 		markDeleted();
 		if(this.role == UserRole.DELIVERY_MANAGER) this.getDeliveryManager().delete();
+	}
+
+	public void updateByManager(UUID hubId, UserStatus status, DeliveryManagerType deliveryType) {
+		if(hubId!=null) this.hubId = hubId;
+		if(status!=null) this.status = status;
+		if(this.role == UserRole.DELIVERY_MANAGER && deliveryType!=null)
+			this.getDeliveryManager().updateType(deliveryType);
+
+
 	}
 }

@@ -1,22 +1,10 @@
 package com.fastline.authservice.presentation.controller;
 
-import com.fastline.authservice.application.command.DeliveryManagerCommand;
-import com.fastline.authservice.application.command.UpdatePasswordCommand;
-import com.fastline.authservice.application.command.UpdateSlackCommand;
-import com.fastline.authservice.application.command.UserSearchCommand;
-import com.fastline.authservice.application.result.DeliveryManagerMessageResult;
-import com.fastline.authservice.application.result.DeliveryManagerResult;
-import com.fastline.authservice.application.result.UserHubIdResult;
-import com.fastline.authservice.application.result.UserResult;
+import com.fastline.authservice.application.command.*;
+import com.fastline.authservice.application.result.*;
 import com.fastline.authservice.application.service.UserService;
-import com.fastline.authservice.presentation.dto.request.DeliveryManagerSearchRequest;
-import com.fastline.authservice.presentation.dto.request.UpdatePasswordRequest;
-import com.fastline.authservice.presentation.dto.request.UpdateSlackRequest;
-import com.fastline.authservice.presentation.dto.request.UserSearchRequest;
-import com.fastline.authservice.presentation.dto.response.DeliveryManagerMessageResponse;
-import com.fastline.authservice.presentation.dto.response.DeliveryManagerResponse;
-import com.fastline.authservice.presentation.dto.response.UserHubIdResponse;
-import com.fastline.authservice.presentation.dto.response.UserResponse;
+import com.fastline.authservice.presentation.dto.request.*;
+import com.fastline.authservice.presentation.dto.response.*;
 import com.fastline.common.response.ApiResponse;
 import com.fastline.common.response.ResponseUtil;
 import com.fastline.common.security.model.UserDetailsImpl;
@@ -157,6 +145,22 @@ public class UserController {
 		return ResponseUtil.successResponse(SuccessCode.USER_UPDATE_SUCCESS);
 	}
 
+	//유저 정보 수정 - 관리자만 가능한 영격
+	@PutMapping("/{userId}")
+	@PreAuthorize("hasAnyRole('MASTER', 'HUB_MANAGER')")
+	public ResponseEntity<ApiResponse<Void>> updateDeliveryManager(
+			@AuthenticationPrincipal UserDetailsImpl userDetails,
+			@PathVariable("userId") Long userId,
+			@RequestBody @Valid UserManagerUpdateRequest request) {
+		UserManagerUpdateCommand command = new UserManagerUpdateCommand(
+				request.hubId(),
+				request.status(),
+				request.deliveryType()
+		);
+		userService.updateDeliveryManager(userDetails.getUserId(), userId,  command);
+		return ResponseUtil.successResponse(SuccessCode.USER_UPDATE_SUCCESS);
+	}
+
 	// 회원 탈퇴 신청
 	@PostMapping("/user/withdraw")
 	public ResponseEntity<ApiResponse<Void>> withdrawUser(
@@ -197,5 +201,22 @@ public class UserController {
 		UserHubIdResult result = userService.getUserHubInfo(userId);
 		UserHubIdResponse responseDto = new UserHubIdResponse(result.hubId());
 		return ResponseUtil.successResponse(SuccessCode.HUBID_READ_SUCCESS, responseDto);
+	}
+
+	// 배달 매니저 자동 배정
+	@GetMapping("/assign/{hubId}/{managerType}")
+	public ResponseEntity<ApiResponse<DeliveryManagerAssignResponse>> getDeliveryManagerAssignment(
+			@PathVariable String hubId, @PathVariable String managerType) {
+		DeliveryManagerAssignResult result =
+				userService.getDeliveryManagerAssignment(hubId, managerType);
+		DeliveryManagerAssignResponse responseDto = new DeliveryManagerAssignResponse(result.managerId());
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_ASSIGN_SUCCESS, responseDto);
+	}
+
+	// 배달매니저 배송완료 알림
+	@PostMapping("/{managerId}/complete")
+	public ResponseEntity<ApiResponse<Void>> completeDeliveryManager(@PathVariable Long managerId) {
+		userService.completeDeliveryManager(managerId);
+		return ResponseUtil.successResponse(SuccessCode.DELIVERY_MANAGER_COMPLETE_SUCCESS);
 	}
 }

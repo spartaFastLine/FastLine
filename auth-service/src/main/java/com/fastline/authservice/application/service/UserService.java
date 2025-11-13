@@ -1,17 +1,12 @@
 package com.fastline.authservice.application.service;
 
-import com.fastline.authservice.application.change.DeliveryManagerService;
-import com.fastline.authservice.application.command.DeliveryManagerCommand;
-import com.fastline.authservice.application.command.UpdatePasswordCommand;
-import com.fastline.authservice.application.command.UpdateSlackCommand;
-import com.fastline.authservice.application.command.UserSearchCommand;
-import com.fastline.authservice.application.result.DeliveryManagerMessageResult;
-import com.fastline.authservice.application.result.DeliveryManagerResult;
-import com.fastline.authservice.application.result.UserHubIdResult;
-import com.fastline.authservice.application.result.UserResult;
+import com.fastline.authservice.application.command.*;
+import com.fastline.authservice.application.result.*;
 import com.fastline.authservice.domain.model.DeliveryManager;
 import com.fastline.authservice.domain.model.User;
 import com.fastline.authservice.domain.repository.UserRepository;
+import com.fastline.authservice.domain.service.UserDomainService;
+import com.fastline.authservice.domain.vo.DeliveryManagerType;
 import com.fastline.authservice.domain.vo.ManagerOrderBy;
 import com.fastline.authservice.domain.vo.UserOrderBy;
 import com.fastline.authservice.domain.vo.UserStatus;
@@ -34,16 +29,16 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final DeliveryManagerService.CheckUser checkUser;
+    private final UserDomainService domainService;
 
     @Transactional
     public void permitSignup(Long managerId, Long userId) {
-        User newUser = checkUser.userCheck(userId);
+        User newUser = domainService.userCheck(userId);
         // 매니저 유저 확인
-        User manager = checkUser.userCheck(managerId);
+        User manager = domainService.userCheck(managerId);
 
         // 허브 매니저라면 소속 허브 아이디 체크
-        checkUser.checkHubManager(manager, newUser.getHubId());
+        domainService.checkHubManager(manager, newUser.getHubId());
         // 승인 대기 상태가 아닌 경우 예외 발생
         if (newUser.getStatus() != UserStatus.PENDING) throw new CustomException(ErrorCode.NOT_PENDING);
 
@@ -54,11 +49,11 @@ public class UserService {
     @Transactional(readOnly = true)
     public Page<UserResult> getUsers(Long managerId, UserSearchCommand command) {
         // 매니저 유저 확인
-        User manager = checkUser.userCheck(managerId);
+        User manager = domainService.userCheck(managerId);
         UUID requestHubId = command.hubId();
         // 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
         if (requestHubId != null) {
-            checkUser.checkHubManager(manager, requestHubId);
+            domainService.checkHubManager(manager, requestHubId);
         } else {
             // 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
             if (manager.getRole() == UserRole.HUB_MANAGER) requestHubId = manager.getHubId();
@@ -89,10 +84,10 @@ public class UserService {
     public Page<DeliveryManagerResult> getDeliveryManagers(
             Long managerId, DeliveryManagerCommand command) {
         // 매니저 유저 확인
-        User manager = checkUser.userCheck(managerId);
+        User manager = domainService.userCheck(managerId);
         UUID hubId = command.hubId();
         // 허브가 null이 아닌데 해당 허브의 관리자가 아닌 경우 에러발생
-        if (hubId != null) checkUser.checkHubManager(manager, hubId);
+        if (hubId != null) domainService.checkHubManager(manager, hubId);
         else {
             // 허브매니저인데 허브아이디가 null인 경우 자기 허브로 고정
             if (manager.getRole() == UserRole.HUB_MANAGER) hubId = manager.getHubId();
@@ -125,7 +120,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResult getUser(Long userId) {
                 // 유저 확인
-        User user = checkUser.userCheck(userId);
+        User user = domainService.userCheck(userId);
         return new UserResult(user);
 
     }
@@ -133,7 +128,7 @@ public class UserService {
     @Transactional
     public void updatePassword(Long userId, UpdatePasswordCommand command) {
         // 유저 확인
-        User user = checkUser.userCheck(userId);
+        User user = domainService.userCheck(userId);
         // 현재 비밀번호 확인
         if (!passwordEncoder.matches(command.password(), user.getPassword()))
             throw new CustomException(ErrorCode.PASSWORD_NOT_MATCHES);
@@ -149,7 +144,7 @@ public class UserService {
     @Transactional
     public void updateSlack(Long userId, UpdateSlackCommand command) {
         // 유저 확인
-        User user = checkUser.userCheck(userId);
+        User user = domainService.userCheck(userId);
         // 슬랙 아이디 업데이트
         user.updateSlackId(command.slackId());
     }
@@ -157,20 +152,38 @@ public class UserService {
     @Transactional
     public void withdrawUser(Long userId) {
         // 유저 확인
-        User user = checkUser.userCheck(userId);
+        User user = domainService.userCheck(userId);
         // 권한 정지
         user.updateReject();
+    }
+
+    //관리자가 유저 정보 수정
+    @Transactional
+    public void updateDeliveryManager(Long managerId, Long userId, UserManagerUpdateCommand command) {
+        // 매니저 유저 확인
+        User manager = domainService.userCheck(managerId);
+        // 승인 대상 유저 확인
+        User user = domainService.userCheck(userId);
+
+        // 허브 매니저라면 소속 허브 아이디 체크
+        domainService.checkHubManager(manager, user.getHubId());
+
+        // 도메인 서비스에서 유저 정보 수정
+        user.updateByManager(command.hubId(),
+                UserStatus.from(command.status()),
+                DeliveryManagerType.from(command.deliveryType()));
+
     }
 
     @Transactional
     public void permitDeleteUser(Long managerId, Long userId) {
         // 매니저 유저 확인
-        User manager = checkUser.userCheck(managerId);
+        User manager = domainService.userCheck(managerId);
         // 승인 대상 유저 확인
-        User user = checkUser.userCheck(userId);
+        User user = domainService.userCheck(userId);
 
         // 허브 매니저라면 소속 허브 아이디 체크
-        checkUser.checkHubManager(manager, user.getHubId());
+        domainService.checkHubManager(manager, user.getHubId());
 
         // 권한 정지 상태가 아니라면 예외 발생
         if (user.getStatus() != UserStatus.REJECTED) throw new CustomException(ErrorCode.NOT_REJECTED);
@@ -179,12 +192,31 @@ public class UserService {
     }
 
     public DeliveryManagerMessageResult getDeliveryManagerMessageInfo(Long userId) {
-        User user = checkUser.userCheck(userId);
+        User user = domainService.userCheck(userId);
         return new DeliveryManagerMessageResult(user.getSlackId(), user.getUsername(), user.getEmail());
     }
 
     public UserHubIdResult getUserHubInfo(Long userId) {
-        User user = checkUser.userCheck(userId);
+        User user = domainService.userCheck(userId);
         return new UserHubIdResult(user.getHubId());
+    }
+
+    // 배달 매니저 자동 배정
+    @Transactional
+    public DeliveryManagerAssignResult getDeliveryManagerAssignment(
+            String hubId, String managerType) {
+        User manager =
+                userRepository
+                        .assignDeliveryManager(UUID.fromString(hubId), DeliveryManagerType.from(managerType))
+                        .orElseThrow(() -> new CustomException(ErrorCode.IMPOSSIBLE_ASSIGNMENT));
+        manager.assign();
+        return new DeliveryManagerAssignResult(manager.getId());
+    }
+
+    // 배달매니저 배송완료 알림 -> 배송가능 상태로 변경
+    @Transactional
+    public void completeDeliveryManager(Long managerId) {
+        User manager = domainService.userCheck(managerId);
+        manager.complete();
     }
 }
