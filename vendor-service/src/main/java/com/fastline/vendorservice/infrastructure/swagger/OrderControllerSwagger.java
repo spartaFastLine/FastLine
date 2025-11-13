@@ -1,6 +1,7 @@
 package com.fastline.vendorservice.infrastructure.swagger;
 
 import com.fastline.common.response.ApiResponse;
+import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.vendorservice.presentation.request.OrderCreateRequest;
 import com.fastline.vendorservice.presentation.response.order.OrderCreateResponse;
 import com.fastline.vendorservice.presentation.response.order.OrderFindResponse;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 public interface OrderControllerSwagger {
@@ -35,7 +37,8 @@ public interface OrderControllerSwagger {
 											schema = @Schema(implementation = OrderCreateRequest.class))))
 	@PostMapping
 	ResponseEntity<ApiResponse<OrderCreateResponse>> insertOrder(
-			@RequestBody @Valid OrderCreateRequest createRequest);
+			@RequestBody @Valid OrderCreateRequest createRequest,
+			@AuthenticationPrincipal UserDetailsImpl userDetails);
 
 	@Operation(
 			summary = "주문 단건 조회",
@@ -53,7 +56,8 @@ public interface OrderControllerSwagger {
 						schema = @Schema(implementation = UUID.class))
 			})
 	@GetMapping
-	ResponseEntity<ApiResponse<OrderFindResponse>> findOrder(@RequestParam UUID orderId);
+	ResponseEntity<ApiResponse<OrderFindResponse>> findOrder(
+			@RequestParam UUID orderId, @AuthenticationPrincipal UserDetailsImpl userDetails);
 
 	@Operation(
 			summary = "주문 상태 수정",
@@ -81,7 +85,9 @@ public interface OrderControllerSwagger {
 			})
 	@PutMapping
 	ResponseEntity<ApiResponse<OrderStatusUpdateResponse>> updateStatus(
-			@RequestParam UUID orderId, @RequestParam String status);
+			@RequestParam UUID orderId,
+			@RequestParam String status,
+			@AuthenticationPrincipal UserDetailsImpl userDetails);
 
 	@Operation(
 			summary = "주문 단건 삭제",
@@ -100,5 +106,6 @@ public interface OrderControllerSwagger {
 						schema = @Schema(implementation = UUID.class))
 			})
 	@DeleteMapping
-	ResponseEntity<ApiResponse<UUID>> deletedOrder(@RequestParam UUID orderId);
+	ResponseEntity<ApiResponse<UUID>> deletedOrder(
+			@RequestParam UUID orderId, @AuthenticationPrincipal UserDetailsImpl userDetails);
 }

@@ -1,6 +1,7 @@
 package com.fastline.vendorservice.infrastructure.swagger;
 
 import com.fastline.common.response.ApiResponse;
+import com.fastline.common.security.model.UserDetailsImpl;
 import com.fastline.vendorservice.presentation.request.ProductCreateRequest;
 import com.fastline.vendorservice.presentation.request.ProductUpdateRequest;
 import com.fastline.vendorservice.presentation.response.product.ProductCreateResponse;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 public interface ProductControllerSwagger {
@@ -35,7 +37,8 @@ public interface ProductControllerSwagger {
 											schema = @Schema(implementation = ProductCreateRequest.class))))
 	@PostMapping
 	ResponseEntity<ApiResponse<ProductCreateResponse>> insertProduct(
-			@RequestBody @Valid ProductCreateRequest createRequest);
+			@RequestBody @Valid ProductCreateRequest createRequest,
+			@AuthenticationPrincipal UserDetailsImpl userDetails);
 
 	@Operation(
 			summary = "상품 단건 조회",
@@ -83,7 +86,9 @@ public interface ProductControllerSwagger {
 											schema = @Schema(implementation = ProductUpdateRequest.class))))
 	@PutMapping
 	ResponseEntity<ApiResponse<ProductUpdateResponse>> updateProduct(
-			@RequestBody @Valid ProductUpdateRequest updateRequest, @RequestParam UUID productId);
+			@RequestBody @Valid ProductUpdateRequest updateRequest,
+			@RequestParam UUID productId,
+			@AuthenticationPrincipal UserDetailsImpl userDetails);
 
 	@Operation(
 			summary = "상품 단건 삭제",
@@ -102,5 +107,6 @@ public interface ProductControllerSwagger {
 						schema = @Schema(implementation = UUID.class))
 			})
 	@DeleteMapping
-	ResponseEntity<ApiResponse<UUID>> deleteProduct(@RequestParam UUID productId);
+	ResponseEntity<ApiResponse<UUID>> deleteProduct(
+			@RequestParam UUID productId, @AuthenticationPrincipal UserDetailsImpl userDetails);
 }

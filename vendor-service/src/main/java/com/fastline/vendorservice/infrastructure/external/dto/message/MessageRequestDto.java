@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public record MessageRequestDto(
 		UUID orderId,
+		Long deliveryManagerId,
 		String customerName,
 		String customerEmail,
 		Instant orderDateTime,
@@ -13,8 +14,6 @@ public record MessageRequestDto(
 		String requestNote,
 		String sourceHub,
 		List<String> viaHubs,
-		String destination,
-		String deliveryManagerName,
-		String deliveryManagerEmail) {
+		String destination) {
 	public record MessageItem(String name, Integer quantity) {}
 }

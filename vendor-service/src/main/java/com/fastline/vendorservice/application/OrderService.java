@@ -2,14 +2,22 @@ package com.fastline.vendorservice.application;
 
 import com.fastline.common.exception.CustomException;
 import com.fastline.common.exception.ErrorCode;
-import com.fastline.vendorservice.domain.entity.Order;
-import com.fastline.vendorservice.domain.entity.OrderProduct;
+import com.fastline.vendorservice.application.service.DeliveryClient;
+import com.fastline.vendorservice.application.service.MessageClient;
+import com.fastline.vendorservice.application.service.UserClient;
+import com.fastline.vendorservice.domain.model.Order;
+import com.fastline.vendorservice.domain.model.OrderProduct;
 import com.fastline.vendorservice.domain.repository.OrderRepository;
 import com.fastline.vendorservice.domain.service.OrderProductService;
+import com.fastline.vendorservice.domain.service.VendorOrderService;
 import com.fastline.vendorservice.domain.vo.OrderStatus;
-import com.fastline.vendorservice.infrastructure.external.MessageClient;
+import com.fastline.vendorservice.infrastructure.external.dto.OrderCompleteDto;
+import com.fastline.vendorservice.infrastructure.external.dto.UserResponseDto;
+import com.fastline.vendorservice.infrastructure.external.dto.delivery.DeliveryRequestDto;
+import com.fastline.vendorservice.infrastructure.external.dto.delivery.DeliveryResponseDto;
 import com.fastline.vendorservice.infrastructure.external.dto.message.MessageRequestDto;
 import com.fastline.vendorservice.presentation.request.OrderCreateRequest;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -25,36 +33,69 @@ public class OrderService {
 
 	private final OrderRepository repository;
 	private final OrderProductService orderProductService;
+	private final VendorOrderService vendorOrderService;
 
-	//    private final DeliveryClient deliveryClient;
+	private final DeliveryClient deliveryClient;
+	private final UserClient userClient;
 	private final MessageClient messageClient;
 
-	/** TODO: 배송서비스에 배송 생성을 요청하는 흐름 필요. */
-	public Order insert(OrderCreateRequest createRequest) {
+	public Order insert(OrderCreateRequest createRequest, Long userId) {
 
 		Order order = Order.create(createRequest);
 		List<OrderProduct> orderProducts =
 				orderProductService.createOrderProducts(order, createRequest.orderProductRequests());
 		orderProducts.forEach(order::mappingOrderProduct);
 
-		//        UUID deliveryId = deliveryClient. 받아와서 다시 해당 배송정보를 요청
-		order.mappingDeliveryId(UUID.randomUUID());
+		UserResponseDto userInfo = userClient.getUserInfo(userId);
+
+		DeliveryResponseDto deliveryResponseDto =
+				deliveryClient.requestDelivery(
+						new DeliveryRequestDto(
+								order.getId().toString(),
+								order.getVendorProducerId().toString(),
+								order.getVendorConsumerId().toString(),
+								order.getConsumerName(),
+								userInfo.slackId(),
+								createRequest.address()));
+
+		order.mappingDeliveryId(UUID.fromString(deliveryResponseDto.deliveryId()));
 		Order result = repository.insert(order);
 
-		//		messageClient.sendMassage(createMessageRequestDto(result));
+		messageClient.sendMessage(
+				createMessageRequestDto(result, userInfo, deliveryResponseDto, createRequest.address()));
 
 		return result;
 	}
 
 	@Transactional(readOnly = true)
-	public Order findByOrderId(UUID orderId) {
+	public Order findByOrderId(UUID orderId, Long userId) {
+
+		if (userId == 1L) return repository.findByOrderIdWithProducts(orderId);
+
+		UUID userHubId = userClient.getUserHubId(userId);
+		Order order = repository.findByOrderId(orderId);
+
+		boolean isHubOrder = vendorOrderService.isHubOrder(order, userHubId); // 허브관리자가 관리하는 업체의 주문인가
+		boolean isVendorOrder = vendorOrderService.isVendorOrder(order, userId); // 벤더관리자가 관리하는 업체의 주문인가
+
+		if (!isHubOrder && !isVendorOrder) {
+			throw new CustomException(ErrorCode.ORDER_FORBIDDEN);
+		}
+
 		return repository.findByOrderIdWithProducts(orderId);
 	}
 
-	public Order updateStatus(UUID orderId, String status) {
+	public Order updateStatus(UUID orderId, String status, Long userId) {
+
+		Order order = repository.findByOrderId(orderId);
+		if (!isMasterUser(userId)) {
+			boolean isVendorOrder = vendorOrderService.isVendorOrder(order, userId);
+			if (!isVendorOrder) {
+				throw new CustomException(ErrorCode.ORDER_FORBIDDEN);
+			}
+		}
 
 		OrderStatus newStatus = OrderStatus.fromString(status);
-		Order order = repository.findByOrderId(orderId);
 
 		if (order.getStatus() == OrderStatus.COMPLETED || order.getStatus() == OrderStatus.CANCELLED) {
 			throw new CustomException(ErrorCode.ORDER_STATUS_UPDATE_FAIL);
@@ -66,16 +107,39 @@ public class OrderService {
 		return order;
 	}
 
-	public UUID deleteOrder(UUID orderId) {
+	public UUID deleteOrder(UUID orderId, Long userId) {
+
+		Order order = repository.findByOrderId(orderId);
+
+		if (isMasterUser(userId)) {
+			return repository.deleteByOrderId(orderId);
+		}
+
+		UUID userHubId = userClient.getUserHubId(userId);
+		boolean isHubOrder = vendorOrderService.isHubOrder(order, userHubId);
+
+		if (!isHubOrder) {
+			throw new CustomException(ErrorCode.ORDER_FORBIDDEN);
+		}
 
 		return repository.deleteByOrderId(orderId);
 	}
 
-	private MessageRequestDto createMessageRequestDto(Order order) {
+	public UUID deliveryCompleteNotification(UUID orderId, OrderCompleteDto completeDto) {
 
-		List<OrderProduct> orderProducts = order.getOrderProducts();
+		Order order = repository.findByOrderId(orderId);
+		order.complete(completeDto.arrivedTime());
+		return order.getId();
+	}
+
+	private MessageRequestDto createMessageRequestDto(
+			Order order,
+			UserResponseDto userInfo,
+			DeliveryResponseDto deliveryResponseDto,
+			String destination) {
+
 		ArrayList<MessageRequestDto.MessageItem> messageItems =
-				orderProducts.stream()
+				order.getOrderProducts().stream()
 						.map(
 								product ->
 										new MessageRequestDto.MessageItem(
@@ -84,15 +148,18 @@ public class OrderService {
 
 		return new MessageRequestDto(
 				order.getId(),
+				deliveryResponseDto.managerId(),
 				order.getConsumerName(),
-				"test123@gmail.com",
-				order.getCreatedAt(),
+				userInfo.email(),
+				Instant.now(),
 				messageItems,
 				order.getRequest(),
-				"testHub",
-				List.of("hub1, hub2"),
-				"도착지",
-				"매니저",
-				"manager@gmail.com");
+				deliveryResponseDto.hubPath().get(0),
+				deliveryResponseDto.hubPath().subList(1, deliveryResponseDto.hubPath().size()),
+				destination);
+	}
+
+	private boolean isMasterUser(Long userId) {
+		return userId == 1L;
 	}
 }

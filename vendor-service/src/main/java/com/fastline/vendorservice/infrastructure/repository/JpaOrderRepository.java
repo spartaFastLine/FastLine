@@ -1,6 +1,6 @@
 package com.fastline.vendorservice.infrastructure.repository;
 
-import com.fastline.vendorservice.domain.entity.Order;
+import com.fastline.vendorservice.domain.model.Order;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;

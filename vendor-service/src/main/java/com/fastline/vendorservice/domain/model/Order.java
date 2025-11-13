@@ -1,4 +1,4 @@
-package com.fastline.vendorservice.domain.entity;
+package com.fastline.vendorservice.domain.model;
 
 import com.fastline.common.auditing.TimeBaseEntity;
 import com.fastline.vendorservice.domain.vo.OrderStatus;
@@ -67,6 +67,12 @@ public class Order extends TimeBaseEntity<Order> {
 		this.status = orderStatus;
 
 		return this;
+	}
+
+	public UUID complete(LocalDateTime arrivalTime) {
+		this.status = OrderStatus.COMPLETED;
+		this.arrivalTime = arrivalTime;
+		return this.id;
 	}
 
 	public void mappingOrderProduct(OrderProduct orderProduct) {

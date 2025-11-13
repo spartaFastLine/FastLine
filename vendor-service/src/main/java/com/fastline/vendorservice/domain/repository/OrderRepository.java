@@ -1,6 +1,6 @@
 package com.fastline.vendorservice.domain.repository;
 
-import com.fastline.vendorservice.domain.entity.Order;
+import com.fastline.vendorservice.domain.model.Order;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Pageable;

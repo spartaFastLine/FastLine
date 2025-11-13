@@ -1,8 +1,13 @@
 package com.fastline.vendorservice.application;
 
-import com.fastline.vendorservice.domain.entity.Product;
-import com.fastline.vendorservice.domain.entity.Vendor;
+import com.fastline.common.exception.CustomException;
+import com.fastline.common.exception.ErrorCode;
+import com.fastline.vendorservice.application.service.HubClient;
+import com.fastline.vendorservice.application.service.UserClient;
+import com.fastline.vendorservice.domain.model.Product;
+import com.fastline.vendorservice.domain.model.Vendor;
 import com.fastline.vendorservice.domain.repository.ProductRepository;
+import com.fastline.vendorservice.domain.service.VendorProductService;
 import com.fastline.vendorservice.domain.vo.Stock;
 import com.fastline.vendorservice.presentation.request.ProductCreateRequest;
 import com.fastline.vendorservice.presentation.request.ProductUpdateRequest;
@@ -17,18 +22,29 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
 
 	private final ProductRepository repository;
-	private final VendorService vendorService;
+	private final VendorProductService vendorProductService;
 
-	//    private final HubClient hubClient
+	private final HubClient hubClient;
+	private final UserClient userClient;
 
-	/** TODO: vendor의 hubId가 유효한지 확인하는 흐름 작성 필요. */
-	public Product insert(ProductCreateRequest request) {
+	public Product insert(ProductCreateRequest request, Long userId) {
 
-		Vendor vendor = vendorService.findByVendorId(request.vendorId());
-		//        hubClient.findHub();
+		Vendor vendor = vendorProductService.findVendorByVendorId(request.vendorId());
+		Boolean isExistHub = hubClient.validateHubId(vendor.getId());
+
+		if (!isExistHub) {
+			throw new CustomException(ErrorCode.VENDOR_HUBID_INVALIDATION);
+		}
 
 		Product product =
 				Product.create(request.name(), Stock.of(request.stock()), request.price(), vendor);
+
+		UUID userHubId = userClient.getUserHubId(userId);
+		if (!isMasterUser(userId)
+				&& !vendor.isHubManager(userHubId)
+				&& !vendor.isVendorManager(userId)) {
+			throw new CustomException(ErrorCode.PRODUCT_FORBIDDEN);
+		}
 
 		return repository.insert(product);
 	}
@@ -38,15 +54,37 @@ public class ProductService {
 		return repository.findByProductId(productId);
 	}
 
-	public Product updateProduct(ProductUpdateRequest request, UUID productId) {
+	public Product updateProduct(ProductUpdateRequest request, UUID productId, Long userId) {
 
-		Product product = repository.findByProductId(productId);
+		Product product = repository.findByProductIdFetchVendor(productId);
+		Vendor vendor = product.getVendor();
+
+		UUID userHubId = userClient.getUserHubId(userId);
+		if (!isMasterUser(userId)
+				&& !vendor.isHubManager(userHubId)
+				&& !vendor.isVendorManager(userId)) {
+			throw new CustomException(ErrorCode.PRODUCT_FORBIDDEN);
+		}
+
 		product.update(request.name(), request.stock(), request.price());
 
 		return repository.insert(product);
 	}
 
-	public UUID deleteProduct(UUID productId) {
+	public UUID deleteProduct(UUID productId, Long userId) {
+
+		Product product = repository.findByProductIdFetchVendor(productId);
+		Vendor vendor = product.getVendor();
+
+		UUID userHubId = userClient.getUserHubId(userId);
+		if (!isMasterUser(userId) && !vendor.isHubManager(userHubId)) {
+			throw new CustomException(ErrorCode.PRODUCT_FORBIDDEN);
+		}
+
 		return repository.deleteByProductId(productId);
+	}
+
+	private boolean isMasterUser(Long userId) {
+		return userId == 1L;
 	}
 }
