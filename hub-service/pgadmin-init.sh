@@ -7,7 +7,7 @@ cat >/pgadmin4/servers.json <<EOF
       "Name": "local-docker",
       "Group": "Servers",
       "Host": "db",
-      "Port": 5435,
+      "Port": 5432,
       "MaintenanceDB": "fastlinehub",
       "Username": "user",
       "SSLMode": "prefer",
@@ -17,7 +17,7 @@ cat >/pgadmin4/servers.json <<EOF
 }
 EOF
 
-echo "db:5435:fastlinehub:user:1234" > /pgpass
+echo "db:5432:fastlinehub:user:1234" > /pgpass
 chmod 600 /pgpass
 chown 5050:5050 /pgpass /pgadmin4/servers.json   # ★ 중요
 

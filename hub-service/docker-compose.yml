@@ -39,7 +39,7 @@ services:
       PGADMIN_SERVER_JSON_FILE: /pgadmin4/servers.json
       PGADMIN_REPLACE_SERVERS_ON_STARTUP: "True"
     ports:
-      - "127.0.0.1:5050:85"
+      - "127.0.0.1:5050:80"
     depends_on:
       db:
         condition: service_healthy
