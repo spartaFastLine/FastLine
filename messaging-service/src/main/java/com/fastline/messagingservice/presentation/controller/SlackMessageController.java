@@ -6,6 +6,7 @@ import com.fastline.common.success.SuccessCode;
 import com.fastline.messagingservice.application.command.SendMessageCommand;
 import com.fastline.messagingservice.application.service.SlackMessageApplicationService;
 import com.fastline.messagingservice.presentation.dto.SendMessageRequest;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +23,16 @@ public class SlackMessageController {
 
 	private final SlackMessageApplicationService slackMessageService;
 
+	@Operation(summary = "슬랙 메세지 전송 API")
 	@PostMapping("/messages")
 	public ResponseEntity<ApiResponse<Void>> generateMessage(
 			@RequestBody SendMessageRequest request) {
 		log.info("Slack 메세지 전송 요청: orderId={}", request.orderId());
 
 		SendMessageCommand command = SendMessageCommand.from(request);
-
 		slackMessageService.send(command);
 
 		log.info("Slack 메세지 전송 성공");
-
 		return ResponseUtil.successResponse(SuccessCode.SLACK_MESSAGE_SENT_SUCCESS);
 	}
 }
